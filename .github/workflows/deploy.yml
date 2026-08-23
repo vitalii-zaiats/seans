@@ -59,7 +59,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dart-lang/setup-dart@v1
+      # Flutter rather than `setup-dart`, and it is not a preference: the pub
+      # workspace at the root includes `apps/tv`, which depends on the Flutter
+      # SDK. A plain Dart toolchain cannot resolve the workspace at all, so it
+      # cannot get as far as the packages that have nothing to do with Flutter.
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
       - run: dart pub get
       - run: dart analyze packages/dart
       - run: dart format --set-exit-if-changed packages/dart
@@ -233,16 +240,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
-
       - run: pipx install --include-deps ansible-core
+
+      # The key lives in the repository, encrypted, and the password to it lives
+      # here. A public repository makes that blob world-downloadable, so the
+      # vault password is the only thing between the internet and this server —
+      # which is the trade `ansible-vault` is for, and worth saying out loud.
+      - name: Unlock the deploy key
+        env:
+          VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s' "$VAULT_PASSWORD" > /tmp/vault_pass
+          chmod 600 /tmp/vault_pass
+          ansible-vault view --vault-password-file /tmp/vault_pass \
+            deploy/ansible/secrets/deploy_key.vault > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          rm -f /tmp/vault_pass
+          # The host key is checked from here on, so a changed one is a refusal
+          # rather than a question nobody is there to answer.
+          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
 
       - name: Deploy
         working-directory: deploy/ansible
-        env:
-          ANSIBLE_HOST_KEY_CHECKING: "False"
         run: |
           ansible-playbook deploy.yml \
             -i "${{ secrets.DEPLOY_HOST }}," \

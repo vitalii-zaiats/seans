@@ -163,15 +163,21 @@ collections: plain `ansible-core` is enough.
 
 | kind | name | what |
 | --- | --- | --- |
-| variable | `DOMAIN` | the apex, e.g. `seans.com` |
+| variable | `DOMAIN` | the apex, e.g. `seans-kino.online` |
 | variable | `ACME_EMAIL` | where Let's Encrypt writes |
+| variable | `DEPLOY_ENABLED` | `true` to let a push reach the server |
 | variable | `SELF_UPDATE_URL` | where the APK lives, if there is one |
 | secret | `DEPLOY_HOST` | the server |
 | secret | `DEPLOY_USER` | the account to ssh in as |
-| secret | `DEPLOY_SSH_KEY` | its private key |
+| secret | `ANSIBLE_VAULT_PASSWORD` | opens `deploy/ansible/secrets/deploy_key.vault` |
 | secret | `POSTGRES_PASSWORD` | the database |
+| secret | `ANDROID_KEYSTORE` + `_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD` | signs the APK; without them it is signed with the debug key and says so |
 
 `GITHUB_TOKEN` covers the registry — no secret needed for GHCR.
+
+The deploy key is committed, encrypted, under `deploy/ansible/secrets/`. That
+directory's README says what that costs in a public repository and how to rotate
+it.
 
 First time on a fresh machine, install Docker with the tag that exists for it
 and nothing else:

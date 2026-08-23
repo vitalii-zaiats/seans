@@ -1,19 +1,12 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_movies_api/super_movies_api.dart';
 
-import 'package:go_router/go_router.dart';
-
 import '../../core/navigate.dart';
 import '../../core/home_hero.dart';
 import '../../core/home_rails.dart';
-import '../../core/nav_tab.dart';
-import '../../platform/box_for_platform.dart';
-import '../../data/camera_store.dart';
 import '../../data/library_store.dart';
 import '../../data/settings_store.dart';
-import '../../data/startup.dart';
 import '../../theme/nocturne.dart';
 import '../../widgets/poster_tile.dart';
 import '../../widgets/rail.dart';
@@ -25,7 +18,6 @@ import 'widgets/clock_hero.dart';
 import 'widgets/hero_panel.dart';
 import 'widgets/pinned_apps_rail.dart';
 import 'widgets/tv_rail.dart';
-import 'widgets/top_bar.dart';
 
 /// The launcher's first screen: hero on top, rails under it.
 class HomeScreen extends StatefulWidget {
@@ -39,9 +31,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  /// Where the highlight sits while the home screen itself is showing.
-  NavTab _destination = NavTab.home;
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
@@ -49,93 +38,15 @@ class _HomeScreenState extends State<HomeScreen> {
         // Without a Material ancestor every Text here falls back to Flutter's
         // debug style — yellow, double-underlined. The other screens get one
         // from their own Scaffold; this one is built straight into the shell.
+        //
+        // The section row used to be drawn here, above this body. It belongs to
+        // the shell now: it was disappearing the moment you left the home
+        // screen, because it was part of the screen you were leaving.
         return Scaffold(
-          body: Column(
-            children: [
-              TopBar(
-                destinations: _tabs(context),
-                selected: _destination,
-                link: state.link,
-                onSelect: _openDestination,
-                onEnter: _toTop,
-              ),
-              Expanded(
-                child: _Body(state: state, controller: widget.scrollController),
-              ),
-            ],
-          ),
+          body: _Body(state: state, controller: widget.scrollController),
         );
       },
     );
-  }
-
-  /// Puts the rails back at the top when focus walks up into the bar.
-  ///
-  /// The bar is outside the scrollable, so without this, going up from a rail
-  /// highlights a tab while the hero stays half off the screen — and pressing
-  /// down again returns to the rail rather than to the hero, so there is no way
-  /// back to it at all.
-  void _toTop() {
-    final controller = widget.scrollController;
-    if (!controller.hasClients || controller.offset <= 0) return;
-    controller.animateTo(
-      0,
-      duration: const Duration(milliseconds: 320),
-      curve: Curves.easeOutCubic,
-    );
-  }
-
-  /// The sections this box shows, in their declared order.
-  ///
-  /// A section switched off in settings is not drawn at all — the point of
-  /// switching it off is that somebody does not want it, and a greyed-out tab
-  /// would still be in the way of the ones they do.
-  List<NavTab> _tabs(BuildContext context) {
-    final settings = context.read<SettingsStore>().value;
-    // Cameras are the one section that appears on its own: a box with none is
-    // most boxes, and an empty tab in everybody's way is worse than a tab that
-    // turns up when it has something in it.
-    final hasCameras = !context.read<CameraStore>().isEmpty;
-    // What the server said this build may carry. A shop that reviews the build
-    // decides some of this, not the owner — so it is checked before the
-    // owner's own switches rather than after: a section that is not allowed
-    // must not be reachable by having been switched on before it was withdrawn.
-    final startup = context.watch<Startup>();
-
-    return [
-      for (final tab in NavTab.values)
-        if (!tab.needsBox || platformBox.present)
-          if (startup.allows(tab.id))
-            if (!tab.optional || settings.showsTab(tab.id))
-              if (tab != NavTab.cameras || hasCameras) tab,
-    ];
-  }
-
-  Future<void> _openDestination(NavTab tab) async {
-    if (tab == NavTab.home) return;
-
-    // On the web a section is a *place*, not a screen laid on top of this one.
-    //
-    // `push` records an imperative route and deliberately leaves the address
-    // alone, so every section read `/` in the bar: nothing could be linked to,
-    // a reload always landed back here, and the browser's own Back returned to
-    // this screen while the bar still had the section underlined — the tab
-    // highlight and the stack had come apart.
-    //
-    // `go` makes it an address. This screen is disposed on the way out and
-    // rebuilt on the way back, so the highlight below has nothing to restore
-    // and cannot fall out of step.
-    if (kIsWeb) {
-      context.go(tab.path);
-      return;
-    }
-
-    // On a box there is no address bar to be right about, and BACK is a key
-    // somebody presses — so a section stays a screen pushed on top, and the
-    // highlight moves at once and comes back when it closes.
-    setState(() => _destination = tab);
-    await openRoute<void>(context, tab.path);
-    if (mounted) setState(() => _destination = NavTab.home);
   }
 }
 

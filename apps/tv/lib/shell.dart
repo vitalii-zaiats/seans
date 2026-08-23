@@ -8,12 +8,16 @@ import 'package:super_movies_api/super_movies_api.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/nav_tab.dart';
+import 'platform/box_for_platform.dart';
+import 'data/startup.dart';
+import 'data/camera_store.dart';
 import 'core/navigate.dart';
 import 'core/router.dart';
 import 'data/library_store.dart';
 import 'data/settings_store.dart';
 import 'features/ambient/ambient_screen.dart';
 import 'features/home/home_cubit.dart';
+import 'features/home/widgets/top_bar.dart';
 import 'features/home/home_state.dart';
 import 'parts/parts.dart';
 import 'platform/box.dart';
@@ -57,13 +61,63 @@ class _LauncherShellState extends State<LauncherShell> {
   /// Not over a player: it has its own controls, its own way out and a picture
   /// that goes edge to edge, so a bar above it would letterbox the film to
   /// make room for a button the screen already offers.
+  /// The sections this machine shows, in their declared order.
+  ///
+  /// Moved here from the home screen along with the row that draws them: it
+  /// was part of the screen you were leaving, so switching to any other tab
+  /// took the tabs away with it and left a lone "back" chip in their place.
+  List<NavTab> get _tabs {
+    final settings = context.read<SettingsStore>().value;
+    // Cameras are the one section that appears on its own: a box with none is
+    // most boxes, and an empty tab in everybody's way is worse than a tab that
+    // turns up when it has something in it.
+    final hasCameras = !context.read<CameraStore>().isEmpty;
+    // What the server said this build may carry. A shop that reviews the build
+    // decides some of this, not the owner — so it is checked before the
+    // owner's own switches rather than after: a section that is not allowed
+    // must not be reachable by having been switched on before it was withdrawn.
+    final startup = context.watch<Startup>();
+
+    return [
+      for (final tab in NavTab.values)
+        if (!tab.needsBox || platformBox.present)
+          if (startup.allows(tab.id))
+            if (!tab.optional || settings.showsTab(tab.id))
+              if (tab != NavTab.cameras || hasCameras) tab,
+    ];
+  }
+
+  /// The section showing now, or `null` on a screen that is deeper than one.
+  ///
+  /// Read off the router rather than remembered. The row used to keep its own
+  /// idea of where you were, and after the browser's Back it kept pointing at
+  /// a section that had already closed.
+  NavTab? get _section {
+    final where = GoRouter.of(context).state.matchedLocation;
+    for (final tab in _tabs) {
+      if (tab.path == where) return tab;
+    }
+    return null;
+  }
+
+  /// The tabs are shown on a section, and nowhere deeper.
+  ///
+  /// A film, a player or the settings are *inside* a section rather than
+  /// beside it, and a row of tabs over them would offer to leave sideways from
+  /// somewhere you got to by going in. Those keep the way back instead.
+  bool get _showsTabs =>
+      _section != null && !isFullBleed(GoRouter.of(context).state.fullPath);
+
   bool get _showsWayBack {
     if (!Settings.pointerByDefault) return false;
     final router = GoRouter.of(context);
     if (isFullBleed(router.state.fullPath)) return false;
-    // Anywhere but home has a way out of it, whatever kind of navigation put
-    // us here — `closeRoute` works out which. Home itself has none, which is
-    // what stops the strip appearing over the screen it would return to.
+    // Not beside the tabs: where they are showing, they *are* the way out —
+    // every section is one click away and home is among them.
+    if (_showsTabs) return false;
+    // Anywhere else, whatever kind of navigation put us here — `closeRoute`
+    // works out which. Home itself has none, which is what stops the strip
+    // appearing over the screen it would return to.
     return router.canPop() || _awayFromHome(router);
   }
 
@@ -157,6 +211,32 @@ class _LauncherShellState extends State<LauncherShell> {
   /// going to put them. Jumping them somewhere else would be the surprise.
   void _goBack() => closeRoute(context);
 
+  /// Switching section, from the row that is always there now.
+  ///
+  /// `openRoute` rather than a bare `go`: on a box a section is still a screen
+  /// pushed on top, so BACK unwinds to home the way it always did. On the web
+  /// it is an address. Either way the row above survives the move, because it
+  /// belongs to the shell and not to what is underneath it.
+  void _openSection(NavTab tab) {
+    if (tab == _section) return;
+    unawaited(openRoute<void>(context, tab.path));
+  }
+
+  /// Puts the rails back at the top when focus walks up into the row.
+  ///
+  /// The row is outside the scrollable, so without this, going up from a rail
+  /// highlights a tab while the hero stays half off the screen — and pressing
+  /// down again returns to the rail rather than to the hero, so there is no way
+  /// back to it at all.
+  void _toTop() {
+    if (!_scrollController.hasClients || _scrollController.offset <= 0) return;
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 320),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
   /// HOME: close whatever is open and put the rails back at the top.
   void _goHome() {
     setState(() => _ambient = false);
@@ -222,6 +302,28 @@ class _LauncherShellState extends State<LauncherShell> {
                   // Painted, because it sits outside every `Scaffold` — and an
                   // unpainted strip is not transparent, it is the browser's
                   // own white showing through the app.
+                  // The section row, above whichever section is showing. It
+                  // lives here rather than in the home screen so that leaving
+                  // home does not take it away — switching tab is a sideways
+                  // move, and the tabs have to still be there to move to.
+                  if (_showsTabs)
+                    // `Material`, and it is not decoration: the row now sits
+                    // in the shell, outside every `Scaffold`, and a `Text`
+                    // with no `Material` above it is painted in Flutter's
+                    // yellow double-underlined debug style. The home screen
+                    // used to lend it one; nothing does now.
+                    Material(
+                      color: context.ground,
+                      child: BlocBuilder<HomeCubit, HomeState>(
+                        builder: (context, state) => TopBar(
+                          destinations: _tabs,
+                          selected: _section ?? NavTab.home,
+                          link: state.link,
+                          onSelect: _openSection,
+                          onEnter: _toTop,
+                        ),
+                      ),
+                    ),
                   if (_showsWayBack)
                     ColoredBox(
                       color: context.ground,

@@ -35,11 +35,20 @@
 (launcher) {
 	encode zstd gzip
 
-	# Pairing lives here as well as on its own name, and this is the one the QR
-	# code carries: it is the shortest, and a phone camera is pointed at it from
-	# across a room. The path stays `/r/…` because the remote app's own router
-	# owns that route — see `apps/remote/src/router.ts`.
+	# Pairing lives here as well as on its own name — a QR already printed on a
+	# television screen should keep working.
+	#
+	# `/assets/*` has to come with it, and missing that is what made this page
+	# load as a blank rectangle: the HTML arrived from the remote app and its
+	# one script was fetched from `/assets/…`, which everything-else-goes-to-web
+	# answered with `index.html` — 200, `text/html`, and a module the browser
+	# cannot run. The launcher is a Nuxt build and keeps its own code under
+	# `/_nuxt/`, so this prefix is free.
 	handle /r/* {
+		reverse_proxy remote:8080
+	}
+
+	handle /assets/* {
 		reverse_proxy remote:8080
 	}
 

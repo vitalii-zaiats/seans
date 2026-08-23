@@ -223,6 +223,19 @@
     </div>
   </div>
 
+  <!-- hls.js, and it has to be on the page for any of this to work.
+       Every stream here is HLS and no desktop browser decodes it: the library
+       reads the playlist itself and feeds a `<video>` through Media Source
+       Extensions. It shipped in `web/` but nothing ever loaded it, so
+       `window.Hls` was undefined and `web_playback.dart` fell through to
+       asking the element. Chrome answers `maybe` to `application/vnd.apple.
+       mpegurl` and Firefox answers "", which is why one of them appeared to
+       work and the other said the browser could not play HLS at all.
+
+       `defer`, not `async`: playback starts long after load, so there is
+       nothing to race, and this must not hold up the first frame. -->
+  <script src="hls.min.js" defer></script>
+
   <!-- Not the generated one: `web/flutter_bootstrap.js` drives the screen above
        off the loader's own milestones. -->
   <script src="flutter_bootstrap.js" async></script>

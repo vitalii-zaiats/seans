@@ -18,6 +18,9 @@ import type {
   Identity,
   Init,
   Resolved,
+  Schedule,
+  TvChannels,
+  TvStream,
   Account,
 } from '~/types/api'
 
@@ -155,6 +158,30 @@ export const api = {
    */
   init: (platform: 'android' | 'web' | 'linux' | 'windows', ver = '0.0.0') =>
     request<Init>('/init', { method: 'POST', body: { platform, ver } }),
+
+  /** Every free channel, with its categories. */
+  channels: () => request<TvChannels>('/tv/channels'),
+
+  /**
+   * A playable address for a channel.
+   *
+   * `use_proxy` is not optional here and is the whole reason this works in a
+   * browser: the stitched playlist comes from a host that answers no
+   * `access-control-allow-origin`, so a page cannot read it. With the flag the
+   * address points at `/stream`, which it can.
+   *
+   * A lease rather than an address — it goes stale after `refresh_in` seconds,
+   * so ask again rather than keeping it.
+   */
+  openChannel: (id: number) =>
+    request<TvStream>(`/tv/channels/${id}/stream`, {
+      method: 'POST',
+      query: { use_proxy: 'true' },
+    }),
+
+  /** One channel's programmes for one day. Today when no day is given. */
+  schedule: (id: number, day?: string) =>
+    request<Schedule>(`/tv/channels/${id}/schedule`, { query: { day } }),
 
   /**
    * A player page, read for the stream inside it.

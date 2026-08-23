@@ -19,6 +19,8 @@ const props = defineProps<{
   startAt: number
   /** What went wrong, if anything did. */
   failed: string | null
+  /** A channel rather than a title: no bookmark, and nothing to seek back to. */
+  live?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -111,14 +113,16 @@ onBeforeUnmount(() => {
 
       <div v-else class="waiting">
         <span class="dot" />
-        <div class="mono">Шукаємо потік…</div>
-        <p class="mono note">
+        <div class="mono">{{ live ? 'Відкриваємо канал…' : 'Шукаємо потік…' }}</div>
+        <p v-if="!live" class="mono note">
           Каталог віддає сторінку плеєра, а не відео — сервер читає її й дістає доріжку.
         </p>
       </div>
     </div>
 
-    <div v-if="src" class="mono hint">пробіл — пауза · ←→ 30 с · esc — вийти</div>
+    <div v-if="src" class="mono hint">
+      {{ live ? 'пробіл — пауза · esc — вийти' : 'пробіл — пауза · ←→ 30 с · esc — вийти' }}
+    </div>
   </div>
 </template>
 

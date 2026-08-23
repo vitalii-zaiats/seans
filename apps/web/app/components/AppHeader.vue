@@ -48,6 +48,7 @@ const initial = computed(() => account.value?.display_name?.trim().slice(0, 1).t
       <NuxtLink to="/" class="brand">SEANS</NuxtLink>
       <nav>
         <NuxtLink v-for="one in sections" :key="one.type" :to="one.to">{{ one.title }}</NuxtLink>
+        <NuxtLink to="/live">ТБ</NuxtLink>
         <NuxtLink to="/list">Мій список</NuxtLink>
         <NuxtLink to="/downloads">Завантажити</NuxtLink>
       </nav>

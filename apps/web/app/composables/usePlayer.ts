@@ -12,7 +12,7 @@
  * uploaded is not the same as a player page that would not open.
  */
 
-import type { Card, Details, Season } from '~/types/api'
+import type { Card, Details, Season, TvChannel } from '~/types/api'
 
 export interface Playing {
   slug: string
@@ -27,6 +27,13 @@ export interface Playing {
   episode: number | null
   /** What went wrong, if anything did. */
   failed: string | null
+  /**
+   * Live television, where there is no "where you got to".
+   *
+   * A channel has no end and no position worth keeping: a bookmark on it would
+   * mean "resume at 14:32 yesterday", which is not a thing anybody can do.
+   */
+  live: boolean
 }
 
 /** The embed pages of one season, or of one episode of it. */
@@ -68,6 +75,7 @@ export function usePlayer() {
       season: options.season ?? previous?.season ?? null,
       episode: options.episode ?? previous?.episode ?? null,
       failed: null,
+      live: false,
     }
 
     try {
@@ -106,10 +114,48 @@ export function usePlayer() {
     }
   }
 
+  /**
+   * Opens a channel.
+   *
+   * One request rather than the film's two: a channel's lease already carries a
+   * playable address, and asking for it with `use_proxy` is what makes it
+   * readable from a page at all.
+   */
+  async function playChannel(channel: TvChannel): Promise<void> {
+    const slug = `tv-${channel.id}`
+    playing.value = {
+      slug,
+      title: channel.name,
+      meta: channel.now_playing ?? 'ПРЯМИЙ ЕФІР',
+      art: channel.banner_url ?? channel.icon_url,
+      src: null,
+      startAt: 0,
+      season: null,
+      episode: null,
+      failed: null,
+      live: true,
+    }
+
+    try {
+      const lease = await api.openChannel(channel.id)
+      if (playing.value?.slug !== slug) return
+      // Never `plain_url` here: that address exists because Android rejects the
+      // stitching host's certificate chain, and a page served over https cannot
+      // load plain http at all.
+      playing.value = { ...playing.value, src: lease.url }
+    } catch (error) {
+      if (playing.value?.slug !== slug) return
+      playing.value = {
+        ...playing.value,
+        failed: error instanceof ApiError ? error.message : 'Канал не відкрився',
+      }
+    }
+  }
+
   /** Where the playhead is, in milliseconds, as the library keeps it. */
   function remember(position: number, duration: number): void {
     const current = playing.value
-    if (!current || duration <= 0) return
+    if (!current || current.live || duration <= 0) return
 
     const entry = {
       slug: current.slug,
@@ -133,5 +179,5 @@ export function usePlayer() {
     playing.value = null
   }
 
-  return { playing, play, remember, close }
+  return { playing, play, playChannel, remember, close }
 }

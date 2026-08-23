@@ -161,6 +161,7 @@ onBeforeUnmount(() => clearInterval(turning))
       :src="player.playing.value.src"
       :start-at="player.playing.value.startAt"
       :failed="player.playing.value.failed"
+      :live="player.playing.value.live"
       @close="player.close"
       @progress="player.remember($event.position, $event.duration)"
     />

@@ -240,6 +240,66 @@ export interface Details {
   is_playable: boolean
 }
 
+/* ── live television ──────────────────────────────────────────────────────── */
+
+export interface TvCategory {
+  id: number
+  title: string
+  slug: string | null
+  /** The "everything" chip, which the list carries rather than the client inventing. */
+  is_all: boolean
+}
+
+export interface TvChannel {
+  id: number
+  slug: string
+  name: string
+  icon_url: string | null
+  banner_url: string | null
+  /** The channel's own accent, when it has one — used behind a missing icon. */
+  colour: string | null
+  /** Category ids, in the order the list gives them. */
+  categories: number[]
+  /** How many days back this channel can be rewound. Zero means live only. */
+  catchup_days: number
+  /** What is on right now, when the source says. */
+  now_playing: string | null
+}
+
+export interface TvChannels {
+  items: TvChannel[]
+  /** In the order the site shows them, which is not the order they arrive in. */
+  categories: TvCategory[]
+}
+
+/**
+ * A lease, not an address: it carries a session and goes stale after
+ * `refresh_in` seconds. Ask again rather than storing it.
+ */
+export interface TvStream {
+  channel_id: number
+  url: string
+  /** The same stream over plain http — for Android, useless to a page on https. */
+  plain_url: string | null
+  direct_url: string | null
+  refresh_in: number
+}
+
+export interface Programme {
+  id: number
+  title: string
+  /** ISO-8601 with an offset, like every timestamp here. */
+  start: string
+  stop: string
+  available: boolean
+}
+
+export interface Schedule {
+  channel_id: number
+  day: string
+  items: Programme[]
+}
+
 /* ── playback ─────────────────────────────────────────────────────────────── */
 
 export interface ResolvedStream {

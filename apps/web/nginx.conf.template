@@ -62,6 +62,15 @@ server {
 
     # Artwork. Long-lived on purpose: a poster is addressed by a content hash
     # upstream, so the bytes behind one of these paths do not change.
+    # Free-to-air channels. Named here because the launcher now has a screen for
+    # them, and that screen lives at `/live` precisely so it cannot be confused
+    # with this.
+    location /tv/ {
+        set $api ${API_UPSTREAM};
+        proxy_pass http://$api;
+        include /etc/nginx/proxy-api.conf;
+    }
+
     # Reading a player page for the stream inside it. A browser cannot: the page
     # is served from a host with no CORS header, and it wants a `Referer` a page
     # is not allowed to set.

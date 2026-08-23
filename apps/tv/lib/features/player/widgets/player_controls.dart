@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:super_movies_api/super_movies_api.dart';
 
+import '../../../widgets/back_chip.dart';
+import '../../../platform/box_for_platform.dart';
+import '../../../core/navigate.dart';
 import '../../../core/labels.dart';
 import '../../../platform/fullscreen.dart';
 import '../../../playback/playback.dart';
@@ -85,6 +88,14 @@ class PlayerControls extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Something to click for a machine with a pointer. A remote
+                  // has BACK under a thumb, but a PWA window has no browser
+                  // Back and the shell hides its way-back strip over a picture
+                  // that goes edge to edge — so there was nothing to aim at.
+                  if (!platformBox.present) ...[
+                    BackChip(onSelect: () => closeRoute(context)),
+                    SizedBox(height: context.px(24)),
+                  ],
                   Text(
                     details.name,
                     style: TextStyle(

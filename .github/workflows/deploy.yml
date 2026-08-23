@@ -312,4 +312,5 @@ jobs:
             -e registry_token="${{ secrets.GITHUB_TOKEN }}" \
             -e postgres_password="${{ secrets.POSTGRES_PASSWORD }}" \
             -e self_update_url="${{ vars.SELF_UPDATE_URL }}" \
-            -e catalogue_proxy="${{ secrets.CATALOGUE_PROXY }}"
+            -e catalogue_proxy="${{ secrets.CATALOGUE_PROXY }}" \
+            -e latest_version="${{ vars.LATEST_VERSION }}"

@@ -1,3 +1,7 @@
+import '../../widgets/back_chip.dart';
+import '../../platform/box_for_platform.dart';
+import '../../core/navigate.dart';
+
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -194,6 +198,20 @@ class _LivePlayerScreenState extends State<LivePlayerScreen> {
       case LogicalKeyboardKey.enter:
         _showControls();
         return KeyEventResult.handled;
+      // The way out. Both hints on screen say "⌫ назад", and until this
+      // existed neither key did anything: on a box BACK is a *system* key, so
+      // the platform popped the route without ever reaching here — and in a
+      // browser there is no system key at all. In a PWA window there is no
+      // browser Back either, and the way-back strip is hidden over a picture
+      // that goes edge to edge, so a viewer had nothing left to press.
+      //
+      // Escape as well as Backspace: it is what a browser trains people to
+      // reach for to get out of something full-screen.
+      case LogicalKeyboardKey.backspace:
+      case LogicalKeyboardKey.escape:
+      case LogicalKeyboardKey.goBack:
+        closeRoute(context);
+        return KeyEventResult.handled;
       default:
         return KeyEventResult.ignored;
     }
@@ -352,6 +370,15 @@ class _Overlay extends StatelessWidget {
                 children: [
                   Row(
                     children: [
+                      // A machine with a pointer needs something to click. A
+                      // remote has BACK under a thumb; a PWA window has no
+                      // browser Back at all, and the shell's way-back strip is
+                      // hidden over a picture that goes edge to edge — so
+                      // without this the only way out was a key nobody can see.
+                      if (!platformBox.present) ...[
+                        BackChip(onSelect: () => closeRoute(context)),
+                        SizedBox(width: context.px(20)),
+                      ],
                       const _LiveBadge(),
                       SizedBox(width: context.px(16)),
                       Flexible(

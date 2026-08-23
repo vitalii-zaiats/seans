@@ -75,6 +75,10 @@ services:
       # correct on a Ukrainian machine and returns unplayable titles anywhere
       # else — see `api.settings.catalogue_proxy`.
       API_CATALOGUE_PROXY: ${API_CATALOGUE_PROXY:-}
+      # What the newest build is. `POST /init` compares a box's own version
+      # against it, so an APK nobody names here is an APK no box ever hears
+      # about — and the downloads page has no version to print.
+      API_LATEST_VERSION: ${API_LATEST_VERSION:-0.0.0}
     depends_on:
       postgres:
         condition: service_healthy

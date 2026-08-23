@@ -1,3 +1,5 @@
+import '../../core/navigate.dart';
+
 import 'dart:async';
 import 'dart:ui';
 
@@ -326,6 +328,20 @@ class _PlayerScreenState extends State<PlayerScreen> {
         return KeyEventResult.handled;
       case LogicalKeyboardKey.arrowDown:
         _openPicker();
+        return KeyEventResult.handled;
+      // The way out. Both hints on screen say "⌫ назад", and until this
+      // existed neither key did anything: on a box BACK is a *system* key, so
+      // the platform popped the route without ever reaching here — and in a
+      // browser there is no system key at all. In a PWA window there is no
+      // browser Back either, and the way-back strip is hidden over a picture
+      // that goes edge to edge, so a viewer had nothing left to press.
+      //
+      // Escape as well as Backspace: it is what a browser trains people to
+      // reach for to get out of something full-screen.
+      case LogicalKeyboardKey.backspace:
+      case LogicalKeyboardKey.escape:
+      case LogicalKeyboardKey.goBack:
+        closeRoute(context);
         return KeyEventResult.handled;
       default:
         return KeyEventResult.ignored;

@@ -1,7 +1,7 @@
 name: seans_tv
 description: The home screen of an Android TV box, and the movie app it is made of.
 publish_to: none
-version: 0.1.0+1
+version: 0.1.1+2
 resolution: workspace
 
 environment:

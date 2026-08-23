@@ -71,6 +71,10 @@ services:
       # there is a build to point at, and the page says so rather than offering
       # a dead link — see `apps/web/app/pages/downloads.vue`.
       API_SELF_UPDATE_URL: ${API_SELF_UPDATE_URL:-}
+      # Where the catalogue is asked from. Empty means "from here", which is
+      # correct on a Ukrainian machine and returns unplayable titles anywhere
+      # else — see `api.settings.catalogue_proxy`.
+      API_CATALOGUE_PROXY: ${API_CATALOGUE_PROXY:-}
     depends_on:
       postgres:
         condition: service_healthy

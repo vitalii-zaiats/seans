@@ -311,4 +311,5 @@ jobs:
             -e registry_user="${{ github.actor }}" \
             -e registry_token="${{ secrets.GITHUB_TOKEN }}" \
             -e postgres_password="${{ secrets.POSTGRES_PASSWORD }}" \
-            -e self_update_url="${{ vars.SELF_UPDATE_URL }}"
+            -e self_update_url="${{ vars.SELF_UPDATE_URL }}" \
+            -e catalogue_proxy="${{ secrets.CATALOGUE_PROXY }}"

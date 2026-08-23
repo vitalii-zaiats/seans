@@ -78,6 +78,24 @@ class Settings(BaseSettings):
     playback_timeout: float = 20.0
 
     # --- catalogue ----------------------------------------------------------
+    # Where the catalogue is asked from.
+    #
+    # kinostrain.com is licensed for Ukraine and answers a request from
+    # anywhere else with the metadata intact and `player_data` **empty** — the
+    # title looks browsable and turns out to be unplayable. Measured, not
+    # guessed: the same `/catalogue/content/susidi-zverhu` returns three
+    # players to a Ukrainian address and none to a German one.
+    #
+    # Only this client needs it. ashdi's player pages and its CDN answer a
+    # German address perfectly well (200 on both), and so does sweet.tv,
+    # including opening a stream — so no video is routed through here and the
+    # bandwidth stays where it was.
+    #
+    #     API_CATALOGUE_PROXY=http://user:pass@host:port
+    #     API_CATALOGUE_PROXY=socks5://host:1080
+    catalogue_proxy: str | None = None
+    catalogue_timeout: float = 20.0
+
     # What their own site sends. Upstream does not check it today — a plain curl
     # works — but it costs nothing, and it is the header a service like this
     # starts checking first.

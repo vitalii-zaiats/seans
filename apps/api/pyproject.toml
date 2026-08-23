@@ -8,6 +8,12 @@ dependencies = [
     "alembic>=1.14",
     "asyncpg>=0.30",
     "fastapi>=0.115",
+    # Imported directly by `modules/proxy`, `modules/stream` and
+    # `modules/playback`; it arrived behind fastapi before, which is a
+    # dependency nobody declared. `[socks]` because a `socks5://` proxy fails at
+    # runtime without `socksio`, and the one place this matters is a machine
+    # somebody is trying to give a Ukrainian exit to.
+    "httpx[socks]>=0.28",
     "pydantic[email]>=2.10",
     "pydantic-settings>=2.7",
     "sqlalchemy[asyncio]>=2.0",

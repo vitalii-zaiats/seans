@@ -183,9 +183,18 @@ collections: plain `ansible-core` is enough.
 | secret | `DEPLOY_USER` | the account to ssh in as |
 | secret | `ANSIBLE_VAULT_PASSWORD` | opens `deploy/ansible/secrets/deploy_key.vault` |
 | secret | `POSTGRES_PASSWORD` | the database |
+| secret | `CATALOGUE_PROXY` | an exit in Ukraine for the catalogue — see below |
 | secret | `ANDROID_KEYSTORE` + `_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD` | signs the APK; without them it is signed with the debug key and says so |
 
 `GITHUB_TOKEN` covers the registry — no secret needed for GHCR.
+
+**The catalogue is geo-restricted and nothing else is.** kinostrain.com answers
+a request from outside Ukraine with the metadata intact and `player_data`
+empty — every title looks browsable and turns out to be unplayable. Measured:
+the same title returns three players to a Ukrainian address and none to a German
+one. `CATALOGUE_PROXY` points that one client at an exit in Ukraine. ashdi's
+player pages, its CDN and sweet.tv all answer a foreign address perfectly well,
+so no video is routed through it.
 
 **The images land private even though the repository is public.** That is GHCR's
 default and it does not stop a deploy: the playbook logs in with the same run's

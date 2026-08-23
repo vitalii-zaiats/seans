@@ -198,9 +198,7 @@ class _RemoteControlState extends State<RemoteControl> {
     // Everything below belongs to a screen that is itself the control. Where
     // there is none, this is not the arbiter's key: `Focusable` has already
     // had OK, and `HardwareTyping` the letters.
-    final controls = from == null
-        ? null
-        : FocusAreas.enclosing(from)!.controls;
+    final controls = from == null ? null : FocusAreas.enclosing(from)!.controls;
     if (controls == null) return KeyEventResult.ignored;
 
     final transport = _transport[key];
@@ -240,6 +238,12 @@ class _RemoteControlState extends State<RemoteControl> {
       for (final next in parent.childrenTowards(area, move)) {
         if (next.enter()) return;
       }
+      // Areas first, then whatever this one holds itself: a screen is rarely
+      // all areas, and the «Далі» under a row of chips is a focusable of the
+      // body's own. Looking for it only after the areas keeps the common case
+      // — a row handing over to the row below it — deciding on layout rather
+      // than on which pixel happens to be nearest.
+      if (parent.moveOnto(from, move)) return;
       area = parent;
     }
   }

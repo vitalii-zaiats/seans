@@ -106,7 +106,8 @@ abstract final class Back {
   }
 
   /// The same, for a widget that has a context and no router in hand.
-  static void requestFrom(BuildContext context) => request(GoRouter.of(context));
+  static void requestFrom(BuildContext context) =>
+      request(GoRouter.of(context));
 }
 
 /// The single door the platform's BACK comes through on Android.

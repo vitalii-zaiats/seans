@@ -58,8 +58,7 @@ class HardwareTyping extends StatefulWidget {
   State<HardwareTyping> createState() => _HardwareTypingState();
 }
 
-class _HardwareTypingState extends State<HardwareTyping>
-    implements DigitSink {
+class _HardwareTypingState extends State<HardwareTyping> implements DigitSink {
   /// Set while a keypad below is drawn. Read at the moment of the press, so
   /// nothing here rebuilds when it changes.
   ValueChanged<String>? _digits;

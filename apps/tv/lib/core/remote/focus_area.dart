@@ -17,6 +17,36 @@ enum RemoteMove {
 
   /// Towards the end of that axis — down the screen, or across to its right.
   final bool forward;
+
+  /// Whether [to] is on the far side of [from] in this direction at all.
+  ///
+  /// Read off the near edges rather than the centres: a wide row under a narrow
+  /// button is still below it, and comparing centres would call a tall
+  /// neighbour "not ahead" for no reason anybody watching could see.
+  bool isAhead(Rect from, Rect to) => switch (this) {
+    RemoteMove.up => to.bottom <= from.top + _slack,
+    RemoteMove.down => to.top >= from.bottom - _slack,
+    RemoteMove.left => to.right <= from.left + _slack,
+    RemoteMove.right => to.left >= from.right - _slack,
+  };
+
+  /// How far along the press [to] lies.
+  double stepFrom(Rect from, Rect to) => switch (this) {
+    RemoteMove.up => from.top - to.bottom,
+    RemoteMove.down => to.top - from.bottom,
+    RemoteMove.left => from.left - to.right,
+    RemoteMove.right => to.left - from.right,
+  };
+
+  /// How far off to the side it lies, across the press.
+  double driftFrom(Rect from, Rect to) => axis == Axis.vertical
+      ? (to.center.dx - from.center.dx).abs()
+      : (to.center.dy - from.center.dy).abs();
+
+  /// Rows drawn to the same edge come back a fraction of a pixel apart once the
+  /// interface scale has been through a `double`, and a strict comparison then
+  /// calls a neighbour that is plainly below "not below".
+  static const _slack = 1.0;
 }
 
 /// A screen that *is* the control, rather than a list of things to focus.
@@ -79,6 +109,15 @@ abstract interface class RemoteArea {
   /// The areas beside [from] that a press in this direction would reach, in
   /// the order it would reach them.
   List<RemoteArea> childrenTowards(RemoteArea from, RemoteMove move);
+
+  /// Moves onto a focusable of this area's own that no child area holds.
+  ///
+  /// A screen is rarely all areas: the wizard puts a row of chips over a plain
+  /// «Далі», the details screen a row of buttons over a strip. Leaving the row
+  /// downwards has to be able to land on that button, and a walk that only ever
+  /// looked for *areas* beside the one it was in walked past it — the arrows
+  /// simply stopped, on a screen with something plainly below them.
+  bool moveOnto(FocusNode from, RemoteMove move);
 }
 
 /// An area of the screen the remote can be handed.
@@ -318,6 +357,40 @@ class _FocusAreaState extends State<FocusArea>
     ];
   }
 
+  @override
+  bool moveOnto(FocusNode from, RemoteMove move) {
+    // Mine alone: a node inside a child area belongs to that area, and reaching
+    // it is `childrenTowards`' business rather than this one's.
+    final loose = [
+      for (final node in _scope.traversalDescendants)
+        if (identical(FocusAreas.enclosing(node), this) && !node.rect.isEmpty)
+          node,
+    ];
+    if (loose.isEmpty) return false;
+
+    final origin = from.rect;
+    final ahead = [
+      for (final node in loose)
+        if (move.isAhead(origin, node.rect)) node,
+    ];
+    if (ahead.isEmpty) return false;
+
+    // Nearest along the press, and where two are equally far along it, the one
+    // more nearly in front: a button under the left end of a row is what UP and
+    // DOWN mean there, not the one under its far end.
+    ahead.sort((a, b) {
+      final byStep = move
+          .stepFrom(origin, a.rect)
+          .compareTo(move.stepFrom(origin, b.rect));
+      if (byStep != 0) return byStep;
+      return move
+          .driftFrom(origin, a.rect)
+          .compareTo(move.driftFrom(origin, b.rect));
+    });
+    ahead.first.requestFocus();
+    return true;
+  }
+
   /// The areas directly inside this one, in the order somebody sees them.
   ///
   /// Ordered by where they are on the panel rather than by when they were
@@ -328,9 +401,7 @@ class _FocusAreaState extends State<FocusArea>
       for (final area in FocusAreas._areas)
         if (identical(area.parent, this)) area,
     ];
-    final at = {
-      for (final area in mine) area: area._along(widget.flow),
-    };
+    final at = {for (final area in mine) area: area._along(widget.flow)};
     mine.sort((a, b) {
       final byPlace = at[a]!.compareTo(at[b]!);
       return byPlace != 0 ? byPlace : a._order.compareTo(b._order);
@@ -420,9 +491,8 @@ abstract final class FocusAreas {
   ///
   /// Deepest, because the innermost thing on screen is the newest: an overlay
   /// wins over the screen behind it without anybody ranking them.
-  static List<RemoteArea> get landings => _sorted(
-    (area) => area.available && area.landing,
-  );
+  static List<RemoteArea> get landings =>
+      _sorted((area) => area.available && area.landing);
 
   /// Everything focus could go, in the same order — the last resort.
   static List<RemoteArea> get anywhere => _sorted((area) => area.available);

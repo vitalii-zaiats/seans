@@ -1,8 +1,10 @@
 # Serves the pairing page — the one a television's QR code opens on a phone.
 #
-# Only `/auth` is proxied: this app signs a person in and approves a device, and
-# it has no business reaching any other part of the API. A narrower proxy is a
-# smaller thing to get wrong.
+# Only `/api/v1/auth` is proxied: this app signs a person in and approves a
+# device, and it has no business reaching any other part of the API. A narrower
+# proxy is a smaller thing to get wrong — which is also why the version is
+# spelled out rather than left as `/api/`. A version this page has never been
+# built against is not one it should be able to reach.
 
 # Resolved per request, not at start-up.
 #
@@ -29,7 +31,7 @@ server {
         return 200 "ok\n";
     }
 
-    location /auth/ {
+    location /api/v1/auth/ {
         set $api ${API_UPSTREAM};
         proxy_pass http://$api;
         include /etc/nginx/proxy-api.conf;

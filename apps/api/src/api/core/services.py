@@ -21,6 +21,7 @@ from api.core.database import Session
 from api.modules.accounts.service import AccountService
 from api.modules.installs.service import InstallService
 from api.modules.release.service import ReleaseService
+from api.modules.titles.service import TitleService
 from api.settings import settings
 
 
@@ -32,6 +33,7 @@ class Services:
     installs: InstallService
     accounts: AccountService
     release: ReleaseService
+    titles: TitleService
 
 
 def build(session: AsyncSession) -> Services:
@@ -49,6 +51,7 @@ def build(session: AsyncSession) -> Services:
         accounts=accounts,
         release=release,
         installs=InstallService(session, accounts, release),
+        titles=TitleService(session),
     )
 
 

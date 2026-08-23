@@ -51,7 +51,7 @@ strict = true
 # from the directory it happens to sit in and reports the two `__main__`s as
 # the same module.
 explicit_package_bases = true
-mypy_path = "apps/api/src:packages/python/crawlers/src:packages/python/httpkit/src:packages/python/kinostrain/src:packages/python/sweet-tv/src"
+mypy_path = "apps/api/src:packages/python/crawlers/src:packages/python/httpkit/src:packages/python/kinostrain/src:packages/python/sweet-tv/src:packages/python/t9/src"
 
 [tool.pytest.ini_options]
 testpaths = ["apps/api/tests", "packages/python"]

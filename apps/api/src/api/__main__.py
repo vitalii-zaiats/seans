@@ -1,19 +1,23 @@
 """Entry point: `uv run api`.
 
-Two things a shell needs from this app: run it, and put the first admin in the
-database. The second exists because the role cannot be granted over HTTP by
-anybody who does not already have it — which is correct, and which leaves the
-very first one with no way in.
+Three things a shell needs from this app: run it, put the first admin in the
+database, and build the catalogue. The admin command exists because the role
+cannot be granted over HTTP by anybody who does not already have it — which is
+correct, and which leaves the very first one with no way in. The catalogue one
+exists because loading it is minutes of work over files somebody scraped, and
+that is not a request.
 
     uv run api                                  serve
     uv run api serve
     uv run api admin boss@example.com           create, or promote if it exists
+    uv run api titles .data                     merge the catalogue dumps and load them
 """
 
 import argparse
 import asyncio
 import getpass
 import sys
+from pathlib import Path
 
 import uvicorn
 
@@ -53,6 +57,29 @@ async def _admin(email: str, password: str | None, display_name: str | None) -> 
         return 0
 
 
+async def _titles(folder: Path, replace: bool) -> int:
+    """Read the dumps, merge, and write the result as one transaction."""
+    async with services() as api:
+        if replace:
+            await api.titles.clear()
+        loaded = await api.titles.rebuild(folder)
+        await api.session.commit()
+
+    print(
+        f"{loaded.titles} titles from {loaded.sources} source rows: "
+        f"{loaded.identifiers} identifiers, {loaded.aliases} aliases, "
+        f"{loaded.seasons} seasons, {loaded.episodes} episodes, "
+        f"{loaded.streams} streams, {loaded.keys} keypad codes"
+    )
+    if loaded.contested:
+        # Each of these is a merge that should have happened and did not. Worth
+        # reading; never worth failing the load over.
+        print(f"{len(loaded.contested)} contested identifiers, first few:")
+        for line in loaded.contested[:10]:
+            print(f"  {line}")
+    return 0
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(prog="api", description="Super Movies API")
     commands = parser.add_subparsers(dest="command")
@@ -68,13 +95,24 @@ def main() -> None:
     )
     admin.add_argument("--name", dest="display_name", help="defaults to the part before the @")
 
+    titles = commands.add_parser("titles", help="merge the catalogue dumps and load them")
+    titles.add_argument("folder", type=Path, help="where the .jsonl dumps are")
+    titles.add_argument(
+        "--keep",
+        action="store_true",
+        help="do not empty the tables first. Only useful on an empty database — "
+        "a load writes the whole catalogue and does not reconcile with what is there.",
+    )
+
     arguments = parser.parse_args()
 
-    if arguments.command != "admin":
+    if arguments.command not in ("admin", "titles"):
         serve()
         return
 
     try:
+        if arguments.command == "titles":
+            raise SystemExit(asyncio.run(_titles(arguments.folder, not arguments.keep)))
         raise SystemExit(
             asyncio.run(_admin(arguments.email, arguments.password, arguments.display_name))
         )

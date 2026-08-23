@@ -6,7 +6,7 @@ A monorepo: Python services, Dart clients and a landing site in one tree.
 
 ```
 apps/
-  api/        Python HTTP API — /init, accounts, pairing, remote control
+  api/        Python HTTP API at /api/v1 — accounts, pairing, remote control
   tv/         Flutter launcher for an Android TV box, and its web build
   web/        Nuxt 4 + TS — the catalogue in a browser
   admin/      Vue 3 + TS dashboard — install statistics
@@ -97,18 +97,23 @@ docker compose -f compose.yaml -f compose.edge.yaml logs ngrok | grep -o 'https:
 | `/r/<code>` | the phone pairing page (`apps/remote`) |
 | `/dashboard/` | install statistics (`apps/admin`) |
 | `/box/` | the launcher's own web build (`apps/tv`, `--profile tv`) |
-| `/catalogue/`, `/auth/`, `/init`, `/proxy/`, … | the API |
+| `/api/v1/…` | the API |
+| `/proxy/`, `/stream` | the API's two relays, outside every version |
 
 **Nothing is rebuilt when the tunnel address changes.** Every client here asks
-for `/catalogue/…` with no host, so a bundle knows nothing about where it is
-served from. The one exception is the Flutter build: it needs `--base-href` to
-know its prefix, and `--dart-define=REMOTE=<public url>` if the QR code it draws
-is to be scannable from a phone — a QR cannot carry a relative address.
+for `/api/v1/catalogue/…` with no host, so a bundle knows nothing about where
+it is served from — only which version of the API it was written against, and
+that is in its own source. The one exception is the Flutter build: it needs
+`--base-href` to know its prefix, and `--dart-define=REMOTE=<public url>` if
+the QR code it draws is to be scannable from a phone — a QR cannot carry a
+relative address.
 
 `deploy/edge/nginx.conf.template` is the front door, and it carries the one rule
-worth knowing: an app's prefix must never collide with an API path. That is why
-the launcher is at `/box/` and not `/tv/`, and the dashboard at `/dashboard/`
-and not `/admin/` — the API owns both of those.
+worth knowing: an app's prefix must never collide with an API path. Since the
+API moved under `/api/` that leaves four names to stay off — `api`, `proxy`,
+`stream`, `health` — where it used to be the whole API surface. `/box/` and
+`/dashboard/` are from before that, and stay: a bundle is built knowing its own
+prefix.
 
 ## Deploying it
 
@@ -222,8 +227,8 @@ README line.
 
 ## What exists so far
 
-**`POST /init`** — the first call an app makes, safe on every launch. It answers
-with the install, an account, a session, the update plan and the feature flags.
+**`POST /api/v1/init`** — the first call an app makes, safe on every launch. It
+answers with the install, an account, a session, the update plan and the feature flags.
 Send no install id and nothing is written down at all: that is the "everything
 stays on this device" case, and the answer still carries the update plan.
 

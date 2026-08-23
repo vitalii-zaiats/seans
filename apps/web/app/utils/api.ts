@@ -1,11 +1,16 @@
 /**
  * One place that knows how to ask the API something.
  *
- * Same-origin, always: the client asks for `/catalogue/…` with no host, and
- * something in front puts the two behind one address — nginx in the image, the
- * dev proxy in `nuxt.config.ts`. That is why there is no base URL to configure
- * and no CORS to arrange, and why the `/proxy/…` image paths the API hands out
- * work without anybody rewriting them.
+ * Same-origin, always: the client asks for `/api/v1/catalogue/…` with no host,
+ * and something in front puts the two behind one address — nginx in the image,
+ * the dev proxy in `nuxt.config.ts`. That is why there is no base URL to
+ * configure and no CORS to arrange.
+ *
+ * The version is written once, in `request`, and every path below is relative
+ * to it. The `/proxy/…` image paths the API hands back are *not*: the server
+ * serves those at its root, outside the versions, so they keep working out of
+ * a browser cache that was told to hold them for a week. Nothing here has to
+ * do anything about that — it hands them on as they came.
  */
 
 import type {
@@ -23,6 +28,9 @@ import type {
   TvStream,
   Account,
 } from '~/types/api'
+
+/** The API version this bundle speaks. See `api.versions` on the server. */
+const V = '/api/v1'
 
 /**
  * A refusal, with the status intact.
@@ -73,7 +81,7 @@ function refusal(error: unknown): ApiError {
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   try {
-    return await $fetch<T>(path, {
+    return await $fetch<T>(`${V}${path}`, {
       method: options.method,
       query: options.query,
       body: options.body,

@@ -9,7 +9,19 @@
 import type { Account, Identity, Overview, Platform, RecordPage } from './types'
 
 /** Unset means "the origin this page was served from" — see `vite.config.ts`. */
-const BASE = import.meta.env.VITE_API_URL ?? ''
+const ORIGIN = import.meta.env.VITE_API_URL ?? ''
+
+/**
+ * The version of the API this bundle speaks — see `api.versions` on the server.
+ *
+ * Folded into the base rather than written at every call, because it belongs to
+ * the whole of what this file knows how to ask for: a version is a set of paths
+ * and payloads, and a bundle speaks exactly one.
+ */
+const V = '/api/v1'
+
+/** Where every path below is appended. */
+const BASE = `${ORIGIN}${V}`
 
 /**
  * A refusal, with the status intact.

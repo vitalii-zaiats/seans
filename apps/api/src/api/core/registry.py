@@ -9,6 +9,31 @@ thing this file is for.
 from api.core.models import Base
 from api.modules.accounts.models import AuthSession, User
 from api.modules.installs.models import Install
+from api.modules.titles.models import (
+    Episode,
+    Season,
+    Stream,
+    Title,
+    TitleAlias,
+    TitleIdentifier,
+    TitleKey,
+    TitleSource,
+)
 from api.modules.together.models import Member, Room
 
-__all__ = ["AuthSession", "Base", "Install", "Member", "Room", "User"]
+__all__ = [
+    "AuthSession",
+    "Base",
+    "Episode",
+    "Install",
+    "Member",
+    "Room",
+    "Season",
+    "Stream",
+    "Title",
+    "TitleAlias",
+    "TitleIdentifier",
+    "TitleKey",
+    "TitleSource",
+    "User",
+]

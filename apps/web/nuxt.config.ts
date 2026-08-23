@@ -61,14 +61,16 @@ export default defineNuxtConfig({
   // The API is same-origin in production — nginx puts the two behind one
   // address, exactly as it does for the dashboard. In dev it is a separate
   // process, and this is what makes them look like one origin: no CORS to
-  // arrange, no base URL to configure, and `/proxy/…` image paths that the API
-  // hands out resolve without anybody rewriting them.
+  // arrange and no base URL to configure.
+  //
+  // Three entries rather than one per feature: the whole JSON API lives under
+  // `/api/`, and the two relays sit at the root because their addresses end up
+  // inside an `.m3u8` and inside a browser's cache — see `api.versions`.
   nitro: {
     devProxy: {
-      '/catalogue': { target: `${API}/catalogue`, changeOrigin: true },
-      '/auth': { target: `${API}/auth`, changeOrigin: true },
+      '/api': { target: `${API}/api`, changeOrigin: true },
       '/proxy': { target: `${API}/proxy`, changeOrigin: true },
-      '/init': { target: `${API}/init`, changeOrigin: true },
+      '/stream': { target: `${API}/stream`, changeOrigin: true },
     },
   },
 

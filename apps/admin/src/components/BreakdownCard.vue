@@ -157,7 +157,14 @@ function portion(item: Slice): string {
   }
 
   &__name {
-    font-size: 0.875rem;
+    // `android`, `0.1.2`, `com.android.shell` — every row here is a machine's
+    // own word for itself, and none of them is prose. The mono face says so,
+    // and keeps a version number from being read as a date.
+    // A step down from the 0.875rem the row was set at: JetBrains Mono has a
+    // taller x-height and wider letters than Karla, so the same nominal size
+    // reads bigger and `com.android.shell` starts crowding its count.
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
     color: var(--chart-ink);
     overflow: hidden;
     text-overflow: ellipsis;

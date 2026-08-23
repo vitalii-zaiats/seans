@@ -1,7 +1,9 @@
 """The app: middleware, routers, and one place where a refusal becomes a status.
 
 Everything else is in `modules/`. A new feature is a new folder and a line in
-`modules/__init__.py` — this file should not have to grow for it.
+`modules/__init__.py` — this file should not have to grow for it, and neither
+should it grow for a new version: `api.versions` says which routers answer
+under which prefix, and the loop below is the whole of the mounting.
 """
 
 from collections.abc import AsyncIterator
@@ -23,8 +25,9 @@ from api.errors import (
     Unauthorized,
     Upstream,
 )
-from api.modules import ROUTERS
+from api.modules import RELAYS
 from api.settings import settings
+from api.versions import VERSIONS, prefix
 
 STATUS: dict[type[ApiError], int] = {
     NotFound: 404,
@@ -61,8 +64,12 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    for router in ROUTERS:
-        app.include_router(router)
+    for version, routers in VERSIONS.items():
+        for router in routers:
+            app.include_router(router, prefix=prefix(version))
+
+    for relay in RELAYS:
+        app.include_router(relay)
 
     @app.exception_handler(ApiError)
     async def domain_error(request: Request, exc: ApiError) -> JSONResponse:

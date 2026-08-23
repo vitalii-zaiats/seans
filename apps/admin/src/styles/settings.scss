@@ -3,7 +3,12 @@
 // chart palette that has to agree with it. This file is for the handful of
 // things Vuetify only exposes at build time.
 @use 'vuetify/settings' with (
-  // The same stack the charts label their axes in, so a tick and a table cell
-  // are set in one typeface rather than two that nearly match.
-  $body-font-family: (system-ui, -apple-system, 'Segoe UI', sans-serif)
+  // The same stack `--font-body` names in `main.scss`. Spelled out rather than
+  // read from the custom property because Vuetify bakes this into component
+  // rules at build time, where a `var()` would resolve but a fallback list
+  // could not be inspected.
+  //
+  // Not the rule that sets the app's font — that is `html` in `main.scss`.
+  // This one only reaches the components that ask for it by name.
+  $body-font-family: (Karla, system-ui, sans-serif)
 );

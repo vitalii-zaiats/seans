@@ -7,14 +7,17 @@
 # runs it.
 #
 # Same origin is not a convenience here, it is the whole design: every client in
-# this repo asks for `/catalogue/…` with no host, so a bundle built months ago
-# works through a tunnel whose address was invented a minute ago. Nothing has to
-# be rebuilt when the URL changes.
+# this repo asks for `/api/v1/catalogue/…` with no host, so a bundle built months
+# ago works through a tunnel whose address was invented a minute ago. Nothing has
+# to be rebuilt when the URL changes.
 #
-# **The one rule.** An app's prefix must never collide with an API path. That is
-# why the launcher lives at `/box/` rather than `/tv/` (the API owns `/tv/` —
-# live channels) and why the dashboard is at `/dashboard/` rather than `/admin/`
-# (the API owns that one — install statistics).
+# **The one rule.** An app's prefix must never collide with an API path — which,
+# since the API moved under `/api/`, leaves four names to stay off: `api`,
+# `proxy`, `stream` and `health`. It used to be the whole of the API's surface,
+# and that is the reason the launcher sits at `/box/` rather than `/tv/` and the
+# dashboard at `/dashboard/` rather than `/admin/`. Those names are free now;
+# the prefixes stay because a bundle is built knowing its own, and renaming one
+# is a deploy rather than a line here.
 
 upstream api {
     server ${API_UPSTREAM};
@@ -51,18 +54,19 @@ server {
 
     # ── the API ─────────────────────────────────────────────────────────────
     #
-    # Spelled out rather than "everything that is not an app", because the two
-    # sets are decided by different people: these paths come from
-    # `contracts/openapi.json`, and the prefixes below come from this file.
-    # Where a rule has to be guessed, it should be guessed in favour of the app,
-    # so a new API path shows up as a 404 rather than as a page that silently
-    # stops working.
-
-    # `POST /init` — the first call an app makes, and the only bare path here.
-    location = /init {
+    # One prefix for the whole of it. This used to be four blocks naming nine
+    # path segments, kept in step with `contracts/openapi.json` by hand — and a
+    # new endpoint outside the list was a 404 nobody could see coming. `/api/`
+    # is the API's own namespace now, versions and all, so this file stops
+    # having an opinion about what is inside it.
+    location /api/ {
         proxy_pass http://api;
         include /etc/nginx/proxy-api.conf;
     }
+
+    # The two relays, at the root and outside every version — see
+    # `api.versions`. Their addresses are written into an `.m3u8` and into a
+    # browser's cache, so they outlive the version that handed them out.
 
     # `/stream?url=…` — HLS through the API, because a media host pins CORS to
     # itself. No trailing slash to match on: the target is in the query.
@@ -71,21 +75,8 @@ server {
         include /etc/nginx/proxy-api.conf;
     }
 
-    # `GET /users`, `GET /devices` — the collection roots, without a trailing
-    # slash. Their sub-paths are covered by the prefix rule below.
-    location ~ ^/(users|devices)$ {
-        proxy_pass http://api;
-        include /etc/nginx/proxy-api.conf;
-    }
-
-    #   auth       sessions, guests, claims, device pairing
-    #   catalogue  films and series
-    #   tv         free-to-air channels
-    #   proxy      artwork from a host that will not let a browser have it
-    #   admin      install statistics
-    #   users      the account directory
-    #   device     driving a box from a phone — server-sent events among them
-    location ~ ^/(auth|catalogue|tv|proxy|admin|users|device|playback)/ {
+    # `/proxy/…` — artwork from a host that will not let a browser have it.
+    location /proxy/ {
         proxy_pass http://api;
         include /etc/nginx/proxy-api.conf;
     }

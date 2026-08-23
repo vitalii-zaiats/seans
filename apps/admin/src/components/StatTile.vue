@@ -85,6 +85,7 @@ const tone = computed(() => {
   &__value {
     // Proportional figures: a headline number is read, not compared down a
     // column. Tabular is for the table.
+    font-family: var(--font-display);
     font-size: 2.25rem;
     font-weight: 600;
     line-height: 1.1;

@@ -15,6 +15,7 @@ from api.core.throttle import Throttle
 from api.main import create_app
 from api.modules.tv.deps import tv_service
 from api.modules.tv.service import STREAM_BURST, STREAMS_PER_SECOND, TvService
+from conftest import BASE
 from sweet_tv import AsyncSweetTv, Catalogue, Device, Schedule
 from sweet_tv.transport import Request, Response
 
@@ -106,7 +107,7 @@ def tv(upstream: Upstream) -> Iterator[TvService]:
 async def client(tv: TvService) -> httpx2.AsyncClient:
     app = create_app()
     app.dependency_overrides[tv_service] = lambda: tv
-    return httpx2.AsyncClient(transport=httpx2.ASGITransport(app=app), base_url="http://test")
+    return httpx2.AsyncClient(transport=httpx2.ASGITransport(app=app), base_url=BASE)
 
 
 # --- the list ----------------------------------------------------------------
@@ -193,9 +194,7 @@ async def test_a_day_upstream_never_published_is_empty_rather_than_an_error() ->
     app = create_app()
     app.dependency_overrides[tv_service] = lambda: serving(upstream)
 
-    async with httpx2.AsyncClient(
-        transport=httpx2.ASGITransport(app=app), base_url="http://test"
-    ) as http:
+    async with httpx2.AsyncClient(transport=httpx2.ASGITransport(app=app), base_url=BASE) as http:
         got = await http.get("/tv/channels/3554/schedule")
 
     assert got.status_code == 200
@@ -273,9 +272,7 @@ async def test_a_channel_outside_the_free_tier_is_refused(
     app = create_app()
     app.dependency_overrides[tv_service] = lambda: serving(Upstream(answer))
 
-    async with httpx2.AsyncClient(
-        transport=httpx2.ASGITransport(app=app), base_url="http://test"
-    ) as http:
+    async with httpx2.AsyncClient(transport=httpx2.ASGITransport(app=app), base_url=BASE) as http:
         got = await http.post("/tv/channels/3554/stream")
 
     assert got.status_code == 403
@@ -297,9 +294,7 @@ async def test_a_failure_upstream_is_a_502_not_a_500() -> None:
     app = create_app()
     app.dependency_overrides[tv_service] = lambda: serving(upstream)
 
-    async with httpx2.AsyncClient(
-        transport=httpx2.ASGITransport(app=app), base_url="http://test"
-    ) as http:
+    async with httpx2.AsyncClient(transport=httpx2.ASGITransport(app=app), base_url=BASE) as http:
         got = await http.get("/tv/channels")
 
     assert got.status_code == 502

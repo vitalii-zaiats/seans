@@ -251,6 +251,7 @@ onMounted(() => void overview.load())
   }
 
   &__ratio-value {
+    font-family: var(--font-display);
     font-size: 2.25rem;
     font-weight: 600;
     line-height: 1.1;

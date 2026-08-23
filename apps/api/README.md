@@ -9,10 +9,11 @@ transport (gRPC) can be added without touching a single decision.
 src/api/
   settings.py   configuration, prefix API_
   errors.py     domain errors — a service raises, a transport translates
+  versions.py   which routers answer under which prefix
   main.py       FastAPI: middleware, routers, error → status code
   core/         engine, Base, Repository, security, composition root
   modules/      one folder per feature
-    installs/   POST /init — the first call an app makes
+    installs/   POST /api/v1/init — the first call an app makes
     accounts/   guests, claims, logins, tokens, and pairing a television
     release/    what to update, what to switch on
     remote/     driving a box from a phone
@@ -35,6 +36,23 @@ There is exactly one `adapters.py`, in `remote/`, and it is there for the reason
 the rule allows one: "which boxes may this person drive" is half an accounts
 question and half an installs question, so something has to have met both.
 
+## Versions
+
+**Every path in this document is under `/api/v1`.** The JSON API is versioned
+and moves as one: `POST /api/v1/init`, `GET /api/v1/catalogue/search`. A client
+does not choose the version — the version is what it was written against, so it
+belongs in the client's own source and not in its configuration.
+
+Three paths are **not** versioned, and `versions.py` says why: `/health`, which
+answers a load balancer, and the two relays, `/proxy/{path}` and `/stream`.
+Those take a URL and hand back bytes; there is no schema to version, and their
+addresses live inside an `.m3u8` a player is halfway through and inside a
+browser cache that was told to hold them for a week. A version bump that moved
+them would break every one and buy nothing.
+
+Adding a version is a line in `versions.py` — a version is a tuple of routers,
+so the modules that did not change are the same objects rather than copies.
+
 ## Running it
 
 ```bash
@@ -43,12 +61,12 @@ uv run alembic upgrade head
 uv run api                           # http://127.0.0.1:8000/docs
 ```
 
-## POST /init
+## POST /api/v1/init
 
 The only endpoint so far. Called on every launch, safe to repeat.
 
 ```bash
-curl -s localhost:8000/init -H 'content-type: application/json' -d '{
+curl -s localhost:8000/api/v1/init -H 'content-type: application/json' -d '{
   "id": "3f2a1e40-9a1c-4f0e-8b1d-2c9e7a5b6d10",
   "platform": "android",
   "vendor": "com.android.vending",

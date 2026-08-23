@@ -71,6 +71,7 @@ onMounted(() => void auth.restore())
 
 .shell {
   &__brand {
+    font-family: var(--font-display);
     font-size: 1rem;
     font-weight: 600;
   }

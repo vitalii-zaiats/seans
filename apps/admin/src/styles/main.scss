@@ -1,6 +1,25 @@
 @use './tokens';
 
+// The three faces, named the same as in `apps/web/app/assets/css/nocturne.css`
+// so a value can be moved between the two without translation.
+:root {
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: Karla, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+// **This is the rule the app was missing.** `$body-font-family` in
+// `settings.scss` reaches only the Vuetify components that ask for it — a
+// badge, a chip — and the built stylesheet ends up with exactly one
+// `font-family` declaration in it, on none of them. Everything else inherited
+// the browser's default, which is a serif in several of them.
+//
+// On `html` rather than on `.v-application`, because the chart's SVG text and
+// anything drawn outside `<v-app>` inherit from the document and not from
+// Vuetify's wrapper.
 html {
+  font-family: var(--font-body);
+
   // Vuetify's app bar is fixed; without this the page jumps a hair when a
   // short view is replaced by a scrolling one.
   scrollbar-gutter: stable;
@@ -8,6 +27,16 @@ html {
 
 body {
   margin: 0;
+}
+
+// Headings and headline numbers. Space Grotesk is drawn for exactly this: its
+// figures are wide and even-coloured, which is what makes a `100%` in a tile
+// read as a value rather than as a word.
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
 }
 
 // A focus ring that survives a dark theme. Vuetify draws its own on its own

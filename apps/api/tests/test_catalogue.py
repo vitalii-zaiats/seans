@@ -15,6 +15,7 @@ from api.core.cache import Cache
 from api.main import create_app
 from api.modules.catalogue.deps import catalogue_service
 from api.modules.catalogue.service import CatalogueService, RailKey
+from conftest import BASE
 from kinostrain import AsyncKinostrainApi, CatalogFilters, ContentCard
 from kinostrain.transport import Request, Response
 
@@ -127,7 +128,7 @@ def catalogue(upstream: Upstream) -> CatalogueService:
 async def client(catalogue: CatalogueService) -> httpx2.AsyncClient:
     app = create_app()
     app.dependency_overrides[catalogue_service] = lambda: catalogue
-    return httpx2.AsyncClient(transport=httpx2.ASGITransport(app=app), base_url="http://test")
+    return httpx2.AsyncClient(transport=httpx2.ASGITransport(app=app), base_url=BASE)
 
 
 # --- what comes back ----------------------------------------------------------
@@ -169,9 +170,7 @@ async def test_a_section_upstream_grew_does_not_break_a_client(
     app = create_app()
     app.dependency_overrides[catalogue_service] = lambda: serving(upstream)
 
-    async with httpx2.AsyncClient(
-        transport=httpx2.ASGITransport(app=app), base_url="http://test"
-    ) as http:
+    async with httpx2.AsyncClient(transport=httpx2.ASGITransport(app=app), base_url=BASE) as http:
         card = (await http.get("/catalogue/content")).json()["items"][0]
 
     assert card["type"] is None
@@ -290,9 +289,7 @@ async def test_a_slug_nobody_has_is_a_404_not_a_502() -> None:
     app = create_app()
     app.dependency_overrides[catalogue_service] = lambda: serving(Upstream(answer))
 
-    async with httpx2.AsyncClient(
-        transport=httpx2.ASGITransport(app=app), base_url="http://test"
-    ) as http:
+    async with httpx2.AsyncClient(transport=httpx2.ASGITransport(app=app), base_url=BASE) as http:
         got = await http.get("/catalogue/content/nope")
 
     # The request was fine and so was upstream — the title is simply not there.
@@ -305,9 +302,7 @@ async def test_a_failure_upstream_is_a_502() -> None:
     app = create_app()
     app.dependency_overrides[catalogue_service] = lambda: serving(upstream)
 
-    async with httpx2.AsyncClient(
-        transport=httpx2.ASGITransport(app=app), base_url="http://test"
-    ) as http:
+    async with httpx2.AsyncClient(transport=httpx2.ASGITransport(app=app), base_url=BASE) as http:
         got = await http.get("/catalogue/trending")
 
     assert got.status_code == 502

@@ -28,7 +28,7 @@ uv run api admin you@example.com     # creates it, or promotes an account that e
 ```
 
 In development the API is a second process, and `vite.config.ts` proxies
-`/admin` and `/auth` to it so the two look like one origin — no CORS, and no
+`/api/` to it so the two look like one origin — no CORS, and no
 base URL to configure:
 
 ```bash

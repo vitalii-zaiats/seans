@@ -67,7 +67,7 @@ The bearer token travels in metadata, not in a field:
 authorization: Bearer <token>
 ```
 
-Same token as HTTP, from the same `POST /auth/login`. Nothing in these files
+Same token as HTTP, from the same `POST /api/v1/auth/login`. Nothing in these files
 takes a token as an argument, because a credential in a request body is a
 credential in every log that ever writes a request body.
 

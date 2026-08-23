@@ -5,14 +5,14 @@
     "version": "0.1.0"
   },
   "paths": {
-    "/init": {
+    "/api/v1/init": {
       "post": {
         "tags": [
           "installs"
         ],
         "summary": "Init",
         "description": "Announce this install and collect everything it needs to start.\n\nSafe to call on every launch: the install row is updated rather than\nduplicated, and a session token sent along in `Authorization: Bearer` is\nkept rather than replaced.",
-        "operationId": "init_init_post",
+        "operationId": "init_api_v1_init_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -47,14 +47,14 @@
         }
       }
     },
-    "/auth/me": {
+    "/api/v1/auth/me": {
       "get": {
         "tags": [
           "accounts"
         ],
         "summary": "Me",
         "description": "Who the token belongs to. 401 when there is no token, or it is stale.",
-        "operationId": "me_auth_me_get",
+        "operationId": "me_api_v1_auth_me_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -74,7 +74,7 @@
         ],
         "summary": "Forget",
         "description": "The way back to local-only. Deletes the account and its sessions.",
-        "operationId": "forget_auth_me_delete",
+        "operationId": "forget_api_v1_auth_me_delete",
         "responses": {
           "204": {
             "description": "Successful Response"
@@ -86,7 +86,7 @@
           "accounts"
         ],
         "summary": "Rename",
-        "operationId": "rename_auth_me_patch",
+        "operationId": "rename_api_v1_auth_me_patch",
         "requestBody": {
           "content": {
             "application/json": {
@@ -121,14 +121,14 @@
         }
       }
     },
-    "/auth/guest": {
+    "/api/v1/auth/guest": {
       "post": {
         "tags": [
           "accounts"
         ],
         "summary": "Start Guest",
         "description": "A guest on demand, for a client that has no install to announce.\n\nDeliberately unconditional: calling it while already signed in starts a\n*second*, empty identity rather than handing back the first.",
-        "operationId": "start_guest_auth_guest_post",
+        "operationId": "start_guest_api_v1_auth_guest_post",
         "responses": {
           "201": {
             "description": "Successful Response",
@@ -143,14 +143,14 @@
         }
       }
     },
-    "/auth/claim": {
+    "/api/v1/auth/claim": {
       "post": {
         "tags": [
           "accounts"
         ],
         "summary": "Claim",
         "description": "Keep the account, add the login.\n\nEverything watched as a guest stays where it is — this writes an email and a\npassword onto that same row, and rotates the token.",
-        "operationId": "claim_auth_claim_post",
+        "operationId": "claim_api_v1_auth_claim_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -185,14 +185,14 @@
         }
       }
     },
-    "/auth/register": {
+    "/api/v1/auth/register": {
       "post": {
         "tags": [
           "accounts"
         ],
         "summary": "Register",
         "description": "An account with no guest behind it.\n\nFor somebody who ran the app locally and told us nothing until now: there is\nno history to keep, so making a guest first and claiming it would be theatre.",
-        "operationId": "register_auth_register_post",
+        "operationId": "register_api_v1_auth_register_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -227,13 +227,13 @@
         }
       }
     },
-    "/auth/login": {
+    "/api/v1/auth/login": {
       "post": {
         "tags": [
           "accounts"
         ],
         "summary": "Login",
-        "operationId": "login_auth_login_post",
+        "operationId": "login_api_v1_auth_login_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -268,13 +268,13 @@
         }
       }
     },
-    "/auth/logout": {
+    "/api/v1/auth/logout": {
       "post": {
         "tags": [
           "accounts"
         ],
         "summary": "Logout",
-        "operationId": "logout_auth_logout_post",
+        "operationId": "logout_api_v1_auth_logout_post",
         "responses": {
           "204": {
             "description": "Successful Response"
@@ -282,14 +282,14 @@
         }
       }
     },
-    "/auth/device": {
+    "/api/v1/auth/device": {
       "post": {
         "tags": [
           "accounts"
         ],
         "summary": "Start Device Link",
         "description": "Begin a pairing. Deliberately open: nobody is signed in yet.\n\nA box that already announced itself may send its token anyway — the install\nit belongs to is carried onto the session it eventually collects, so\n\"sign this device out\" means something later.\n\nThe body is optional so that a build shipped before it existed still works.\nThose get the `User-Agent`, which is what this always used and which reads\nas a paragraph of browser trivia on the approval screen; anything that can\nname itself should.",
-        "operationId": "start_device_link_auth_device_post",
+        "operationId": "start_device_link_api_v1_auth_device_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -331,14 +331,14 @@
         }
       }
     },
-    "/auth/device/{code}": {
+    "/api/v1/auth/device/{code}": {
       "get": {
         "tags": [
           "accounts"
         ],
         "summary": "Device Link Status",
         "description": "What is being asked for, for the page that is about to say yes.",
-        "operationId": "device_link_status_auth_device__code__get",
+        "operationId": "device_link_status_api_v1_auth_device__code__get",
         "parameters": [
           {
             "name": "code",
@@ -374,14 +374,14 @@
         }
       }
     },
-    "/auth/device/approve": {
+    "/api/v1/auth/device/approve": {
       "post": {
         "tags": [
           "accounts"
         ],
         "summary": "Approve Device Link",
         "description": "Say yes, as somebody. The only step that needs an identity, and it is\nthe phone's.",
-        "operationId": "approve_device_link_auth_device_approve_post",
+        "operationId": "approve_device_link_api_v1_auth_device_approve_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -416,14 +416,14 @@
         }
       }
     },
-    "/auth/device/collect": {
+    "/api/v1/auth/device/collect": {
       "post": {
         "tags": [
           "accounts"
         ],
         "summary": "Collect Device Link",
         "description": "The television asking whether it may come in yet.",
-        "operationId": "collect_device_link_auth_device_collect_post",
+        "operationId": "collect_device_link_api_v1_auth_device_collect_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -458,13 +458,13 @@
         }
       }
     },
-    "/users": {
+    "/api/v1/users": {
       "get": {
         "tags": [
           "accounts"
         ],
         "summary": "List Users",
-        "operationId": "list_users_users_get",
+        "operationId": "list_users_api_v1_users_get",
         "parameters": [
           {
             "name": "guests",
@@ -532,13 +532,13 @@
         }
       }
     },
-    "/users/{public_id}/role": {
+    "/api/v1/users/{public_id}/role": {
       "patch": {
         "tags": [
           "accounts"
         ],
         "summary": "Set Role",
-        "operationId": "set_role_users__public_id__role_patch",
+        "operationId": "set_role_api_v1_users__public_id__role_patch",
         "parameters": [
           {
             "name": "public_id",
@@ -584,14 +584,14 @@
         }
       }
     },
-    "/devices": {
+    "/api/v1/devices": {
       "get": {
         "tags": [
           "remote"
         ],
         "summary": "Devices",
         "description": "Every box you are signed in on — which is exactly the set you may drive.\n\nSigning a box in claims it; signing it out gives it up. That is why there is\nno separate list of \"my devices\" to fall out of step with reality.",
-        "operationId": "devices_devices_get",
+        "operationId": "devices_api_v1_devices_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -606,14 +606,14 @@
         }
       }
     },
-    "/device/{public_id}/rpc": {
+    "/api/v1/device/{public_id}/rpc": {
       "post": {
         "tags": [
           "remote"
         ],
         "summary": "Send",
         "description": "Press a button on somebody's television.\n\n`202`, not `200`: this hands the command to whoever is listening and does\nnot wait to hear how it went. `listeners` in the answer is the honest\nversion of \"did that work\" — zero means nobody was connected.",
-        "operationId": "send_device__public_id__rpc_post",
+        "operationId": "send_api_v1_device__public_id__rpc_post",
         "parameters": [
           {
             "name": "public_id",
@@ -659,14 +659,14 @@
         }
       }
     },
-    "/device/{public_id}/events": {
+    "/api/v1/device/{public_id}/events": {
       "get": {
         "tags": [
           "remote"
         ],
         "summary": "Watch",
         "description": "A remote watching what a box is doing.\n\nOpens with whatever the box last said, so a phone that just unlocked has\nsomething to draw before the next change arrives.",
-        "operationId": "watch_device__public_id__events_get",
+        "operationId": "watch_api_v1_device__public_id__events_get",
         "parameters": [
           {
             "name": "public_id",
@@ -700,14 +700,14 @@
         }
       }
     },
-    "/device/events": {
+    "/api/v1/device/events": {
       "get": {
         "tags": [
           "remote"
         ],
         "summary": "Commands",
         "description": "The box, listening for buttons.",
-        "operationId": "commands_device_events_get",
+        "operationId": "commands_api_v1_device_events_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -720,14 +720,14 @@
         }
       }
     },
-    "/device/state": {
+    "/api/v1/device/state": {
       "post": {
         "tags": [
           "remote"
         ],
         "summary": "Report",
         "description": "The box saying what it is doing.",
-        "operationId": "report_device_state_post",
+        "operationId": "report_api_v1_device_state_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -755,14 +755,14 @@
         }
       }
     },
-    "/tv/channels": {
+    "/api/v1/tv/channels": {
       "get": {
         "tags": [
           "tv"
         ],
         "summary": "Channels",
         "description": "Every free channel, with its categories.\n\nCached: the list changes when a channel is added, not per viewer. Each entry\nalready carries what is on right now, so a grid needs no request per row.",
-        "operationId": "channels_tv_channels_get",
+        "operationId": "channels_api_v1_tv_channels_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -777,14 +777,14 @@
         }
       }
     },
-    "/tv/channels/{channel_id}/schedule": {
+    "/api/v1/tv/channels/{channel_id}/schedule": {
       "get": {
         "tags": [
           "tv"
         ],
         "summary": "Schedule",
         "description": "One channel's programmes for one day.\n\nA day upstream never published comes back empty rather than as an error — a\nchannel simply has no schedule that far out.",
-        "operationId": "schedule_tv_channels__channel_id__schedule_get",
+        "operationId": "schedule_api_v1_tv_channels__channel_id__schedule_get",
         "parameters": [
           {
             "name": "channel_id",
@@ -839,14 +839,14 @@
         }
       }
     },
-    "/tv/channels/{channel_id}/stream": {
+    "/api/v1/tv/channels/{channel_id}/stream": {
       "post": {
         "tags": [
           "tv"
         ],
         "summary": "Stream",
         "description": "A playable address for a channel.\n\nA lease rather than an address: it carries a session and goes stale after\n`refresh_in`. Ask again rather than storing it.\n\n**`use_proxy` is for browsers and only for browsers.** The stitched playlist\ncomes from a host that does not answer `access-control-allow-origin`, so a\npage cannot read it; set the flag and every address here comes back pointing\nat `/stream`, which can. A native build — Android, a box, a desktop — has no\nsuch rule and should leave it off: the video then goes host-to-viewer\ninstead of through us, which is faster and costs us nothing.",
-        "operationId": "stream_tv_channels__channel_id__stream_post",
+        "operationId": "stream_api_v1_tv_channels__channel_id__stream_post",
         "parameters": [
           {
             "name": "channel_id",
@@ -894,14 +894,14 @@
         }
       }
     },
-    "/catalogue/content": {
+    "/api/v1/catalogue/content": {
       "get": {
         "tags": [
           "catalogue"
         ],
         "summary": "Catalog",
         "description": "A page of the catalogue.\n\n`genres` and `year` take slugs from `/catalogue/filters`, not display names.\nNever cached: the ordering is by what changed, so a held page would show\nsomebody yesterday's answer.",
-        "operationId": "catalog_catalogue_content_get",
+        "operationId": "catalog_api_v1_catalogue_content_get",
         "parameters": [
           {
             "name": "type",
@@ -1000,14 +1000,14 @@
         }
       }
     },
-    "/catalogue/filters": {
+    "/api/v1/catalogue/filters": {
       "get": {
         "tags": [
           "catalogue"
         ],
         "summary": "Filters",
         "description": "Genres and year buckets per section, with per-section counts.\n\nCached: it changes when a genre is added, which is not often.",
-        "operationId": "filters_catalogue_filters_get",
+        "operationId": "filters_api_v1_catalogue_filters_get",
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1022,14 +1022,14 @@
         }
       }
     },
-    "/catalogue/trending": {
+    "/api/v1/catalogue/trending": {
       "get": {
         "tags": [
           "catalogue"
         ],
         "summary": "Trending",
         "description": "A home rail, richer than a catalogue card. Not paginated.",
-        "operationId": "trending_catalogue_trending_get",
+        "operationId": "trending_api_v1_catalogue_trending_get",
         "parameters": [
           {
             "name": "type",
@@ -1072,14 +1072,14 @@
         }
       }
     },
-    "/catalogue/slider": {
+    "/api/v1/catalogue/slider": {
       "get": {
         "tags": [
           "catalogue"
         ],
         "summary": "Slider",
         "description": "The hero row, with trailer ids and age ratings filled in.",
-        "operationId": "slider_catalogue_slider_get",
+        "operationId": "slider_api_v1_catalogue_slider_get",
         "parameters": [
           {
             "name": "type",
@@ -1122,14 +1122,14 @@
         }
       }
     },
-    "/catalogue/search": {
+    "/api/v1/catalogue/search": {
       "get": {
         "tags": [
           "catalogue"
         ],
         "summary": "Search",
         "description": "Titles matching `q`.\n\nAnything under two characters comes back empty without a round trip, which\nis what makes this safe to call on every keystroke.",
-        "operationId": "search_catalogue_search_get",
+        "operationId": "search_api_v1_catalogue_search_get",
         "parameters": [
           {
             "name": "q",
@@ -1185,19 +1185,19 @@
         }
       }
     },
-    "/catalogue/cards": {
+    "/api/v1/catalogue/cards": {
       "post": {
         "tags": [
           "catalogue"
         ],
         "summary": "Cards",
         "description": "Cards for several slugs at once.\n\nA `POST` because the list can be long and a stored watchlist is not\nsomething to put in a URL. Neither the order nor an entry for every slug is\nguaranteed — upstream answers with what it has.",
-        "operationId": "cards_catalogue_cards_post",
+        "operationId": "cards_api_v1_catalogue_cards_post",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Body_cards_catalogue_cards_post"
+                "$ref": "#/components/schemas/Body_cards_api_v1_catalogue_cards_post"
               }
             }
           },
@@ -1227,14 +1227,14 @@
         }
       }
     },
-    "/catalogue/persons": {
+    "/api/v1/catalogue/persons": {
       "get": {
         "tags": [
           "catalogue"
         ],
         "summary": "Persons",
         "description": "The directory of actors and directors.",
-        "operationId": "persons_catalogue_persons_get",
+        "operationId": "persons_api_v1_catalogue_persons_get",
         "parameters": [
           {
             "name": "page",
@@ -1278,14 +1278,14 @@
         }
       }
     },
-    "/catalogue/content/{slug}": {
+    "/api/v1/catalogue/content/{slug}": {
       "get": {
         "tags": [
           "catalogue"
         ],
         "summary": "Content",
         "description": "One title in full.\n\nA series lists **every** season but fills in the episodes and players of\none. Pass `season` to fill in a different one — the rest come back empty\neither way, and `is_loaded` is what tells \"not fetched yet\" from \"nothing to\nwatch\".",
-        "operationId": "content_catalogue_content__slug__get",
+        "operationId": "content_api_v1_catalogue_content__slug__get",
         "parameters": [
           {
             "name": "slug",
@@ -1320,7 +1320,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DetailsOut"
+                  "$ref": "#/components/schemas/api__modules__catalogue__schemas__DetailsOut"
                 }
               }
             }
@@ -1338,14 +1338,14 @@
         }
       }
     },
-    "/admin/stats/installs": {
+    "/api/v1/admin/stats/installs": {
       "get": {
         "tags": [
           "stats"
         ],
         "summary": "Installs",
         "description": "Totals, a day-by-day series, and the three breakdowns, over one window.",
-        "operationId": "installs_admin_stats_installs_get",
+        "operationId": "installs_api_v1_admin_stats_installs_get",
         "parameters": [
           {
             "name": "days",
@@ -1414,14 +1414,14 @@
         }
       }
     },
-    "/admin/stats/installs/recent": {
+    "/api/v1/admin/stats/installs/recent": {
       "get": {
         "tags": [
           "stats"
         ],
         "summary": "Recent",
         "description": "The installs themselves, most recently seen first.",
-        "operationId": "recent_admin_stats_installs_recent_get",
+        "operationId": "recent_api_v1_admin_stats_installs_recent_get",
         "parameters": [
           {
             "name": "limit",
@@ -1512,14 +1512,14 @@
         }
       }
     },
-    "/rooms": {
+    "/api/v1/rooms": {
       "get": {
         "tags": [
           "together"
         ],
         "summary": "Listing",
         "description": "The public rooms, busiest-first, with what is playing in each.\n\nNo identity needed to read it: a public room is an invitation, and an\ninvitation nobody can see is not one.",
-        "operationId": "listing_rooms_get",
+        "operationId": "listing_api_v1_rooms_get",
         "parameters": [
           {
             "name": "limit",
@@ -1574,7 +1574,7 @@
         ],
         "summary": "Open Room",
         "description": "Start a room and take the host's seat in it.\n\n`user` is whoever the request turned out to belong to, and `None` is a\nsupported answer — this deliberately does not mint a guest on the way, the\nway nothing else in this API does either.",
-        "operationId": "open_room_rooms_post",
+        "operationId": "open_room_api_v1_rooms_post",
         "requestBody": {
           "required": true,
           "content": {
@@ -1609,14 +1609,14 @@
         }
       }
     },
-    "/rooms/join": {
+    "/api/v1/rooms/join": {
       "post": {
         "tags": [
           "together"
         ],
         "summary": "Join",
         "description": "Take a seat, by code.\n\nSomebody signed in who is already in this room comes back to the seat they\nhad — the host's, if that is what it was. Everybody else gets a new one.",
-        "operationId": "join_rooms_join_post",
+        "operationId": "join_api_v1_rooms_join_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1651,14 +1651,14 @@
         }
       }
     },
-    "/rooms/{public_id}": {
+    "/api/v1/rooms/{public_id}": {
       "get": {
         "tags": [
           "together"
         ],
         "summary": "Room",
         "description": "One room — a title and a poster, for somebody deciding whether to join.\n\nAnswered for a private room too. Whoever asks had to be told the id by\nsomebody, and what comes back has no way in attached: the code is withheld\nunless they are already seated.",
-        "operationId": "room_rooms__public_id__get",
+        "operationId": "room_api_v1_rooms__public_id__get",
         "parameters": [
           {
             "name": "public_id",
@@ -1699,7 +1699,7 @@
         ],
         "summary": "Close",
         "description": "That's the end of it. Everybody with a stream open is told, once.",
-        "operationId": "close_rooms__public_id__delete",
+        "operationId": "close_api_v1_rooms__public_id__delete",
         "parameters": [
           {
             "name": "public_id",
@@ -1728,14 +1728,14 @@
         }
       }
     },
-    "/rooms/{public_id}/state": {
+    "/api/v1/rooms/{public_id}/state": {
       "post": {
         "tags": [
           "together"
         ],
         "summary": "Report",
         "description": "The host saying where the film is. Only the host may.\n\nWritten down and published in one go: the row is what a latecomer and the\nlisting read, the stream is what everybody already watching hears.",
-        "operationId": "report_rooms__public_id__state_post",
+        "operationId": "report_api_v1_rooms__public_id__state_post",
         "parameters": [
           {
             "name": "public_id",
@@ -1781,14 +1781,14 @@
         }
       }
     },
-    "/rooms/{public_id}/leave": {
+    "/api/v1/rooms/{public_id}/leave": {
       "post": {
         "tags": [
           "together"
         ],
         "summary": "Leave",
         "description": "Give the seat up. The host leaving ends the room for everybody.",
-        "operationId": "leave_rooms__public_id__leave_post",
+        "operationId": "leave_api_v1_rooms__public_id__leave_post",
         "parameters": [
           {
             "name": "public_id",
@@ -1817,14 +1817,14 @@
         }
       }
     },
-    "/rooms/{public_id}/events": {
+    "/api/v1/rooms/{public_id}/events": {
       "get": {
         "tags": [
           "together"
         ],
         "summary": "Watch",
         "description": "Everything the room says, for as long as it says anything.\n\n    state    where the film is, and what it is\n    members  who is here\n    closed   the last thing this stream will ever say\n\nThe reading happens here rather than inside the generator, and on purpose: a\nsession held open for the life of an SSE stream is a database connection\nheld open for the life of an SSE stream, and there are as many of those as\nthere are people watching. Everything below the `return` runs on the bus\nalone.",
-        "operationId": "watch_rooms__public_id__events_get",
+        "operationId": "watch_api_v1_rooms__public_id__events_get",
         "parameters": [
           {
             "name": "public_id",
@@ -1842,6 +1842,1601 @@
             "content": {
               "application/json": {
                 "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/playback/resolve": {
+      "post": {
+        "tags": [
+          "playback"
+        ],
+        "summary": "Resolve",
+        "description": "Open the player page and read what is playable off it.\n\n404 when the page loads and holds nothing — which is an ordinary state for a\ntitle the catalogue lists but nobody has uploaded yet, and a different thing\nfrom the page being unreachable.",
+        "operationId": "resolve_api_v1_playback_resolve_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolveIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResolveOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/init": {
+      "post": {
+        "tags": [
+          "installs"
+        ],
+        "summary": "Init",
+        "description": "Announce this install and collect everything it needs to start.\n\nSafe to call on every launch: the install row is updated rather than\nduplicated, and a session token sent along in `Authorization: Bearer` is\nkept rather than replaced.",
+        "operationId": "init_api_v2_init_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InitOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/auth/me": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Me",
+        "description": "Who the token belongs to. 401 when there is no token, or it is stale.",
+        "operationId": "me_api_v2_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountOut"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Forget",
+        "description": "The way back to local-only. Deletes the account and its sessions.",
+        "operationId": "forget_api_v2_auth_me_delete",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Rename",
+        "operationId": "rename_api_v2_auth_me_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RenameRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/auth/guest": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Start Guest",
+        "description": "A guest on demand, for a client that has no install to announce.\n\nDeliberately unconditional: calling it while already signed in starts a\n*second*, empty identity rather than handing back the first.",
+        "operationId": "start_guest_api_v2_auth_guest_post",
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/auth/claim": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Claim",
+        "description": "Keep the account, add the login.\n\nEverything watched as a guest stays where it is — this writes an email and a\npassword onto that same row, and rotates the token.",
+        "operationId": "claim_api_v2_auth_claim_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/auth/register": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Register",
+        "description": "An account with no guest behind it.\n\nFor somebody who ran the app locally and told us nothing until now: there is\nno history to keep, so making a guest first and claiming it would be theatre.",
+        "operationId": "register_api_v2_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/auth/login": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Login",
+        "operationId": "login_api_v2_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/auth/logout": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Logout",
+        "operationId": "logout_api_v2_auth_logout_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/api/v2/auth/device": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Start Device Link",
+        "description": "Begin a pairing. Deliberately open: nobody is signed in yet.\n\nA box that already announced itself may send its token anyway — the install\nit belongs to is carried onto the session it eventually collects, so\n\"sign this device out\" means something later.\n\nThe body is optional so that a build shipped before it existed still works.\nThose get the `User-Agent`, which is what this always used and which reads\nas a paragraph of browser trivia on the approval screen; anything that can\nname itself should.",
+        "operationId": "start_device_link_api_v2_auth_device_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/DeviceLinkRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceLinkOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/auth/device/{code}": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Device Link Status",
+        "description": "What is being asked for, for the page that is about to say yes.",
+        "operationId": "device_link_status_api_v2_auth_device__code__get",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Code"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceLinkStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/auth/device/approve": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Approve Device Link",
+        "description": "Say yes, as somebody. The only step that needs an identity, and it is\nthe phone's.",
+        "operationId": "approve_device_link_api_v2_auth_device_approve_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceApproval"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceLinkStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/auth/device/collect": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Collect Device Link",
+        "description": "The television asking whether it may come in yet.",
+        "operationId": "collect_device_link_api_v2_auth_device_collect_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceCollect"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceSession"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/users": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "List Users",
+        "operationId": "list_users_api_v2_users_get",
+        "parameters": [
+          {
+            "name": "guests",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "only guests, or only claimed",
+              "title": "Guests"
+            },
+            "description": "only guests, or only claimed"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/users/{public_id}/role": {
+      "patch": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Set Role",
+        "operationId": "set_role_api_v2_users__public_id__role_patch",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/devices": {
+      "get": {
+        "tags": [
+          "remote"
+        ],
+        "summary": "Devices",
+        "description": "Every box you are signed in on — which is exactly the set you may drive.\n\nSigning a box in claims it; signing it out gives it up. That is why there is\nno separate list of \"my devices\" to fall out of step with reality.",
+        "operationId": "devices_api_v2_devices_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/device/{public_id}/rpc": {
+      "post": {
+        "tags": [
+          "remote"
+        ],
+        "summary": "Send",
+        "description": "Press a button on somebody's television.\n\n`202`, not `200`: this hands the command to whoever is listening and does\nnot wait to hear how it went. `listeners` in the answer is the honest\nversion of \"did that work\" — zero means nobody was connected.",
+        "operationId": "send_api_v2_device__public_id__rpc_post",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommandIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/device/{public_id}/events": {
+      "get": {
+        "tags": [
+          "remote"
+        ],
+        "summary": "Watch",
+        "description": "A remote watching what a box is doing.\n\nOpens with whatever the box last said, so a phone that just unlocked has\nsomething to draw before the next change arrives.",
+        "operationId": "watch_api_v2_device__public_id__events_get",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/device/events": {
+      "get": {
+        "tags": [
+          "remote"
+        ],
+        "summary": "Commands",
+        "description": "The box, listening for buttons.",
+        "operationId": "commands_api_v2_device_events_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/device/state": {
+      "post": {
+        "tags": [
+          "remote"
+        ],
+        "summary": "Report",
+        "description": "The box saying what it is doing.",
+        "operationId": "report_api_v2_device_state_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/tv/channels": {
+      "get": {
+        "tags": [
+          "tv"
+        ],
+        "summary": "Channels",
+        "description": "Every free channel, with its categories.\n\nCached: the list changes when a channel is added, not per viewer. Each entry\nalready carries what is on right now, so a grid needs no request per row.",
+        "operationId": "channels_api_v2_tv_channels_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/tv/channels/{channel_id}/schedule": {
+      "get": {
+        "tags": [
+          "tv"
+        ],
+        "summary": "Schedule",
+        "description": "One channel's programmes for one day.\n\nA day upstream never published comes back empty rather than as an error — a\nchannel simply has no schedule that far out.",
+        "operationId": "schedule_api_v2_tv_channels__channel_id__schedule_get",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Channel Id"
+            }
+          },
+          {
+            "name": "day",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Defaults to today",
+              "title": "Day"
+            },
+            "description": "Defaults to today"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/tv/channels/{channel_id}/stream": {
+      "post": {
+        "tags": [
+          "tv"
+        ],
+        "summary": "Stream",
+        "description": "A playable address for a channel.\n\nA lease rather than an address: it carries a session and goes stale after\n`refresh_in`. Ask again rather than storing it.\n\n**`use_proxy` is for browsers and only for browsers.** The stitched playlist\ncomes from a host that does not answer `access-control-allow-origin`, so a\npage cannot read it; set the flag and every address here comes back pointing\nat `/stream`, which can. A native build — Android, a box, a desktop — has no\nsuch rule and should leave it off: the video then goes host-to-viewer\ninstead of through us, which is faster and costs us nothing.",
+        "operationId": "stream_api_v2_tv_channels__channel_id__stream_post",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Channel Id"
+            }
+          },
+          {
+            "name": "use_proxy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Point the addresses at `/stream` instead of the host itself",
+              "default": false,
+              "title": "Use Proxy"
+            },
+            "description": "Point the addresses at `/stream` instead of the host itself"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api__modules__tv__schemas__StreamOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/admin/stats/installs": {
+      "get": {
+        "tags": [
+          "stats"
+        ],
+        "summary": "Installs",
+        "description": "Totals, a day-by-day series, and the three breakdowns, over one window.",
+        "operationId": "installs_api_v2_admin_stats_installs_get",
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 365,
+              "minimum": 1,
+              "description": "Window length, in whole UTC days",
+              "default": 30,
+              "title": "Days"
+            },
+            "description": "Window length, in whole UTC days"
+          },
+          {
+            "name": "active_days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 365,
+              "minimum": 1,
+              "description": "How recently an install must have launched",
+              "default": 7,
+              "title": "Active Days"
+            },
+            "description": "How recently an install must have launched"
+          },
+          {
+            "name": "top",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Rows per breakdown",
+              "default": 8,
+              "title": "Top"
+            },
+            "description": "Rows per breakdown"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverviewOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/admin/stats/installs/recent": {
+      "get": {
+        "tags": [
+          "stats"
+        ],
+        "summary": "Recent",
+        "description": "The installs themselves, most recently seen first.",
+        "operationId": "recent_api_v2_admin_stats_installs_recent_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 25,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "android",
+                    "linux",
+                    "windows",
+                    "web"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Platform"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "A full install uuid, or part of a version or vendor",
+              "title": "Q"
+            },
+            "description": "A full install uuid, or part of a version or vendor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecordPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/rooms": {
+      "get": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Listing",
+        "description": "The public rooms, busiest-first, with what is playing in each.\n\nNo identity needed to read it: a public room is an invitation, and an\ninvitation nobody can see is not one.",
+        "operationId": "listing_api_v2_rooms_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoomPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Open Room",
+        "description": "Start a room and take the host's seat in it.\n\n`user` is whoever the request turned out to belong to, and `None` is a\nsupported answer — this deliberately does not mint a guest on the way, the\nway nothing else in this API does either.",
+        "operationId": "open_room_api_v2_rooms_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeatOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/rooms/join": {
+      "post": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Join",
+        "description": "Take a seat, by code.\n\nSomebody signed in who is already in this room comes back to the seat they\nhad — the host's, if that is what it was. Everybody else gets a new one.",
+        "operationId": "join_api_v2_rooms_join_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeatOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/rooms/{public_id}": {
+      "get": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Room",
+        "description": "One room — a title and a poster, for somebody deciding whether to join.\n\nAnswered for a private room too. Whoever asks had to be told the id by\nsomebody, and what comes back has no way in attached: the code is withheld\nunless they are already seated.",
+        "operationId": "room_api_v2_rooms__public_id__get",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoomOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Close",
+        "description": "That's the end of it. Everybody with a stream open is told, once.",
+        "operationId": "close_api_v2_rooms__public_id__delete",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/rooms/{public_id}/state": {
+      "post": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Report",
+        "description": "The host saying where the film is. Only the host may.\n\nWritten down and published in one go: the row is what a latecomer and the\nlisting read, the stream is what everybody already watching hears.",
+        "operationId": "report_api_v2_rooms__public_id__state_post",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShowingOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/rooms/{public_id}/leave": {
+      "post": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Leave",
+        "description": "Give the seat up. The host leaving ends the room for everybody.",
+        "operationId": "leave_api_v2_rooms__public_id__leave_post",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/rooms/{public_id}/events": {
+      "get": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Watch",
+        "description": "Everything the room says, for as long as it says anything.\n\n    state    where the film is, and what it is\n    members  who is here\n    closed   the last thing this stream will ever say\n\nThe reading happens here rather than inside the generator, and on purpose: a\nsession held open for the life of an SSE stream is a database connection\nheld open for the life of an SSE stream, and there are as many of those as\nthere are people watching. Everything below the `return` runs on the bus\nalone.",
+        "operationId": "watch_api_v2_rooms__public_id__events_get",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/playback/resolve": {
+      "post": {
+        "tags": [
+          "playback"
+        ],
+        "summary": "Resolve",
+        "description": "Open the player page and read what is playable off it.\n\n404 when the page loads and holds nothing — which is an ordinary state for a\ntitle the catalogue lists but nobody has uploaded yet, and a different thing\nfrom the page being unreachable.",
+        "operationId": "resolve_api_v2_playback_resolve_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolveIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResolveOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/titles/keys": {
+      "get": {
+        "tags": [
+          "titles"
+        ],
+        "summary": "By Keys",
+        "description": "Titles a telephone keypad finds.\n\n`keys` is what the remote's number pad produced — `2647454` for Ґріфіни,\n`326459` for Family Guy, and both answer with the same title. Every word\nstart is indexed, so `489` finds \"Family Guy\" without the first word and\n`0` is never needed as a separator.\n\nUnder two digits this refuses rather than answers: one digit selects a\nthird of the catalogue and narrows nothing.",
+        "operationId": "by_keys_api_v2_titles_keys_get",
+        "parameters": [
+          {
+            "name": "keys",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32,
+              "description": "Digits, as pressed",
+              "title": "Keys"
+            },
+            "description": "Digits, as pressed"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "default": 12,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TitleList"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/titles/{slug}": {
+      "get": {
+        "tags": [
+          "titles"
+        ],
+        "summary": "Details",
+        "description": "One title, with every source that has it and everything that plays it.\n\n`sources[].evidence` says what made two catalogues' rows into one title —\n`imdb+ashdi+name` when all three keys agreed, `name` when only the spelling\ndid, `sole` when nothing else in either catalogue is this film.",
+        "operationId": "details_api_v2_titles__slug__get",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Slug"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api__modules__titles__schemas__DetailsOut"
+                }
               }
             }
           },
@@ -1899,48 +3494,6 @@
             "content": {
               "application/json": {
                 "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/playback/resolve": {
-      "post": {
-        "tags": [
-          "playback"
-        ],
-        "summary": "Resolve",
-        "description": "Open the player page and read what is playable off it.\n\n404 when the page loads and holds nothing — which is an ordinary state for a\ntitle the catalogue lists but nobody has uploaded yet, and a different thing\nfrom the page being unreachable.",
-        "operationId": "resolve_playback_resolve_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ResolveIn"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ResolveOut"
-                }
               }
             }
           },
@@ -2112,7 +3665,7 @@
         ],
         "title": "AccountPage"
       },
-      "Body_cards_catalogue_cards_post": {
+      "Body_cards_api_v1_catalogue_cards_post": {
         "properties": {
           "slugs": {
             "items": {
@@ -2127,7 +3680,7 @@
         "required": [
           "slugs"
         ],
-        "title": "Body_cards_catalogue_cards_post"
+        "title": "Body_cards_api_v1_catalogue_cards_post"
       },
       "CardList": {
         "properties": {
@@ -2738,244 +4291,6 @@
         ],
         "title": "DeliveryOut"
       },
-      "DetailsOut": {
-        "properties": {
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "original_name": {
-            "type": "string",
-            "title": "Original Name"
-          },
-          "slug": {
-            "type": "string",
-            "title": "Slug"
-          },
-          "type": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/ContentType"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "type_raw": {
-            "type": "string",
-            "title": "Type Raw"
-          },
-          "format": {
-            "type": "string",
-            "title": "Format"
-          },
-          "is_series": {
-            "type": "boolean",
-            "title": "Is Series"
-          },
-          "poster_url": {
-            "type": "string",
-            "title": "Poster Url"
-          },
-          "slider_url": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Slider Url"
-          },
-          "genres": {
-            "items": {
-              "$ref": "#/components/schemas/GenreOut"
-            },
-            "type": "array",
-            "title": "Genres"
-          },
-          "seasons": {
-            "items": {
-              "$ref": "#/components/schemas/SeasonOut"
-            },
-            "type": "array",
-            "title": "Seasons"
-          },
-          "cast": {
-            "items": {
-              "$ref": "#/components/schemas/CreditOut"
-            },
-            "type": "array",
-            "title": "Cast"
-          },
-          "directors": {
-            "items": {
-              "$ref": "#/components/schemas/CreditOut"
-            },
-            "type": "array",
-            "title": "Directors"
-          },
-          "average_rating": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Average Rating"
-          },
-          "ratings_count": {
-            "type": "integer",
-            "title": "Ratings Count"
-          },
-          "comments_count": {
-            "type": "integer",
-            "title": "Comments Count"
-          },
-          "imdb_mark": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Imdb Mark"
-          },
-          "year_start": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Year Start"
-          },
-          "year_end": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Year End"
-          },
-          "age_restrictions": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Age Restrictions"
-          },
-          "short_description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Short Description"
-          },
-          "time": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Time"
-          },
-          "country": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Country"
-          },
-          "trailer_youtube_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Trailer Youtube Id"
-          },
-          "franchise": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/FranchiseOut"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "is_playable": {
-            "type": "boolean",
-            "title": "Is Playable"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name",
-          "original_name",
-          "slug",
-          "type",
-          "type_raw",
-          "format",
-          "is_series",
-          "poster_url",
-          "slider_url",
-          "genres",
-          "seasons",
-          "cast",
-          "directors",
-          "average_rating",
-          "ratings_count",
-          "comments_count",
-          "imdb_mark",
-          "year_start",
-          "year_end",
-          "age_restrictions",
-          "short_description",
-          "time",
-          "country",
-          "trailer_youtube_id",
-          "franchise",
-          "is_playable"
-        ],
-        "title": "DetailsOut",
-        "description": "Everything the title page shows."
-      },
       "DeviceApproval": {
         "properties": {
           "code": {
@@ -3162,49 +4477,6 @@
         ],
         "title": "DeviceSession",
         "description": "Not yet, or here you go.\n\n`pending` is the ordinary answer for as long as somebody is walking to their\nphone, so it is a status rather than an error — a television polling this\nshould not have to read 404s to know it is still waiting."
-      },
-      "EpisodeOut": {
-        "properties": {
-          "number": {
-            "type": "integer",
-            "title": "Number"
-          },
-          "name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Name"
-          },
-          "air_date": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Air Date"
-          },
-          "ready": {
-            "type": "boolean",
-            "title": "Ready"
-          }
-        },
-        "type": "object",
-        "required": [
-          "number",
-          "name",
-          "air_date",
-          "ready"
-        ],
-        "title": "EpisodeOut"
       },
       "FiltersOut": {
         "properties": {
@@ -4470,7 +5742,7 @@
           "player_data": {
             "additionalProperties": {
               "items": {
-                "$ref": "#/components/schemas/SourceOut"
+                "$ref": "#/components/schemas/api__modules__catalogue__schemas__SourceOut"
               },
               "type": "array"
             },
@@ -4481,7 +5753,7 @@
             "additionalProperties": {
               "additionalProperties": {
                 "items": {
-                  "$ref": "#/components/schemas/SourceOut"
+                  "$ref": "#/components/schemas/api__modules__catalogue__schemas__SourceOut"
                 },
                 "type": "array"
               },
@@ -4514,7 +5786,7 @@
           },
           "episodes": {
             "items": {
-              "$ref": "#/components/schemas/EpisodeOut"
+              "$ref": "#/components/schemas/api__modules__catalogue__schemas__EpisodeOut"
             },
             "type": "array",
             "title": "Episodes"
@@ -4762,24 +6034,6 @@
         ],
         "title": "SliceOut"
       },
-      "SourceOut": {
-        "properties": {
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "link": {
-            "type": "string",
-            "title": "Link"
-          }
-        },
-        "type": "object",
-        "required": [
-          "name",
-          "link"
-        ],
-        "title": "SourceOut"
-      },
       "StateIn": {
         "properties": {
           "state": {
@@ -4793,6 +6047,106 @@
         "type": "object",
         "title": "StateIn",
         "description": "What the box is doing. The server does not interpret it."
+      },
+      "TitleList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TitleOut"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "TitleList"
+      },
+      "TitleOut": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "kind": {
+            "type": "string",
+            "title": "Kind"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "original_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Original Name"
+          },
+          "year_start": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year Start"
+          },
+          "year_end": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year End"
+          },
+          "poster_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Poster Url"
+          },
+          "imdb_mark": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Imdb Mark"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "kind",
+          "name",
+          "original_name",
+          "year_start",
+          "year_end",
+          "poster_url",
+          "imdb_mark"
+        ],
+        "title": "TitleOut",
+        "description": "A card. What a shortlist is made of."
       },
       "TrendOut": {
         "properties": {
@@ -4997,6 +6351,305 @@
         ],
         "title": "YearOut"
       },
+      "api__modules__catalogue__schemas__DetailsOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "original_name": {
+            "type": "string",
+            "title": "Original Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContentType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type_raw": {
+            "type": "string",
+            "title": "Type Raw"
+          },
+          "format": {
+            "type": "string",
+            "title": "Format"
+          },
+          "is_series": {
+            "type": "boolean",
+            "title": "Is Series"
+          },
+          "poster_url": {
+            "type": "string",
+            "title": "Poster Url"
+          },
+          "slider_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slider Url"
+          },
+          "genres": {
+            "items": {
+              "$ref": "#/components/schemas/GenreOut"
+            },
+            "type": "array",
+            "title": "Genres"
+          },
+          "seasons": {
+            "items": {
+              "$ref": "#/components/schemas/SeasonOut"
+            },
+            "type": "array",
+            "title": "Seasons"
+          },
+          "cast": {
+            "items": {
+              "$ref": "#/components/schemas/CreditOut"
+            },
+            "type": "array",
+            "title": "Cast"
+          },
+          "directors": {
+            "items": {
+              "$ref": "#/components/schemas/CreditOut"
+            },
+            "type": "array",
+            "title": "Directors"
+          },
+          "average_rating": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Average Rating"
+          },
+          "ratings_count": {
+            "type": "integer",
+            "title": "Ratings Count"
+          },
+          "comments_count": {
+            "type": "integer",
+            "title": "Comments Count"
+          },
+          "imdb_mark": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Imdb Mark"
+          },
+          "year_start": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year Start"
+          },
+          "year_end": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year End"
+          },
+          "age_restrictions": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Age Restrictions"
+          },
+          "short_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Description"
+          },
+          "time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time"
+          },
+          "country": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country"
+          },
+          "trailer_youtube_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trailer Youtube Id"
+          },
+          "franchise": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FranchiseOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "is_playable": {
+            "type": "boolean",
+            "title": "Is Playable"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "original_name",
+          "slug",
+          "type",
+          "type_raw",
+          "format",
+          "is_series",
+          "poster_url",
+          "slider_url",
+          "genres",
+          "seasons",
+          "cast",
+          "directors",
+          "average_rating",
+          "ratings_count",
+          "comments_count",
+          "imdb_mark",
+          "year_start",
+          "year_end",
+          "age_restrictions",
+          "short_description",
+          "time",
+          "country",
+          "trailer_youtube_id",
+          "franchise",
+          "is_playable"
+        ],
+        "title": "DetailsOut",
+        "description": "Everything the title page shows."
+      },
+      "api__modules__catalogue__schemas__EpisodeOut": {
+        "properties": {
+          "number": {
+            "type": "integer",
+            "title": "Number"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "air_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Air Date"
+          },
+          "ready": {
+            "type": "boolean",
+            "title": "Ready"
+          }
+        },
+        "type": "object",
+        "required": [
+          "number",
+          "name",
+          "air_date",
+          "ready"
+        ],
+        "title": "EpisodeOut"
+      },
+      "api__modules__catalogue__schemas__SourceOut": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "link": {
+            "type": "string",
+            "title": "Link"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "link"
+        ],
+        "title": "SourceOut"
+      },
       "api__modules__playback__router__StreamOut": {
         "properties": {
           "url": {
@@ -5026,6 +6679,197 @@
           "source"
         ],
         "title": "StreamOut"
+      },
+      "api__modules__titles__schemas__DetailsOut": {
+        "properties": {
+          "title": {
+            "$ref": "#/components/schemas/TitleOut"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/api__modules__titles__schemas__SourceOut"
+            },
+            "type": "array",
+            "title": "Sources"
+          },
+          "episodes": {
+            "items": {
+              "$ref": "#/components/schemas/api__modules__titles__schemas__EpisodeOut"
+            },
+            "type": "array",
+            "title": "Episodes"
+          },
+          "streams": {
+            "items": {
+              "$ref": "#/components/schemas/api__modules__titles__schemas__StreamOut"
+            },
+            "type": "array",
+            "title": "Streams"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "description",
+          "sources",
+          "episodes",
+          "streams"
+        ],
+        "title": "DetailsOut"
+      },
+      "api__modules__titles__schemas__EpisodeOut": {
+        "properties": {
+          "season": {
+            "type": "integer",
+            "title": "Season"
+          },
+          "number": {
+            "type": "integer",
+            "title": "Number"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "season",
+          "number",
+          "name"
+        ],
+        "title": "EpisodeOut"
+      },
+      "api__modules__titles__schemas__SourceOut": {
+        "properties": {
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "external_id": {
+            "type": "string",
+            "title": "External Id"
+          },
+          "external_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "External Url"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year"
+          },
+          "evidence": {
+            "type": "string",
+            "title": "Evidence"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source",
+          "external_id",
+          "external_url",
+          "name",
+          "year",
+          "evidence"
+        ],
+        "title": "SourceOut",
+        "description": "Who says this title exists, and what made us believe they mean the same\none. `evidence` is `imdb+ashdi+name`, or `sole` when nothing agreed."
+      },
+      "api__modules__titles__schemas__StreamOut": {
+        "properties": {
+          "host": {
+            "type": "string",
+            "title": "Host"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "season": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Season"
+          },
+          "episode": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Episode"
+          },
+          "offered_by": {
+            "type": "string",
+            "title": "Offered By"
+          }
+        },
+        "type": "object",
+        "required": [
+          "host",
+          "url",
+          "label",
+          "season",
+          "episode",
+          "offered_by"
+        ],
+        "title": "StreamOut",
+        "description": "One playable address.\n\n`episode` is null far more often than it looks like it should be, and that\nis the data rather than a gap: one catalogue hands over a single link for a\nwhole serial and lets the player deal with the episodes."
       },
       "api__modules__tv__schemas__StreamOut": {
         "properties": {

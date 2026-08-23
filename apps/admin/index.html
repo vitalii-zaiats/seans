@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!--
+      The same three faces as `apps/web` — Space Grotesk for anything that is
+      read as a heading or a headline number, Karla for text, JetBrains Mono
+      for figures in a column. Two dashboards in one product should not be set
+      in two typefaces, and this one was in neither: nothing set a family on
+      the document at all, so each browser used its own default — which is a
+      serif in more of them than you would expect.
+
+      Variable ranges rather than a list of weights: one file each, and 600 —
+      which this app uses and `apps/web` does not — costs nothing extra.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&family=Karla:wght@400..700&family=JetBrains+Mono:wght@400..500&display=swap"
+    />
     <!-- An admin console has nothing to say to a crawler. -->
     <meta name="robots" content="noindex, nofollow" />
     <title>Встановлення · Super Movies</title>

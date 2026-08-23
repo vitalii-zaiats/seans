@@ -1,9 +1,14 @@
 # Serves the web launcher, and makes the API look like it is part of it.
 #
-# The client asks for `/catalogue/…` with no host — see `app/utils/api.ts`. That
-# is deliberate: same origin means no CORS and no build-time base URL. It also
-# means something has to put the two behind one address, and in this image that
-# something is nginx.
+# The client asks for `/api/v1/catalogue/…` with no host — see
+# `app/utils/api.ts`. That is deliberate: same origin means no CORS and no
+# build-time base URL. It also means something has to put the two behind one
+# address, and in this image that something is nginx.
+#
+# One location for the whole API rather than one per feature: everything the
+# API answers as JSON is under `/api/`, and a version that arrives next year
+# needs no line here. The two relays are the exception and they are below, at
+# the root, because that is where the API serves them — see `api.versions`.
 #
 # `/proxy/` is not an afterthought: every poster in the catalogue is served from
 # a host that sends no CORS header, so the API rewrites each one to a path of
@@ -39,55 +44,26 @@ server {
         return 200 "ok\n";
     }
 
-    location /catalogue/ {
-        set $api ${API_UPSTREAM};
-        proxy_pass http://$api;
-        include /etc/nginx/proxy-api.conf;
-    }
-
-    location /auth/ {
-        set $api ${API_UPSTREAM};
-        proxy_pass http://$api;
-        include /etc/nginx/proxy-api.conf;
-    }
-
-    # Asked without an install id, and only by the downloads page — which is why
-    # it is here and why nothing is written down when it is called. See
-    # `app/utils/api.ts`.
-    location = /init {
-        set $api ${API_UPSTREAM};
-        proxy_pass http://$api;
-        include /etc/nginx/proxy-api.conf;
-    }
-
-    # Artwork. Long-lived on purpose: a poster is addressed by a content hash
-    # upstream, so the bytes behind one of these paths do not change.
-    # Free-to-air channels. Named here because the launcher now has a screen for
-    # them, and that screen lives at `/live` precisely so it cannot be confused
-    # with this.
-    location /tv/ {
-        set $api ${API_UPSTREAM};
-        proxy_pass http://$api;
-        include /etc/nginx/proxy-api.conf;
-    }
-
-    # Reading a player page for the stream inside it. A browser cannot: the page
-    # is served from a host with no CORS header, and it wants a `Referer` a page
-    # is not allowed to set.
-    location /playback/ {
+    # Everything the API answers as JSON, every version of it.
+    location /api/ {
         set $api ${API_UPSTREAM};
         proxy_pass http://$api;
         include /etc/nginx/proxy-api.conf;
     }
 
     # HLS playlists and segments. Same origin for the same reason the artwork
-    # is: a media host pins CORS to itself, so a page here cannot read one.
+    # is: a media host pins CORS to itself, so a page here cannot read one. At
+    # the root rather than under `/api/`, because the links inside a playlist
+    # are written by the API itself and outlive a version.
     location /stream {
         set $api ${API_UPSTREAM};
         proxy_pass http://$api;
         include /etc/nginx/proxy-api.conf;
     }
 
+    # Artwork. Long-lived on purpose: a poster is addressed by a content hash
+    # upstream, so the bytes behind one of these paths do not change — which is
+    # also why this is not versioned.
     location /proxy/ {
         set $api ${API_UPSTREAM};
         proxy_pass http://$api;

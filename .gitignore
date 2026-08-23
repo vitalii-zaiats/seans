@@ -50,3 +50,9 @@ package-lock.json.bak
 
 # ── Generated assets ─────────────────────────────────────────────────────────
 tools/sfx-generator/out/
+
+# ── Scraped catalogues ───────────────────────────────────────────────────────
+# Somebody else's data, pulled by `.data/pull_raw.py`. Ninety megabytes of it,
+# and it is stale the day after it lands — the repository holds the puller, not
+# what the puller found.
+.data/*.jsonl

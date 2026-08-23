@@ -11,6 +11,7 @@ import httpx2
 import pytest
 from api.main import create_app
 from api.modules.playback.extract import episodes, streams
+from conftest import BASE
 
 FILM = (Path(__file__).parent / "fixtures_vod_film.html").read_text()
 
@@ -86,7 +87,7 @@ async def test_only_players_this_api_reads() -> None:
     else is a different parser and possibly a different kind of site."""
     app = create_app()
     transport = httpx2.ASGITransport(app=app)
-    async with httpx2.AsyncClient(transport=transport, base_url="http://test") as client:
+    async with httpx2.AsyncClient(transport=transport, base_url=BASE) as client:
         answer = await client.post("/playback/resolve", json={"url": "https://example.com/vod/1"})
         assert answer.status_code == 400
 

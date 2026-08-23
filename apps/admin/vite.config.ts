@@ -43,9 +43,6 @@ export default defineConfig({
     // The API is same-origin in production, so the client asks for `/admin/...`
     // with no host at all. In dev it is a separate process, and this is what
     // makes the two look like one origin — no CORS, no base URL to configure.
-    proxy: {
-      '/admin': API,
-      '/auth': API,
-    },
+    proxy: { '/api': API },
   },
 })

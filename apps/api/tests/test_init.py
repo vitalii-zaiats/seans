@@ -156,8 +156,10 @@ async def test_an_id_that_is_not_a_uuid_never_reaches_the_service(
     assert (await client.post("/init", json=body(id="not-a-uuid"))).status_code == 422
 
 
-async def test_health(client: httpx2.AsyncClient) -> None:
-    assert (await client.get("/health")).json()["status"] == "ok"
+async def test_health(root: httpx2.AsyncClient) -> None:
+    #: `root`, not `client`: health answers a load balancer, and a load balancer
+    #: has no business knowing which API version is current.
+    assert (await root.get("/health")).json()["status"] == "ok"
 
 
 async def test_a_play_store_build_is_told_what_it_may_not_have(

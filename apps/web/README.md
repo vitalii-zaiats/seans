@@ -39,7 +39,7 @@ API_PROXY=http://127.0.0.1:8001 npm run dev   # ...somewhere else
 
 The API has to be up — `uv run api` from the repository root, or
 `docker compose up api`. Nothing in this app has a base URL: it asks for
-`/catalogue/…` with no host, and the dev proxy (`nuxt.config.ts`) or nginx
+`/api/v1/catalogue/…` with no host, and the dev proxy (`nuxt.config.ts`) or nginx
 (`nginx.conf.template`) puts the two behind one address.
 
 ```bash
@@ -64,7 +64,7 @@ app/
 
 `/downloads` offers the two builds that are not this one: the Android TV APK and
 the television app's own web build, which installs as a PWA. Neither version
-number nor link is typed into the page — it asks `POST /init` **without an
+number nor link is typed into the page — it asks `POST /api/v1/init` **without an
 install id**, which answers with the update plan and writes nothing down. Point
 it at the right web build with `NUXT_PUBLIC_TV_URL` at build time; the default
 is `http://localhost:8083`, where `compose.yaml` publishes the `tv` image.

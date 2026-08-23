@@ -22,13 +22,23 @@
 }
 
 # ── the site ─────────────────────────────────────────────────────────────────
-{$DOMAIN} {
+#
+# Two names, one site, and the duplication is a snippet rather than a copy.
+#
+# `app.` is the canonical one because the apex is not ours to serve: GoDaddy
+# overrides the `A @` record with its own parking address — the record is right
+# in the editor and the nameservers answer something else — and the domain
+# cannot move to another registrar until 22 October. The apex block stays so
+# that the day it is freed, it works without anybody remembering this file.
+# Until then Caddy simply fails to get a certificate for it, which costs the
+# other four names nothing.
+(launcher) {
 	encode zstd gzip
 
 	# Pairing lives here as well as on its own name, and this is the one the QR
-	# code should carry: it is the shortest, and a phone camera is pointed at it
-	# from across a room. The path stays `/r/…` because the remote app's own
-	# router owns that route — see `apps/remote/src/router.ts`.
+	# code carries: it is the shortest, and a phone camera is pointed at it from
+	# across a room. The path stays `/r/…` because the remote app's own router
+	# owns that route — see `apps/remote/src/router.ts`.
 	handle /r/* {
 		reverse_proxy remote:8080
 	}
@@ -36,6 +46,14 @@
 	handle {
 		reverse_proxy web:8080
 	}
+}
+
+app.{$DOMAIN} {
+	import launcher
+}
+
+{$DOMAIN} {
+	import launcher
 }
 
 # ── the API, for clients that are not browsers ───────────────────────────────

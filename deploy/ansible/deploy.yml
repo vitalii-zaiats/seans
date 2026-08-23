@@ -123,7 +123,7 @@
 
     - name: Wait for the front door
       ansible.builtin.uri:
-        url: "https://{{ domain }}/health"
+        url: "https://api.{{ domain }}/health"
         status_code: 200
       register: health
       until: health is succeeded

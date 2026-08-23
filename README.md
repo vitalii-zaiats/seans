@@ -116,7 +116,8 @@ Five names, one certificate authority, and nothing else facing the internet:
 
 | name | what | image |
 | --- | --- | --- |
-| `seans.com` | the web launcher, and `/r/<code>` for pairing | `apps/web`, `apps/remote` |
+| `app.seans.com` | the web launcher, and `/r/<code>` for pairing | `apps/web`, `apps/remote` |
+| `seans.com` | the same, once the apex is ours to serve | — |
 | `api.seans.com` | the API — for clients that are **not** browsers | `apps/api` |
 | `tv.seans.com` | the launcher as a web app / PWA | `apps/tv` |
 | `remote.seans.com` | the same pairing page under its own name | `apps/remote` |
@@ -128,9 +129,20 @@ cd apps/tv && flutter build web --release     --dart-define=API= --dart-define=R
 docker compose -f compose.prod.yaml up -d --build
 ```
 
-DNS: an `A` (and `AAAA`) record for each of the five, pointing at the server.
+DNS: a wildcard `A *` covers every subdomain. The apex needs its own record —
+`*` never matches the bare name — and on `seans-kino.online` it currently cannot
+be served at all: GoDaddy answers the apex with its own parking address
+regardless of the `A @` in the editor, and the domain cannot move registrar
+until 22 October. Hence `app.`, which is the canonical name until then; the apex
+block stays in the Caddyfile so it starts working the day it is freed.
+
 Caddy gets the certificates itself on first request; port 80 must be reachable
 or it cannot.
+
+Releases are cut from tags: `git tag v0.1.0 && git push --tags` builds the APK,
+signs it and attaches it as `seans.apk`, which is what the downloads page links
+to at `…/releases/latest/download/seans.apk`. Every push to `main` still leaves
+an APK as a run artifact for thirty days.
 
 **Browsers never talk to `api.`** Each app's own nginx proxies the API paths it
 needs, so a page served from `seans.com` asks `seans.com` for its data — no

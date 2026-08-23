@@ -17,6 +17,8 @@ name: deploy
 on:
   push:
     branches: [main]
+    # A tag is what makes a release. `git tag v0.1.0 && git push --tags`.
+    tags: ["v*"]
   pull_request:
   workflow_dispatch:
     inputs:
@@ -108,7 +110,7 @@ jobs:
           flutter build web --release \
             --base-href / \
             --dart-define=API= \
-            --dart-define=REMOTE=https://${{ vars.DOMAIN || 'example.com' }} \
+            --dart-define=REMOTE=https://app.${{ vars.DOMAIN || 'example.com' }} \
             --no-tree-shake-icons
         working-directory: apps/tv
       - uses: actions/upload-artifact@v4
@@ -126,6 +128,8 @@ jobs:
   apk:
     needs: [dart]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       # Hoisted here rather than tested in a step's `if` directly: the `secrets`
       # context is not dependable in every position, and an empty string is a
@@ -170,7 +174,7 @@ jobs:
       - run: |
           flutter build apk --release \
             --dart-define=API=https://api.${{ vars.DOMAIN || 'example.com' }} \
-            --dart-define=REMOTE=https://${{ vars.DOMAIN || 'example.com' }}
+            --dart-define=REMOTE=https://app.${{ vars.DOMAIN || 'example.com' }}
         working-directory: apps/tv
 
       - name: Say which key signed it
@@ -181,13 +185,34 @@ jobs:
             echo "⚠ Signed with the **debug** key — set \`ANDROID_KEYSTORE\` and friends to sign it properly." >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      # A stable name, because a release asset is addressed by it: the
+      # downloads page points at
+      # `…/releases/latest/download/seans.apk`, and that URL only works if the
+      # file is called the same thing every time.
+      - run: cp apps/tv/build/app/outputs/flutter-apk/app-release.apk seans.apk
+
       - uses: actions/upload-artifact@v4
         with:
           name: seans-apk
-          path: apps/tv/build/app/outputs/flutter-apk/app-release.apk
+          path: seans.apk
           # Long enough to install from, short enough that a public repository
           # is not also a file host.
           retention-days: 30
+
+      # Releases are cut from tags and nothing else. Every push to `main`
+      # produces an artifact anybody with the repository open can download; a
+      # tag is the deliberate act that says "this one is worth a permanent
+      # address", and only that address is safe to put on the downloads page.
+      - name: Attach it to the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --title "${{ github.ref_name }}" \
+            --generate-notes \
+            seans.apk \
+          || gh release upload "${{ github.ref_name }}" seans.apk --clobber
 
       # The key does not outlive the job, but a runner is a machine and the file
       # is a file.

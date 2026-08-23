@@ -1,0 +1,58 @@
+# ── uv workspace root ────────────────────────────────────────────────────────
+# Virtual: never built, never published. It exists to give every Python member
+# one resolution and one uv.lock.
+#
+#   uv sync           install every member + dev tools into ./.venv
+#   uv run pytest     run the whole suite
+[project]
+name = "super-movies"
+version = "0.0.0"
+description = "Super Movies monorepo (Python side)"
+requires-python = ">=3.13"
+dependencies = []
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["apps/api", "packages/python/*"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=1.0",
+    "httpx2>=2.0",
+    "aiosqlite>=0.20",
+    "ruff>=0.9",
+    "mypy>=1.14",
+]
+
+# ── shared tool config ───────────────────────────────────────────────────────
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+# tools/ holds standalone projects with their own conventions and their own venv.
+#
+# Markdown is excluded because ruff 0.16 formats the Python inside a fenced
+# block, and the snippets in `CLAUDE.md` are deliberately not formatted code —
+# they are a "no" next to a "yes", and blank lines between them are the point.
+exclude = ["tools", "*.md"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+# The domain is Ukrainian: titles, genres and half the comments are Cyrillic, so
+# "this letter looks like a Latin one" fires on correct text forever.
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+# Two src roots in one workspace: without these, mypy reads a file's package
+# from the directory it happens to sit in and reports the two `__main__`s as
+# the same module.
+explicit_package_bases = true
+mypy_path = "apps/api/src:packages/python/crawlers/src:packages/python/httpkit/src:packages/python/kinostrain/src:packages/python/sweet-tv/src"
+
+[tool.pytest.ini_options]
+testpaths = ["apps/api/tests", "packages/python"]
+asyncio_mode = "auto"

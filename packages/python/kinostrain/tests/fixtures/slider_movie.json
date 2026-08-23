@@ -1,0 +1,336 @@
+{
+  "data": [
+    {
+      "name": "Одна миля: Розділ другий",
+      "originalName": "One Mile: Chapter Two",
+      "slug": "odna-mila-rozdil-drugij",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 5,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/69ea22beb8391382167784.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/69ea22beb8391382167784.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/69e93097a51cf489901130.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        }
+      ],
+      "shortDescription": "Колишній спецпризначенець Данні повертається на віддалений острів, де минулого разу він втручався в діяльність закритої групи поселенців.",
+      "ageRestrictions": 18,
+      "time": "1 год 20 хв",
+      "country": "Канада, США",
+      "seasonsCount": 1,
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "trailerYoutubeId": "QZUFUvULWqs"
+    },
+    {
+      "name": "Одна миля: Глава перша / Одна миля: Розділ перший",
+      "originalName": "One Mile: Chapter One",
+      "slug": "odna-mila-glava-persa-odna-mila-rozdil-persij",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 5.7,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/69ea22bdec856650077031.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/69ea22bdec856650077031.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/69e93075e6109256254817.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        }
+      ],
+      "shortDescription": "Колишній спецпризначенець шукає доньку після спроби викрадення в ізольованій спільноті поза контролем держави.",
+      "ageRestrictions": 18,
+      "time": "1 год 26 хв",
+      "country": "Канада, США",
+      "seasonsCount": 1,
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "trailerYoutubeId": "868HlmpAhtQ"
+    },
+    {
+      "name": "Заколот",
+      "originalName": "Mutiny",
+      "slug": "zakolot",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 0,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a86b11356485293274264.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a86b11356485293274264.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a86b11435e91409218215.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        }
+      ],
+      "shortDescription": "Колишнього спецпризначенця підставляють у вбивстві його роботодавця-мільярдера, і він вирушає на вантажному судні по сліду змови, щоб знайти справжніх винних і очистити своє ім’я.",
+      "ageRestrictions": 18,
+      "time": "1 год 35 хв",
+      "country": "Велика Британія, США",
+      "seasonsCount": 1,
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "trailerYoutubeId": "_zE6IUTFaww"
+    },
+    {
+      "name": "EPiC: Елвіс Преслі і концерт",
+      "originalName": "EPiC: Elvis Presley in Concert",
+      "slug": "epic-elvis-presli-i-koncert",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 8.1,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a86b0d0b9414527554534.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a86b0d0b9414527554534.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a86b0d19e7f8421214613.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "музичний",
+          "slug": "muzicnij"
+        },
+        {
+          "name": "документальний",
+          "slug": "dokumental-nij"
+        }
+      ],
+      "shortDescription": "Баз Лурманн повертає Елвіса Преслі на великий екран через відновлені концертні записи, рідкісні архівні матеріали та голос самого музиканта, створюючи портрет артиста на піку його сценічної сили.",
+      "ageRestrictions": 13,
+      "time": "1 год 40 хв",
+      "country": "Австралія, США",
+      "seasonsCount": 1,
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "trailerYoutubeId": "Te06pftsNSk"
+    },
+    {
+      "name": "У дорослих свої проблеми / Старші",
+      "originalName": "Die Ältern",
+      "slug": "u-doroslih-svoi-problemi-starsi",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.2,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a86b103e3369096579766.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a86b103e3369096579766.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a86b104aaea4390337776.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        },
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        }
+      ],
+      "shortDescription": "Колишній успішний письменник раптом втрачає звичний сімейний уклад і змушений заново зрозуміти, ким він є, коли дружина та діти більше не потребують його постійної опіки.",
+      "ageRestrictions": null,
+      "time": "1 год 44 хв",
+      "country": "Німеччина",
+      "seasonsCount": 1,
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "trailerYoutubeId": null
+    },
+    {
+      "name": "Вердикт",
+      "originalName": "The Verdict / Keadilan",
+      "slug": "verdikt",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.3,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a86b0e5bed71589832080.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a86b0e5bed71589832080.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a86b0e6923b0497461935.webp",
+      "yearStart": 2025,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        }
+      ],
+      "shortDescription": "Після жорстокого вбивства вагітної дружини працівник суду стикається з корумпованою системою, яка може дозволити впливовому підозрюваному уникнути покарання.",
+      "ageRestrictions": null,
+      "time": "1 год 40 хв",
+      "country": "Індонезія, Південна Корея",
+      "seasonsCount": 1,
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "trailerYoutubeId": "HDODQIjlrJs"
+    },
+    {
+      "name": "Молодий Вашинґтон",
+      "originalName": "Young Washington",
+      "slug": "molodij-vasington",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 7,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a856c565f440296846560.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a856c565f440296846560.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a856c571ccba801811012.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "біографія",
+          "slug": "biografia"
+        },
+        {
+          "name": "історичний",
+          "slug": "istoricnij"
+        },
+        {
+          "name": "воєнний",
+          "slug": "voennij"
+        },
+        {
+          "name": "документальний",
+          "slug": "dokumental-nij"
+        }
+      ],
+      "shortDescription": "Молодий Джордж Вашингтон вступає у війну, де битви, зради й складні рішення випробовують його як солдата та командира.",
+      "ageRestrictions": 13,
+      "time": "2 год 05 хв",
+      "country": "Канада, Ірландія, США",
+      "seasonsCount": 1,
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "trailerYoutubeId": "F4OI-kP64vA"
+    },
+    {
+      "name": "Iron Maiden: Палаючі амбіції",
+      "originalName": "Iron Maiden: Burning Ambition",
+      "slug": "iron-maiden-palauci-ambicii",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 7.4,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a856c3e9817f500510371.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a856c3e9817f500510371.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a856c3f692f5855842162.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "музичний",
+          "slug": "muzicnij"
+        },
+        {
+          "name": "документальний",
+          "slug": "dokumental-nij"
+        }
+      ],
+      "shortDescription": "50 років Iron Maiden – від лондонських пабів до найбільших стадіонів світу через архіви, інтерв’ю та рідкісні кадри.",
+      "ageRestrictions": null,
+      "time": "1 год 46 хв",
+      "country": "Велика Британія, США",
+      "seasonsCount": 1,
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "trailerYoutubeId": "CLdpU1Sc81A"
+    }
+  ]
+}

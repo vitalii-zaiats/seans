@@ -1,0 +1,888 @@
+{
+  "data": [
+    {
+      "name": "Одна миля: Розділ другий",
+      "originalName": "One Mile: Chapter Two",
+      "slug": "odna-mila-rozdil-drugij",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 5,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/69ea22beb8391382167784.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-20T20:05:01+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Одна миля: Глава перша / Одна миля: Розділ перший",
+      "originalName": "One Mile: Chapter One",
+      "slug": "odna-mila-glava-persa-odna-mila-rozdil-persij",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 5.7,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/69ea22bdec856650077031.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-20T19:05:02+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Заколот",
+      "originalName": "Mutiny",
+      "slug": "zakolot",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 0,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a86b11356485293274264.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        },
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-20T18:05:01+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "EPiC: Елвіс Преслі і концерт",
+      "originalName": "EPiC: Elvis Presley in Concert",
+      "slug": "epic-elvis-presli-i-koncert",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 8.1,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a86b0d0b9414527554534.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "документальний",
+          "slug": "dokumental-nij"
+        },
+        {
+          "name": "музичний",
+          "slug": "muzicnij"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-20T16:24:42+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "У дорослих свої проблеми / Старші",
+      "originalName": "Die Ältern",
+      "slug": "u-doroslih-svoi-problemi-starsi",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.2,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a86b103e3369096579766.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        },
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-20T16:24:40+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Вердикт",
+      "originalName": "The Verdict / Keadilan",
+      "slug": "verdikt",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.3,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a86b0e5bed71589832080.webp",
+      "yearStart": 2025,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-20T16:24:37+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Молодий Вашинґтон",
+      "originalName": "Young Washington",
+      "slug": "molodij-vasington",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 7,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a856c565f440296846560.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "документальний",
+          "slug": "dokumental-nij"
+        },
+        {
+          "name": "воєнний",
+          "slug": "voennij"
+        },
+        {
+          "name": "історичний",
+          "slug": "istoricnij"
+        },
+        {
+          "name": "біографія",
+          "slug": "biografia"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-19T13:06:58+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Iron Maiden: Палаючі амбіції",
+      "originalName": "Iron Maiden: Burning Ambition",
+      "slug": "iron-maiden-palauci-ambicii",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 7.4,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a856c3e9817f500510371.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "музичний",
+          "slug": "muzicnij"
+        },
+        {
+          "name": "документальний",
+          "slug": "dokumental-nij"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-19T13:06:53+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Пастка в Осаці",
+      "originalName": "Trapped in Osaka",
+      "slug": "pastka-v-osaci",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": null,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a856c3d93095611645425.webp",
+      "yearStart": null,
+      "yearEnd": null,
+      "genres": [],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-19T12:05:02+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Вісімнадцята троянда",
+      "originalName": "18th Rose",
+      "slug": "visimnadcata-troanda",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 5.6,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/69ea22c8d0d44333503066.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-19T09:05:01+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Снігова людина / Єті",
+      "originalName": "The Yeti",
+      "slug": "snigova-ludina-eti",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 3.6,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a840d3127270207196783.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "жахи",
+          "slug": "zahi"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-18T10:43:11+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Нічний ангел",
+      "originalName": "Malaikat Malam",
+      "slug": "nicnij-angel",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 4.9,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a840bff96ce7482172031.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-18T10:43:09+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "5683",
+      "originalName": "5683",
+      "slug": "5683",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 7.1,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a840c49580ce623199894.webp",
+      "yearStart": 2025,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        },
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-18T10:43:06+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Навколо тліну",
+      "originalName": "Round the Decay",
+      "slug": "navkolo-tlinu",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.2,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a840c0fe7a7b070636513.webp",
+      "yearStart": 2025,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        },
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "жахи",
+          "slug": "zahi"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-18T10:43:04+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Мій найкращий друг, його дівчина і я",
+      "originalName": "My Best Friend, His Girlfriend and Me / Mein bester Freund, seine Freundin und ich",
+      "slug": "mij-najkrasij-drug-jogo-divcina-i-a",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 5.3,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a8012b744fbd310360689.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-17T12:05:02+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Уся ніч шкереберть / Усю ніч усе не так",
+      "originalName": "All Night Wrong",
+      "slug": "usa-nic-skerebert-usu-nic-use-ne-tak",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 4.9,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a815da54bff3536781670.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        },
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-16T09:51:15+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Найбагатша жінка у світі",
+      "originalName": "The Richest Woman in the World",
+      "slug": "najbagatsa-zinka-u-sviti",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.3,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a815d9294c61230403156.webp",
+      "yearStart": 2025,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-16T09:51:15+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Покаяння",
+      "originalName": "The Penance",
+      "slug": "pokaanna",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 5.7,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a815d99e475a632507881.webp",
+      "yearStart": 2025,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-16T09:51:13+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Довіра",
+      "originalName": "Trust",
+      "slug": "dovira",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 3.9,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a815d785e275121741445.webp",
+      "yearStart": 2025,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "жахи",
+          "slug": "zahi"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-16T09:51:11+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Сусіди зверху",
+      "originalName": "The Invite",
+      "slug": "susidi-zverhu",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 7.6,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a4510816aabe011150473.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-15T17:05:02+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Кріс і Мартіна: Фінальний сет",
+      "originalName": "Chris & Martina: The Final Set",
+      "slug": "kris-i-martina-final-nij-set",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 7.9,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a8012dec3406597062929.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "документальний",
+          "slug": "dokumental-nij"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-15T10:20:57+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Оригінальний звук / Оригінальне звучання",
+      "originalName": "Original Sound",
+      "slug": "original-nij-zvuk-original-ne-zvucanna",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 8.1,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a8012c359473758748260.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "драма",
+          "slug": "drama"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-15T10:20:56+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Гра з вогнем",
+      "originalName": "Playing with Fire",
+      "slug": "gra-z-vognem-1",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 5.6,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a8012d0c6af7111143944.webp",
+      "yearStart": 2025,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "трилер",
+          "slug": "triler"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-15T10:20:54+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Не бажай удачі",
+      "originalName": "Don't Say Good Luck",
+      "slug": "ne-bazaj-udaci",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.8,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a7f7e44b45cc234594448.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "музичний",
+          "slug": "muzicnij"
+        },
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-14T23:45:13+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      }
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "perPage": 24,
+    "total": 3436,
+    "totalPages": 144
+  }
+}

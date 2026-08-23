@@ -1,0 +1,16 @@
+name: super_movies_api
+description: Typed Dart client for the Super Movies API — start-up, identity, and the three ways a box can decline to have one.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  http: ^1.6.0
+  meta: ^1.19.0
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.6

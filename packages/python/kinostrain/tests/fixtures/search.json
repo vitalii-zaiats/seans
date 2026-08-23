@@ -1,0 +1,84 @@
+{
+  "data": [
+    {
+      "name": "Дріт мерця",
+      "originalName": "Dead Man's Wire",
+      "slug": "drit-merca",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.4,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/69f36e2be438d224633913.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "highlight": {
+        "name": "Дріт <mark>мерця</mark>"
+      }
+    },
+    {
+      "name": "Черевики мерця",
+      "originalName": "Dead Man's Shoes",
+      "slug": "cereviki-merca",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 7.5,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a734d333a501475915954.webp",
+      "yearStart": 2004,
+      "yearEnd": null,
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "highlight": {
+        "name": "Черевики <mark>мерця</mark>"
+      }
+    },
+    {
+      "name": "Ходячі мерці: Місто мерців",
+      "originalName": "The Walking Dead: Dead City",
+      "slug": "hodaci-merci-misto-merciv",
+      "type": "serial",
+      "format": "serial",
+      "imdbMark": 7,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a0f25745cbe9508088755.webp",
+      "yearStart": 2023,
+      "yearEnd": 2026,
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 6,
+        "readyEpisodesCount": 6,
+        "lastUrlSuffix": null
+      },
+      "highlight": {
+        "name": "Ходячі <mark>мерці</mark>: Місто мерців"
+      }
+    },
+    {
+      "name": "Зловісні мерці у вогні",
+      "originalName": "Evil Dead Burn",
+      "slug": "zlovisni-merci-u-vogni",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.4,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a72f599ed350513273648.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "highlight": {
+        "name": "Зловісні <mark>мерці</mark> у вогні"
+      }
+    }
+  ]
+}

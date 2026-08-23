@@ -1,0 +1,57 @@
+# Serves the pairing page — the one a television's QR code opens on a phone.
+#
+# Only `/auth` is proxied: this app signs a person in and approves a device, and
+# it has no business reaching any other part of the API. A narrower proxy is a
+# smaller thing to get wrong.
+
+# Resolved per request, not at start-up.
+#
+# `upstream api { server api:8000; }` looks harmless and is not: nginx resolves
+# that name when it loads the configuration, so a missing API container is not a
+# degraded site but a front that refuses to boot — the catalogue, the shell and
+# every static byte gone because the thing behind one prefix was not up yet.
+# Deploys are exactly when that happens.
+#
+# A variable in `proxy_pass` defers the lookup to the request, and 127.0.0.11 is
+# Docker's own DNS. The failure becomes what it should have been: 502 on the API
+# paths, and a site that still loads.
+resolver 127.0.0.11 valid=10s ipv6=off;
+
+server {
+    listen 8080;
+    server_name _;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    location /health {
+        access_log off;
+        return 200 "ok\n";
+    }
+
+    location /auth/ {
+        set $api ${API_UPSTREAM};
+        proxy_pass http://$api;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    location /assets/ {
+        include /etc/nginx/app-headers.conf;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+        try_files $uri =404;
+    }
+
+    # `index index.html` is an internal redirect, so a request for `/` is
+    # re-matched and lands here rather than in `location /`.
+    location = /index.html {
+        include /etc/nginx/app-headers.conf;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    # This app *does* have a router: the link a QR code carries is a real path,
+    # and opening it cold has to serve the bundle rather than a 404.
+    location / {
+        include /etc/nginx/app-headers.conf;
+        try_files $uri $uri/ /index.html;
+    }
+}

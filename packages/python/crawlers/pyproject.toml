@@ -1,0 +1,31 @@
+[project]
+name = "crawlers"
+version = "0.1.0"
+description = "Pluggable listing-page crawlers: sources in, sinks out"
+readme = "README.md"
+requires-python = ">=3.13"
+# Parsing only. No HTTP library: the requester is injected, so nothing here
+# forces httpx on a caller who would rather drive sockets themselves.
+dependencies = [
+    "beautifulsoup4>=4.13",
+    "lxml>=5.3",
+]
+
+[project.optional-dependencies]
+# Only the CLI needs a working requester out of the box.
+cli = ["httpkit"]
+# The kinostrain source reads that service's own JSON rather than its HTML, and
+# the client that already knows those shapes is a sibling. Optional so a caller
+# who only wants kinoukr does not take it.
+kinostrain = ["kinostrain"]
+
+[project.scripts]
+crawl = "crawlers.cli:main"
+
+[tool.uv.sources]
+httpkit = { workspace = true }
+kinostrain = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

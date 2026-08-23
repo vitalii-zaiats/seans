@@ -1,0 +1,866 @@
+{
+  "data": [
+    {
+      "name": "Сусіди зверху",
+      "originalName": "The Invite",
+      "slug": "susidi-zverhu",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 7.6,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a4510816aabe011150473.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a4510816aabe011150473.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a451081a790c342961460.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-15T17:05:02+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Дві пари сусідів збираються на невинну вечерю, яка швидко перетворюється на небезпечний експеримент із бажаннями та межами в стосунках.",
+      "time": "107 хв",
+      "country": "Сполучені Штати"
+    },
+    {
+      "name": "Останній дім",
+      "originalName": "The Last House",
+      "slug": "ostannij-dim",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 5.5,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a761ef71ecb2640307100.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a761ef71ecb2640307100.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a761ef80a58a460820421.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "жахи",
+          "slug": "zahi"
+        },
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-07T21:10:12+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Родина застрягає у власному домі без зв’язку й виходу, поки їжа, вода та терпіння поступово закінчуються.",
+      "time": "1 год 50 хв",
+      "country": "Франція, Велика Британія, США"
+    },
+    {
+      "name": "ПостЛюдина",
+      "originalName": "PostHuman",
+      "slug": "postludina",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.9,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a7d7a57bbfd3182759109.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a7d7a57bbfd3182759109.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a7d7a5887da0681758577.webp",
+      "yearStart": 2025,
+      "yearEnd": null,
+      "genres": [],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-13T11:59:19+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Шість історій про недалеке майбутнє досліджують світ, у якому технології дедалі сильніше стирають межу між людиною та машиною.",
+      "time": "1 год 17 хв",
+      "country": "Сполучені Штати"
+    },
+    {
+      "name": "Обсесія",
+      "originalName": "Obsession",
+      "slug": "obsesia",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 7.8,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a46ce1bd7a30385086215.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a46ce1bd7a30385086215.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a46ce1c9dd10401000639.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "жахи",
+          "slug": "zahi"
+        },
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-01T01:05:01+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": "h"
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": "h"
+      },
+      "shortDescription": "Психологічний горор про хлопця, що силою магічного бажання змінює почуття подруги й виявляє, що нав’язлива любов може бути страшнішою за відмову.",
+      "time": "1 год 48 хв",
+      "country": "Велика Британія, США"
+    },
+    {
+      "name": "Володарі Всесвіту",
+      "originalName": "Masters of the Universe",
+      "slug": "volodari-vsesvitu",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.5,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a608be34e637839740940.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a608be34e637839740940.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a608be4419e2871418591.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-06-03T00:00:00+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Загублений на Землі принц Адам дізнається, що він спадкоємець Етернії, і разом із союзниками мусить зупинити Скелетора та повернути собі силу Гі-Мена.",
+      "time": "2 год 20 хв",
+      "country": "США"
+    },
+    {
+      "name": "На повну",
+      "originalName": "To The Max / La Fiera",
+      "slug": "na-povnu",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.1,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a7ed24670a56242657182.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a7ed24670a56242657182.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a7fe26126d94127623310.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "спорт",
+          "slug": "sport"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-14T13:05:02+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Троє друзів шукають відчуття польоту у вінгсьютах, але кожен стрибок дедалі сильніше змінює їхні життя.",
+      "time": "1 год 53 хв",
+      "country": "Іспанія"
+    },
+    {
+      "name": "Заколот",
+      "originalName": "Mutiny",
+      "slug": "zakolot",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 0,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a86b11356485293274264.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a86b11356485293274264.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a86b11435e91409218215.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-20T18:05:01+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Колишнього спецпризначенця підставляють у вбивстві його роботодавця-мільярдера, і він вирушає на вантажному судні по сліду змови, щоб знайти справжніх винних і очистити своє ім’я.",
+      "time": "1 год 35 хв",
+      "country": "Велика Британія, США"
+    },
+    {
+      "name": "Суперґьорл",
+      "originalName": "Supergirl",
+      "slug": "superg-orl",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 5.9,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a705c180f8a5699630331.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a705c180f8a5699630331.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a705c18e13c0322098940.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-06T10:05:01+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Суперґьорл вступає в смертельно небезпечну космічну погоню за піратом Кремом, коли її собаку Крипто отруюють під час чергової “галактичної” вечірки.",
+      "time": "1 год 48 хв",
+      "country": "США"
+    },
+    {
+      "name": "Енола Холмс 3",
+      "originalName": "Enola Holmes 3",
+      "slug": "enola-holms-3",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 5.7,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a44d4e32cbcb767036200.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a44d4e32cbcb767036200.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a44d4e430b47922766409.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "детектив",
+          "slug": "detektiv"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-07-01T11:56:34+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Весілля відкладається, коли Енола вирушає на Мальту розкривати найскладнішу й найнебезпечнішу справу, пов’язану зі зникненням Шерлока.",
+      "time": "1 год 45 хв",
+      "country": "США"
+    },
+    {
+      "name": "Мій найкращий друг, його дівчина і я",
+      "originalName": "My Best Friend, His Girlfriend and Me / Mein bester Freund, seine Freundin und ich",
+      "slug": "mij-najkrasij-drug-jogo-divcina-i-a",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 5.3,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a8012b744fbd310360689.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a8012b744fbd310360689.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a8012b828289301135227.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-17T12:05:02+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Оллі боїться втратити найкращого друга через його нову дівчину й намагається зруйнувати їхні стосунки, щоб урятувати заплановану спільну подорож навколо світу.",
+      "time": "98",
+      "country": "Німеччина"
+    },
+    {
+      "name": "Настроювач",
+      "originalName": "Tuner",
+      "slug": "nastrouvac",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 7.2,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a60b21f1d3c6491505259.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a60b21f1d3c6491505259.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a5f3bacf02ae932271532.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        },
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        },
+        {
+          "name": "музичний",
+          "slug": "muzicnij"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-07-22T09:05:02+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Молодий піаніст-налаштовувач, який чує кожну дрібницю, перетворює свій дар на спосіб відкривати сейфи, рятуючи наставника, але ризикує втратити свободу й чесність у грі з великими грошима.",
+      "time": "1 год 49 хв",
+      "country": "Канада, США"
+    },
+    {
+      "name": "Уся ніч шкереберть / Усю ніч усе не так",
+      "originalName": "All Night Wrong",
+      "slug": "usa-nic-skerebert-usu-nic-use-ne-tak",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 4.9,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a815da54bff3536781670.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a815da54bff3536781670.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a815da61e965157438141.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-16T09:51:15+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Невдале побачення двох самотніх людей перетворюється на кримінальний хаос, коли вони викрадають автомобіль убивці разом із трупом і сумкою грошей.",
+      "time": "1 год 31 хв",
+      "country": "Канада, Велика Британія"
+    },
+    {
+      "name": "Оригінальний звук / Оригінальне звучання",
+      "originalName": "Original Sound",
+      "slug": "original-nij-zvuk-original-ne-zvucanna",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 8.1,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a8012c359473758748260.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a8012c359473758748260.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a8012c450ea7058217857.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "драма",
+          "slug": "drama"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-15T10:20:56+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Талановитий бітмейкер із Нью-Йорка отримує шанс увійти у велику музичну індустрію після того, як популярна співачка привласнює його трек.",
+      "time": "1 год 38 хв",
+      "country": "США"
+    },
+    {
+      "name": "Колонія",
+      "originalName": "Colony / Gunche",
+      "slug": "kolonia",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.5,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a71a7f1c6fe9275399709.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a71a7f1c6fe9275399709.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a71a7f2a3c5c682084705.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "детектив",
+          "slug": "detektiv"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "жахи",
+          "slug": "zahi"
+        },
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-04T11:56:26+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Учасники біотехнологічної конференції опиняються на карантині після спалаху вірусу, що стрімко перетворює людей на небезпечних істот.",
+      "time": "2 год 3 хв",
+      "country": "Південна Корея"
+    },
+    {
+      "name": "Супер Перці",
+      "originalName": "Superbad",
+      "slug": "super-perci",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 7.6,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a61398194d77566737346.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a61398194d77566737346.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a61398299f67898843652.webp",
+      "yearStart": 2007,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2007-03-20T00:00:00+02:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Двоє нерозлучних старшокласників намагаються дістати алкоголь для вечірки, сподіваючись справити враження на дівчат перед випуском.",
+      "time": "1 год 53 хв",
+      "country": "США"
+    },
+    {
+      "name": "Левіт",
+      "originalName": "Leviticus",
+      "slug": "levit",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.4,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a6b0a11b515b801483808.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a6b0a11b515b801483808.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a6b0a128da42736909959.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        },
+        {
+          "name": "жахи",
+          "slug": "zahi"
+        },
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-03T07:05:02+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "У релігійному містечку кохання двох хлопців стає мішенню для людей і надприродної загрози.",
+      "time": "1 год 26 хв",
+      "country": "Австралія, США"
+    },
+    {
+      "name": "Гокум",
+      "originalName": "Hokum",
+      "slug": "gokum",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.7,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a22b00b6c2c9082199661.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a22b00b6c2c9082199661.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a22b00c3f2cd257538647.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "детектив",
+          "slug": "detektiv"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "жахи",
+          "slug": "zahi"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-06-06T18:05:02+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Надприродний хорор, у якому візит письменника до ірландського готелю для прощання з батьками відкриває двері до відьомських легенд, психологічного терору й моторошних таємниць минулого.",
+      "time": "1 год 41 хв",
+      "country": "Об'єднані Арабські Емірати, Гонконг, Ірландія, США"
+    },
+    {
+      "name": "Iron Maiden: Палаючі амбіції",
+      "originalName": "Iron Maiden: Burning Ambition",
+      "slug": "iron-maiden-palauci-ambicii",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 7.4,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a856c3e9817f500510371.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a856c3e9817f500510371.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a856c3f692f5855842162.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "музичний",
+          "slug": "muzicnij"
+        },
+        {
+          "name": "документальний",
+          "slug": "dokumental-nij"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-19T13:06:53+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "50 років Iron Maiden – від лондонських пабів до найбільших стадіонів світу через архіви, інтерв’ю та рідкісні кадри.",
+      "time": "1 год 46 хв",
+      "country": "Велика Британія, США"
+    },
+    {
+      "name": "Залізна людина",
+      "originalName": "Iron Man",
+      "slug": "zalizna-ludina",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 7.9,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/69ea227f08dc2058598400.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/69ea227f08dc2058598400.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/69e220b0409c4047000246.webp",
+      "yearStart": 2008,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2008-04-30T00:00:00+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Інженер створює бронекостюм після полону і стикається з проблемами всередині власної компанії.",
+      "time": "2 год 6 хв",
+      "country": "США, Канада"
+    },
+    {
+      "name": "Зловісні мерці у вогні",
+      "originalName": "Evil Dead Burn",
+      "slug": "zlovisni-merci-u-vogni",
+      "type": "movie",
+      "format": "film",
+      "imdbMark": 6.4,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a72f599ed350513273648.webp",
+      "sliderPosterUrl": "https://api.kinostrain.com/uploads/content/poster/6a72f599ed350513273648.webp",
+      "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a72f59ab3544602361697.webp",
+      "yearStart": 2026,
+      "yearEnd": null,
+      "genres": [
+        {
+          "name": "детектив",
+          "slug": "detektiv"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "жахи",
+          "slug": "zahi"
+        },
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-08-07T16:05:02+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "lastUrlSuffix": null
+      },
+      "shortDescription": "Родинні сварки у віддаленому маєтку переходять у кривавий кошмар, коли заборонені записи про Книгу мертвих пробуджують дедайтів.",
+      "time": "1 год 50 хв",
+      "country": "США"
+    }
+  ]
+}

@@ -1,0 +1,310 @@
+/* Nocturne, on the web.
+ *
+ * The tokens are the design system's own — the same values `apps/tv` carries in
+ * `lib/theme/nocturne.dart`, so a title looks the same on a television and in a
+ * browser. The *shapes* are Ambient's: a sticky blurred header, one enormous
+ * hero, horizontal rails under it, a grid at the bottom.
+ *
+ * Ambient's type comes with it — Space Grotesk for anything that is a name,
+ * Karla for prose, JetBrains Mono for the small capitalised labels that mark a
+ * rail, a runtime or a timecode. The mono is doing work rather than decoration:
+ * it is what makes a row of numbers line up and a section label read as
+ * furniture rather than as a heading.
+ */
+
+:root {
+  /* The two the viewer picks. Everything else on this page is derived from
+     them, which is what makes a theme two values rather than a stylesheet —
+     see `composables/useTheme.ts` and the palette the television offers in
+     `apps/tv/lib/theme/nocturne.dart`. */
+  --ground: #161826;
+  --accent: #9184d9;
+
+  --text: #e9e9ed;
+
+  /* Panels and chips sit one step above whatever ground was chosen, so a card
+     still reads as raised on the pure-black ground as well as on the blue-grey
+     one. The television mixes the same 11% of the same neutral. */
+  --surface: color-mix(in srgb, var(--neutral-400) 11%, var(--ground));
+
+  /* The neutral ramp, whole. On this dark ground the deep steps are fills and
+     borders, 500 is the base, and the light ones are text on a tint. */
+  --neutral-100: #f3f5fe;
+  --neutral-200: #e4e7f5;
+  --neutral-300: #cfd3e5;
+  --neutral-400: #b2b6ca;
+  --neutral-500: #9397ab;
+  --neutral-600: #75798c;
+  --neutral-700: #595d6c;
+  --neutral-800: #3f424d;
+  --neutral-900: #292b31;
+
+  /* Lifted towards the text, for paragraph-size copy in the accent — which the
+     accent itself is too low-contrast to carry against any of the grounds.
+     Mixed rather than tabulated: an accent chosen at runtime has no ramp of its
+     own, and mixing keeps every shade at the same visual weight whichever hue
+     it is. The proportions are the television's `accentSoft`, `accentBright`
+     and the two steps its avatar gradient uses. */
+  --accent-300: color-mix(in srgb, var(--text) 42%, var(--accent));
+  --accent-400: color-mix(in srgb, var(--text) 22%, var(--accent));
+  --accent-600: color-mix(in srgb, var(--ground) 30%, var(--accent));
+  --accent-800: color-mix(in srgb, var(--ground) 62%, var(--accent));
+
+  /* The accent barely mixed into the ground: every tinted fill in the app. */
+  --accent-tint: color-mix(in srgb, var(--accent) 22%, var(--ground));
+  --accent-veil: color-mix(in srgb, var(--accent) 12%, transparent);
+
+  --divider: color-mix(in srgb, var(--text) 16%, transparent);
+  --hairline: color-mix(in srgb, var(--text) 8%, transparent);
+
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: Karla, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* The one radius the system has, and the one it allows itself for artwork. */
+  --radius: 8px;
+  --radius-art: 10px;
+
+  /* The page's own margin. Ambient's clamp, kept: a rail has to be able to run
+     off the right edge, and a fixed gutter on a 4K panel wastes half of it. */
+  --gutter: clamp(16px, 4vw, 64px);
+
+  /* Elevation on a dark ground is an edge plus ambient darkness, never a stack
+     of shadows. */
+  --lift: 0 10px 30px rgba(0, 0, 0, 0.45);
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Sizes here are the design's; weights are not bolder than 500 for a heading,
+   which is the system's one rule about hierarchy. */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* Themed, never the browser's own — and the ring is the accent, at the width
+   the system specifies. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* A rail scrolls, and says nothing about it: the arrows either side are the
+   affordance, and a scrollbar under a row of posters is noise. */
+[data-rail] {
+  scrollbar-width: none;
+}
+
+[data-rail]::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── the pieces every screen builds out of ────────────────────────────────── */
+
+/* A small capitalised label: a rail's name, a field's name, a timecode. */
+.label {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: clamp(12px, 1.1vw, 15px);
+  letter-spacing: 0.18em;
+  color: var(--neutral-500);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.label-sm {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--neutral-600);
+  text-transform: uppercase;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* An action.
+ *
+ * Outlined rather than filled — Ambient fills its Play button, and Nocturne
+ * does not fill anything: the accent is a line and a glow, never a flood. What
+ * survives from Ambient is the size and the lift on hover; the primary is the
+ * one wearing the accent's own border.
+ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 13px clamp(22px, 3vw, 36px);
+  border-radius: var(--radius);
+  border: 1px solid var(--neutral-700);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(15px, 1.3vw, 18px);
+  letter-spacing: 0.03em;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+.btn:hover {
+  background: var(--accent-veil);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(0);
+  background: var(--accent-tint);
+}
+
+.btn-primary {
+  border-color: var(--accent);
+  font-weight: 700;
+}
+
+.btn-primary:hover {
+  background: var(--accent-tint);
+}
+
+.btn-ghost {
+  border-color: transparent;
+  padding-inline: 14px;
+}
+
+.btn-ghost:hover {
+  border-color: var(--hairline);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+  transform: none;
+}
+
+/* A field. Native, styled — there is no component library here. */
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--neutral-800);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  transition: border-color 160ms ease;
+}
+
+.input:hover {
+  border-color: var(--neutral-700);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.input::placeholder {
+  color: var(--neutral-600);
+}
+
+/* Artwork, before it has loaded and where there is none.
+ *
+ * A hue per title rather than one grey: the design's own trick from the Ambient
+ * board, and it means a rail of missing posters still reads as a rail of
+ * different things.
+ */
+.art {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-art);
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--lift);
+}
+
+.art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The gradient a title's name sits on, over its artwork. */
+.shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(10, 11, 20, 0.88) 0%, rgba(10, 11, 20, 0) 58%);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

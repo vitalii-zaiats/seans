@@ -1,0 +1,115 @@
+# Serves the web launcher, and makes the API look like it is part of it.
+#
+# The client asks for `/catalogue/…` with no host — see `app/utils/api.ts`. That
+# is deliberate: same origin means no CORS and no build-time base URL. It also
+# means something has to put the two behind one address, and in this image that
+# something is nginx.
+#
+# `/proxy/` is not an afterthought: every poster in the catalogue is served from
+# a host that sends no CORS header, so the API rewrites each one to a path of
+# its own and the browser asks *this* origin for it. Without that location the
+# site loads and every picture is missing.
+#
+# The upstream address below is substituted at container start by the base
+# image's entrypoint, which only replaces variables that are set in the
+# environment — so nginx's own $uri and $host survive untouched.
+
+# Resolved per request, not at start-up.
+#
+# `upstream api { server api:8000; }` looks harmless and is not: nginx resolves
+# that name when it loads the configuration, so a missing API container is not a
+# degraded site but a front that refuses to boot — the catalogue, the shell and
+# every static byte gone because the thing behind one prefix was not up yet.
+# Deploys are exactly when that happens.
+#
+# A variable in `proxy_pass` defers the lookup to the request, and 127.0.0.11 is
+# Docker's own DNS. The failure becomes what it should have been: 502 on the API
+# paths, and a site that still loads.
+resolver 127.0.0.11 valid=10s ipv6=off;
+
+server {
+    listen 8080;
+    server_name _;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    location /health {
+        access_log off;
+        return 200 "ok\n";
+    }
+
+    location /catalogue/ {
+        set $api ${API_UPSTREAM};
+        proxy_pass http://$api;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    location /auth/ {
+        set $api ${API_UPSTREAM};
+        proxy_pass http://$api;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    # Asked without an install id, and only by the downloads page — which is why
+    # it is here and why nothing is written down when it is called. See
+    # `app/utils/api.ts`.
+    location = /init {
+        set $api ${API_UPSTREAM};
+        proxy_pass http://$api;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    # Artwork. Long-lived on purpose: a poster is addressed by a content hash
+    # upstream, so the bytes behind one of these paths do not change.
+    # Reading a player page for the stream inside it. A browser cannot: the page
+    # is served from a host with no CORS header, and it wants a `Referer` a page
+    # is not allowed to set.
+    location /playback/ {
+        set $api ${API_UPSTREAM};
+        proxy_pass http://$api;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    # HLS playlists and segments. Same origin for the same reason the artwork
+    # is: a media host pins CORS to itself, so a page here cannot read one.
+    location /stream {
+        set $api ${API_UPSTREAM};
+        proxy_pass http://$api;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    location /proxy/ {
+        set $api ${API_UPSTREAM};
+        proxy_pass http://$api;
+        include /etc/nginx/proxy-api.conf;
+        proxy_cache_valid 200 7d;
+    }
+
+    # Hashed filenames: the bytes behind a given name can never change, so the
+    # browser should never ask about them twice. No `expires` directive — it
+    # emits a Cache-Control of its own and the response ends up carrying two.
+    location /_nuxt/ {
+        include /etc/nginx/app-headers.conf;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+        try_files $uri =404;
+    }
+
+    # The one file that must never be cached: it is what names the current
+    # hashed bundle, and a stale copy pins the app to a build that is gone.
+    #
+    # Matched exactly *and* reached from `/`, because `index index.html` is an
+    # internal redirect — a request for `/` is re-matched against the locations
+    # and lands here rather than in `location /`.
+    location = /index.html {
+        include /etc/nginx/app-headers.conf;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    # Every screen has an address and the app is a single bundle, so a reload on
+    # `/title/…` has to land on the bundle rather than on a 404.
+    location / {
+        include /etc/nginx/app-headers.conf;
+        try_files $uri $uri/ /index.html;
+    }
+}

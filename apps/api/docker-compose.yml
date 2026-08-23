@@ -1,0 +1,25 @@
+# Postgres for local development. Port 5433 on purpose — 5432 is already taken
+# on this machine by another stack, and a database you connect to by accident is
+# worse than one that refuses.
+name: super-movies
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: super-movies-postgres
+    environment:
+      POSTGRES_USER: movies
+      POSTGRES_PASSWORD: movies
+      POSTGRES_DB: movies
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U movies -d movies"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:

@@ -1,0 +1,881 @@
+{
+  "movie": {
+    "genres": {
+      "popular": [
+        {
+          "name": "бойовик",
+          "slug": "bojovik"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "жахи",
+          "slug": "zahi"
+        },
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        },
+        {
+          "name": "детектив",
+          "slug": "detektiv"
+        },
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "мелодрама",
+          "slug": "melodrama"
+        }
+      ],
+      "other": [
+        {
+          "name": "kpop",
+          "slug": "kpop"
+        },
+        {
+          "name": "біографія",
+          "slug": "biografia"
+        },
+        {
+          "name": "вестерн",
+          "slug": "vestern"
+        },
+        {
+          "name": "воєнний",
+          "slug": "voennij"
+        },
+        {
+          "name": "для дітей",
+          "slug": "dla-ditej"
+        },
+        {
+          "name": "документальний",
+          "slug": "dokumental-nij"
+        },
+        {
+          "name": "зомбі горрор",
+          "slug": "zombi-gorror"
+        },
+        {
+          "name": "короткометрівка",
+          "slug": "korotkometrivka"
+        },
+        {
+          "name": "космос",
+          "slug": "kosmos"
+        },
+        {
+          "name": "музичний",
+          "slug": "muzicnij"
+        },
+        {
+          "name": "мюзикл",
+          "slug": "muzikl"
+        },
+        {
+          "name": "містика",
+          "slug": "mistika"
+        },
+        {
+          "name": "на основі реальної події",
+          "slug": "na-osnovi-real-noi-podii"
+        },
+        {
+          "name": "науково-популярний",
+          "slug": "naukovo-popularnij"
+        },
+        {
+          "name": "політика",
+          "slug": "politika"
+        },
+        {
+          "name": "пригода",
+          "slug": "prigoda"
+        },
+        {
+          "name": "природничий",
+          "slug": "prirodnicij"
+        },
+        {
+          "name": "пропаганда",
+          "slug": "propaganda"
+        },
+        {
+          "name": "реаліті-шоу",
+          "slug": "realiti-sou"
+        },
+        {
+          "name": "розслідування",
+          "slug": "rozsliduvanna"
+        },
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        },
+        {
+          "name": "спорт",
+          "slug": "sport"
+        },
+        {
+          "name": "спортивний",
+          "slug": "sportivnij"
+        },
+        {
+          "name": "спортивні",
+          "slug": "sportivni"
+        },
+        {
+          "name": "стендап",
+          "slug": "stendap"
+        },
+        {
+          "name": "судова драма",
+          "slug": "sudova-drama"
+        },
+        {
+          "name": "сімейний",
+          "slug": "simejnij"
+        },
+        {
+          "name": "чорна комедія",
+          "slug": "corna-komedia"
+        },
+        {
+          "name": "чорна плівка",
+          "slug": "corna-plivka"
+        },
+        {
+          "name": "чорний гумор",
+          "slug": "cornij-gumor"
+        },
+        {
+          "name": "історичний",
+          "slug": "istoricnij"
+        }
+      ]
+    },
+    "years": [
+      {
+        "name": "2026",
+        "slug": "2026"
+      },
+      {
+        "name": "2025",
+        "slug": "2025"
+      },
+      {
+        "name": "2024",
+        "slug": "2024"
+      },
+      {
+        "name": "2023",
+        "slug": "2023"
+      },
+      {
+        "name": "2022",
+        "slug": "2022"
+      },
+      {
+        "name": "2021",
+        "slug": "2021"
+      },
+      {
+        "name": "2021-2026",
+        "slug": "2021-2026"
+      },
+      {
+        "name": "2016-2020",
+        "slug": "2016-2020"
+      },
+      {
+        "name": "2011-2015",
+        "slug": "2011-2015"
+      },
+      {
+        "name": "2006-2010",
+        "slug": "2006-2010"
+      },
+      {
+        "name": "2001-2005",
+        "slug": "2001-2005"
+      },
+      {
+        "name": "2000 і раніше",
+        "slug": "2000-1900"
+      }
+    ],
+    "totalCount": 3436
+  },
+  "serial": {
+    "genres": {
+      "popular": [
+        {
+          "name": "бойовик",
+          "slug": "bojovik"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "жахи",
+          "slug": "zahi"
+        },
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        },
+        {
+          "name": "детектив",
+          "slug": "detektiv"
+        },
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "мелодрама",
+          "slug": "melodrama"
+        }
+      ],
+      "other": [
+        {
+          "name": "біографія",
+          "slug": "biografia"
+        },
+        {
+          "name": "вестерн",
+          "slug": "vestern"
+        },
+        {
+          "name": "воєнний",
+          "slug": "voennij"
+        },
+        {
+          "name": "війна і політика",
+          "slug": "vijna-i-politika"
+        },
+        {
+          "name": "дитячий",
+          "slug": "ditacij"
+        },
+        {
+          "name": "документальний",
+          "slug": "dokumental-nij"
+        },
+        {
+          "name": "дорама",
+          "slug": "dorama"
+        },
+        {
+          "name": "драми",
+          "slug": "drami"
+        },
+        {
+          "name": "екшн і пригоди",
+          "slug": "eksn-i-prigodi"
+        },
+        {
+          "name": "мильна опера",
+          "slug": "mil-na-opera"
+        },
+        {
+          "name": "музичний",
+          "slug": "muzicnij"
+        },
+        {
+          "name": "мюзикл",
+          "slug": "muzikl"
+        },
+        {
+          "name": "містика",
+          "slug": "mistika"
+        },
+        {
+          "name": "на основі реальної події",
+          "slug": "na-osnovi-real-noi-podii"
+        },
+        {
+          "name": "научний",
+          "slug": "naucnij"
+        },
+        {
+          "name": "політичний",
+          "slug": "politicnij"
+        },
+        {
+          "name": "реальне тб",
+          "slug": "real-ne-tb"
+        },
+        {
+          "name": "реаліті-шоу",
+          "slug": "realiti-sou"
+        },
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        },
+        {
+          "name": "спорт",
+          "slug": "sport"
+        },
+        {
+          "name": "спортивний",
+          "slug": "sportivnij"
+        },
+        {
+          "name": "сімейний",
+          "slug": "simejnij"
+        },
+        {
+          "name": "тв-шоу",
+          "slug": "tv-sou"
+        },
+        {
+          "name": "трілер",
+          "slug": "triler-1"
+        },
+        {
+          "name": "історичний",
+          "slug": "istoricnij"
+        }
+      ]
+    },
+    "years": [
+      {
+        "name": "2026",
+        "slug": "2026"
+      },
+      {
+        "name": "2025",
+        "slug": "2025"
+      },
+      {
+        "name": "2024",
+        "slug": "2024"
+      },
+      {
+        "name": "2023",
+        "slug": "2023"
+      },
+      {
+        "name": "2022",
+        "slug": "2022"
+      },
+      {
+        "name": "2021",
+        "slug": "2021"
+      },
+      {
+        "name": "2021-2026",
+        "slug": "2021-2026"
+      },
+      {
+        "name": "2016-2020",
+        "slug": "2016-2020"
+      },
+      {
+        "name": "2011-2015",
+        "slug": "2011-2015"
+      },
+      {
+        "name": "2006-2010",
+        "slug": "2006-2010"
+      },
+      {
+        "name": "2001-2005",
+        "slug": "2001-2005"
+      },
+      {
+        "name": "2000 і раніше",
+        "slug": "2000-1900"
+      }
+    ],
+    "totalCount": 1952
+  },
+  "cartoon-movie": {
+    "genres": {
+      "popular": [
+        {
+          "name": "бойовик",
+          "slug": "bojovik"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "жахи",
+          "slug": "zahi"
+        },
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        },
+        {
+          "name": "детектив",
+          "slug": "detektiv"
+        },
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        }
+      ],
+      "other": [
+        {
+          "name": "біографія",
+          "slug": "biografia"
+        },
+        {
+          "name": "вестерн",
+          "slug": "vestern"
+        },
+        {
+          "name": "воєнний",
+          "slug": "voennij"
+        },
+        {
+          "name": "документальний",
+          "slug": "dokumental-nij"
+        },
+        {
+          "name": "короткометражний",
+          "slug": "korotkometraznij"
+        },
+        {
+          "name": "короткометрівка",
+          "slug": "korotkometrivka"
+        },
+        {
+          "name": "музичний",
+          "slug": "muzicnij"
+        },
+        {
+          "name": "мюзикл",
+          "slug": "muzikl"
+        },
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        },
+        {
+          "name": "спорт",
+          "slug": "sport"
+        },
+        {
+          "name": "сімейний",
+          "slug": "simejnij"
+        },
+        {
+          "name": "телефільм",
+          "slug": "telefil-m"
+        },
+        {
+          "name": "історичний",
+          "slug": "istoricnij"
+        }
+      ]
+    },
+    "years": [
+      {
+        "name": "2026",
+        "slug": "2026"
+      },
+      {
+        "name": "2025",
+        "slug": "2025"
+      },
+      {
+        "name": "2024",
+        "slug": "2024"
+      },
+      {
+        "name": "2023",
+        "slug": "2023"
+      },
+      {
+        "name": "2022",
+        "slug": "2022"
+      },
+      {
+        "name": "2021",
+        "slug": "2021"
+      },
+      {
+        "name": "2021-2026",
+        "slug": "2021-2026"
+      },
+      {
+        "name": "2016-2020",
+        "slug": "2016-2020"
+      },
+      {
+        "name": "2011-2015",
+        "slug": "2011-2015"
+      },
+      {
+        "name": "2006-2010",
+        "slug": "2006-2010"
+      },
+      {
+        "name": "2001-2005",
+        "slug": "2001-2005"
+      },
+      {
+        "name": "2000 і раніше",
+        "slug": "2000-1900"
+      }
+    ],
+    "totalCount": 349
+  },
+  "cartoon-series": {
+    "genres": {
+      "popular": [
+        {
+          "name": "бойовик",
+          "slug": "bojovik"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "жахи",
+          "slug": "zahi"
+        },
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        },
+        {
+          "name": "детектив",
+          "slug": "detektiv"
+        },
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        }
+      ],
+      "other": [
+        {
+          "name": "воєнний",
+          "slug": "voennij"
+        },
+        {
+          "name": "війьсковий",
+          "slug": "vij-skovij"
+        },
+        {
+          "name": "дитячий",
+          "slug": "ditacij"
+        },
+        {
+          "name": "документальний",
+          "slug": "dokumental-nij"
+        },
+        {
+          "name": "екшн і пригоди",
+          "slug": "eksn-i-prigodi"
+        },
+        {
+          "name": "мультсеріал",
+          "slug": "mul-tserial"
+        },
+        {
+          "name": "мюзикл",
+          "slug": "muzikl"
+        },
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        },
+        {
+          "name": "сімейний",
+          "slug": "simejnij"
+        }
+      ]
+    },
+    "years": [
+      {
+        "name": "2026",
+        "slug": "2026"
+      },
+      {
+        "name": "2025",
+        "slug": "2025"
+      },
+      {
+        "name": "2024",
+        "slug": "2024"
+      },
+      {
+        "name": "2023",
+        "slug": "2023"
+      },
+      {
+        "name": "2022",
+        "slug": "2022"
+      },
+      {
+        "name": "2021",
+        "slug": "2021"
+      },
+      {
+        "name": "2021-2026",
+        "slug": "2021-2026"
+      },
+      {
+        "name": "2016-2020",
+        "slug": "2016-2020"
+      },
+      {
+        "name": "2011-2015",
+        "slug": "2011-2015"
+      },
+      {
+        "name": "2006-2010",
+        "slug": "2006-2010"
+      },
+      {
+        "name": "2001-2005",
+        "slug": "2001-2005"
+      },
+      {
+        "name": "2000 і раніше",
+        "slug": "2000-1900"
+      }
+    ],
+    "totalCount": 98
+  },
+  "anime": {
+    "genres": {
+      "popular": [
+        {
+          "name": "бойовик",
+          "slug": "bojovik"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        },
+        {
+          "name": "трилер",
+          "slug": "triler"
+        },
+        {
+          "name": "жахи",
+          "slug": "zahi"
+        },
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        },
+        {
+          "name": "детектив",
+          "slug": "detektiv"
+        },
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        }
+      ],
+      "other": [
+        {
+          "name": "біографія",
+          "slug": "biografia"
+        },
+        {
+          "name": "вестерн",
+          "slug": "vestern"
+        },
+        {
+          "name": "воєнний",
+          "slug": "voennij"
+        },
+        {
+          "name": "дитячий",
+          "slug": "ditacij"
+        },
+        {
+          "name": "екшн і пригоди",
+          "slug": "eksn-i-prigodi"
+        },
+        {
+          "name": "меха",
+          "slug": "meha"
+        },
+        {
+          "name": "музичний",
+          "slug": "muzicnij"
+        },
+        {
+          "name": "мюзикл",
+          "slug": "muzikl"
+        },
+        {
+          "name": "надприродне",
+          "slug": "nadprirodne"
+        },
+        {
+          "name": "перегони",
+          "slug": "peregoni"
+        },
+        {
+          "name": "повсякденність",
+          "slug": "povsakdennist"
+        },
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        },
+        {
+          "name": "спорт",
+          "slug": "sport"
+        },
+        {
+          "name": "сімейний",
+          "slug": "simejnij"
+        },
+        {
+          "name": "шьонен",
+          "slug": "s-onen"
+        },
+        {
+          "name": "історичний",
+          "slug": "istoricnij"
+        }
+      ]
+    },
+    "years": [
+      {
+        "name": "2026",
+        "slug": "2026"
+      },
+      {
+        "name": "2025",
+        "slug": "2025"
+      },
+      {
+        "name": "2024",
+        "slug": "2024"
+      },
+      {
+        "name": "2023",
+        "slug": "2023"
+      },
+      {
+        "name": "2022",
+        "slug": "2022"
+      },
+      {
+        "name": "2021",
+        "slug": "2021"
+      },
+      {
+        "name": "2021-2026",
+        "slug": "2021-2026"
+      },
+      {
+        "name": "2016-2020",
+        "slug": "2016-2020"
+      },
+      {
+        "name": "2011-2015",
+        "slug": "2011-2015"
+      },
+      {
+        "name": "2006-2010",
+        "slug": "2006-2010"
+      },
+      {
+        "name": "2001-2005",
+        "slug": "2001-2005"
+      },
+      {
+        "name": "2000 і раніше",
+        "slug": "2000-1900"
+      }
+    ],
+    "totalCount": 426
+  }
+}

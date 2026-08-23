@@ -1,0 +1,16 @@
+name: iptv
+description: Parses M3U playlists into channels. Knows nothing about HTTP.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.8.0
+
+# Deliberately dependency-free: parsing is pure string work, and fetching is
+# the caller's job (see PlaylistFetcher).
+dependencies:
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.0

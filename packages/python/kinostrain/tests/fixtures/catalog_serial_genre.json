@@ -1,0 +1,362 @@
+{
+  "data": [
+    {
+      "name": "Зоряне містечко",
+      "originalName": "Star City",
+      "slug": "zorane-mistecko",
+      "type": "serial",
+      "format": "serial",
+      "imdbMark": 7.6,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a1ae68201dea408750443.webp",
+      "yearStart": 2026,
+      "yearEnd": 2026,
+      "genres": [
+        {
+          "name": "війна і політика",
+          "slug": "vijna-i-politika"
+        },
+        {
+          "name": "фантастика та фентезі",
+          "slug": "fantastika-ta-fentezi"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2026-07-09T00:00:00+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 8,
+        "readyEpisodesCount": 8,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 8,
+        "readyEpisodesCount": 8,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Сяй / Сяйво",
+      "originalName": "Shine",
+      "slug": "saj-sajvo",
+      "type": "serial",
+      "format": "serial",
+      "imdbMark": 7.8,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a59ee32188a7432632999.webp",
+      "yearStart": 2025,
+      "yearEnd": 2025,
+      "genres": [
+        {
+          "name": "війна і політика",
+          "slug": "vijna-i-politika"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "історичний",
+          "slug": "istoricnij"
+        },
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2025-09-20T00:00:00+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 8,
+        "readyEpisodesCount": 8,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 8,
+        "readyEpisodesCount": 8,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Пережити падіння Чорного яструба",
+      "originalName": "Surviving Black Hawk Down",
+      "slug": "pereziti-padinna-cornogo-astruba",
+      "type": "serial",
+      "format": "serial",
+      "imdbMark": 7.4,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a63398abc926202719389.webp",
+      "yearStart": 2025,
+      "yearEnd": 2025,
+      "genres": [
+        {
+          "name": "війна і політика",
+          "slug": "vijna-i-politika"
+        },
+        {
+          "name": "документальний",
+          "slug": "dokumental-nij"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2025-02-10T00:00:00+02:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 3,
+        "readyEpisodesCount": 3,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 3,
+        "readyEpisodesCount": 3,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Корьо-киданські війни",
+      "originalName": "Korea-Khitan War / Goryeo Georan Jeonjaeng",
+      "slug": "kor-o-kidans-ki-vijni",
+      "type": "serial",
+      "format": "serial",
+      "imdbMark": 7.8,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a5f3629370c0804364638.webp",
+      "yearStart": 2023,
+      "yearEnd": 2023,
+      "genres": [
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "історичний",
+          "slug": "istoricnij"
+        },
+        {
+          "name": "війна і політика",
+          "slug": "vijna-i-politika"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2024-03-10T00:00:00+02:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 32,
+        "readyEpisodesCount": 32,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 32,
+        "readyEpisodesCount": 32,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Пролісок",
+      "originalName": "Snowdrop",
+      "slug": "prolisok",
+      "type": "serial",
+      "format": "serial",
+      "imdbMark": 8.1,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a56af23c181c182411636.webp",
+      "yearStart": 2021,
+      "yearEnd": 2021,
+      "genres": [
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        },
+        {
+          "name": "кримінал",
+          "slug": "kriminal"
+        },
+        {
+          "name": "війна і політика",
+          "slug": "vijna-i-politika"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2022-01-30T00:00:00+02:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 16,
+        "readyEpisodesCount": 16,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 16,
+        "readyEpisodesCount": 16,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Арсенал військової академії / Арсенал - військова академія",
+      "originalName": "Lie huo jun xiao / Arsenal Military Academy",
+      "slug": "arsenal-vijs-kovoi-akademii-arsenal-vijs-kova-akademia",
+      "type": "serial",
+      "format": "serial",
+      "imdbMark": 8.2,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a55efc84ffd5434558377.webp",
+      "yearStart": 2019,
+      "yearEnd": 2019,
+      "genres": [
+        {
+          "name": "екшн і пригоди",
+          "slug": "eksn-i-prigodi"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "екшн",
+          "slug": "eksn"
+        },
+        {
+          "name": "історичний",
+          "slug": "istoricnij"
+        },
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        },
+        {
+          "name": "війна і політика",
+          "slug": "vijna-i-politika"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2019-09-12T00:00:00+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 48,
+        "readyEpisodesCount": 48,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 48,
+        "readyEpisodesCount": 48,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Кохання у місячному сяйві",
+      "originalName": "Love in the Moonlight",
+      "slug": "kohanna-u-misacnomu-sajvi",
+      "type": "serial",
+      "format": "serial",
+      "imdbMark": 7.8,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a83770e92a54570841862.webp",
+      "yearStart": 2016,
+      "yearEnd": 2016,
+      "genres": [
+        {
+          "name": "романтичний",
+          "slug": "romanticnij"
+        },
+        {
+          "name": "сімейний",
+          "slug": "simejnij"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        },
+        {
+          "name": "війна і політика",
+          "slug": "vijna-i-politika"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "2016-10-18T00:00:00+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 18,
+        "readyEpisodesCount": 18,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 18,
+        "readyEpisodesCount": 18,
+        "lastUrlSuffix": null
+      }
+    },
+    {
+      "name": "Шьоґун / Сьоґун",
+      "originalName": "Shogun",
+      "slug": "s-ogun-s-ogun-1",
+      "type": "serial",
+      "format": "serial",
+      "imdbMark": 8.1,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a56ae43b11c6079706148.webp",
+      "yearStart": 1980,
+      "yearEnd": 1980,
+      "genres": [
+        {
+          "name": "воєнний",
+          "slug": "voennij"
+        },
+        {
+          "name": "екшн і пригоди",
+          "slug": "eksn-i-prigodi"
+        },
+        {
+          "name": "війна і політика",
+          "slug": "vijna-i-politika"
+        },
+        {
+          "name": "пригоди",
+          "slug": "prigodi"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        },
+        {
+          "name": "історичний",
+          "slug": "istoricnij"
+        }
+      ],
+      "seasonsCount": 1,
+      "lastUpdatePage": "1980-09-17T00:00:00+03:00",
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 3,
+        "readyEpisodesCount": 3,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 3,
+        "readyEpisodesCount": 3,
+        "lastUrlSuffix": null
+      }
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "perPage": 24,
+    "total": 8,
+    "totalPages": 1
+  }
+}

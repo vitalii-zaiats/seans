@@ -1,0 +1,18 @@
+# Pub workspace root. It ships nothing itself — it exists so every Dart package
+# in the monorepo shares one resolution and one pubspec.lock, the way the root
+# `pyproject.toml` does for the Python side.
+name: super_movies_workspace
+publish_to: none
+
+environment:
+  sdk: ^3.13.0
+
+workspace:
+  - apps/tv
+  - packages/dart/ashdi_finder
+  - packages/dart/cors_proxy
+  - packages/dart/doh
+  - packages/dart/hls
+  - packages/dart/iptv
+  - packages/dart/super_movies_api
+  - packages/dart/super_movies_remote

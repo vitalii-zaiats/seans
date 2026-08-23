@@ -1,0 +1,165 @@
+# The stack on a server, behind five names and one certificate authority.
+#
+#     cp deploy/prod.env.example .env      # fill it in first
+#     cd apps/tv && flutter build web --release \
+#         --dart-define=API= --dart-define=REMOTE=https://$DOMAIN
+#     docker compose -f compose.prod.yaml up -d --build
+#
+# **Self-contained, not an overlay on `compose.yaml`.** That file publishes a
+# port per service, which is right on a laptop and wrong on a public address —
+# and compose *appends* port lists rather than replacing them, so an overlay
+# could add a TLS front door but could never take those ports away. Here only
+# Caddy is reachable from outside; everything else talks over the compose
+# network and cannot be dialled from the internet at all.
+#
+# What each name serves is in `deploy/caddy/Caddyfile`.
+#
+# **Two ways to get the images, one file.** Every service names both an `image:`
+# and a `build:`, which is not redundancy: on a laptop `--build` produces it
+# from source and tags it, and on the server `docker compose pull` takes what CI
+# published and never looks at the build context — which is just as well, since
+# the server has no checkout, no Flutter SDK and no business compiling anything.
+# `deploy/ansible/deploy.yml` is what does that.
+
+name: seans
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-movies}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-movies}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-movies} -d ${POSTGRES_DB:-movies}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  # A one-shot, not a step in the API's start-up: two API replicas both running
+  # `alembic upgrade head` on boot is a race with a schema at the end of it.
+  migrate:
+    image: ${REGISTRY:?set REGISTRY in .env}/seans-api:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      API_DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-movies}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-movies}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    image: ${REGISTRY:?set REGISTRY in .env}/seans-api:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      API_DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-movies}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-movies}
+      # Every browser here is same-origin with the API — each app's nginx
+      # proxies the paths it needs — so this is the list of hosts that reach it
+      # *cross*-origin, which today is none of ours. Narrowed from the `*` the
+      # settings default to: there are no cookies and every call is a bearer
+      # token, so the wildcard was safe, but a list is what a reviewer expects.
+      API_CORS_ORIGINS: '["https://${DOMAIN}"]'
+      # Where the downloads page sends somebody who wants the APK. Empty until
+      # there is a build to point at, and the page says so rather than offering
+      # a dead link — see `apps/web/app/pages/downloads.vue`.
+      API_SELF_UPDATE_URL: ${API_SELF_UPDATE_URL:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  web:
+    image: ${REGISTRY:?set REGISTRY in .env}/seans-web:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        # Baked in: a static bundle has no server to read an environment
+        # variable at run time, and this is the one address the downloads page
+        # cannot work out for itself.
+        NUXT_PUBLIC_TV_URL: https://tv.${DOMAIN}
+    environment:
+      API_UPSTREAM: api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  admin:
+    image: ${REGISTRY:?set REGISTRY in .env}/seans-admin:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    environment:
+      API_UPSTREAM: api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  remote:
+    image: ${REGISTRY:?set REGISTRY in .env}/seans-remote:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: apps/remote/Dockerfile
+    environment:
+      API_UPSTREAM: api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Packages a bundle rather than building one, so `flutter build web` has to
+  # have run first — `apps/tv/Dockerfile` says why. On its own hostname it wants
+  # `--base-href /`, which is the default.
+  tv:
+    image: ${REGISTRY:?set REGISTRY in .env}/seans-tv:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: apps/tv/Dockerfile
+    environment:
+      API_UPSTREAM: api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in .env}
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL in .env}
+    ports:
+      # The only two ports on this machine that face the internet. 80 is not
+      # optional: it is how the certificate is issued and renewed.
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deploy/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      # Certificates and ACME account keys. Losing this volume means asking
+      # Let's Encrypt for everything again — which has rate limits.
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - web
+      - api
+      - admin
+      - remote
+      - tv
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  caddy-data:
+  caddy-config:

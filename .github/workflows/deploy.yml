@@ -1,0 +1,257 @@
+# Check, build, push, deploy.
+#
+# One workflow rather than three, because the three are one decision: nothing
+# should reach the server that has not been checked, and nothing should be
+# checked twice. Every job below refuses to start until the one before it
+# passed.
+#
+# On `main` it goes all the way. On a pull request it stops after the checks —
+# there is nothing to deploy from a branch, and pushing an image per proposal
+# fills a registry with things nobody will run.
+#
+# Manual runs can go to the server too: `workflow_dispatch` is what a rollback
+# looks like here, with `tag` set to a commit that used to work.
+
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The image tag to deploy — a commit sha. Empty means this run's.
+        required: false
+        type: string
+
+concurrency:
+  # A second push while the first is still deploying would race it onto the
+  # server. Queue rather than cancel: a half-finished `docker compose up` is
+  # worse than a slow one.
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io/${{ github.repository_owner }}
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      # `--all-packages` is not optional: without it uv installs only the
+      # root's dependencies and nothing imports.
+      - run: uv sync --all-packages
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy apps/api/src packages/python/*/src
+      - run: uv run pytest -q
+      # The contract is generated from the app, so a schema change that never
+      # reached `contracts/openapi.json` is a client written against a promise
+      # nobody kept. This is the only place that can notice.
+      - run: uv run openapi --check
+
+  dart:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+      - run: dart pub get
+      - run: dart analyze packages/dart
+      - run: dart format --set-exit-if-changed packages/dart
+      - run: dart test packages/dart
+
+  # The one image that cannot build itself: `apps/tv/Dockerfile` packages a
+  # bundle rather than producing one, because a Flutter SDK in a build stage is
+  # a gigabyte of image for a one-line copy. So the bundle is built here and
+  # handed to the image job.
+  flutter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+        working-directory: apps/tv
+      - run: flutter analyze lib
+        working-directory: apps/tv
+      # `--base-href /`: it has a hostname to itself in production. `API=` empty
+      # keeps it same-origin — `tv.<domain>` proxies the API paths itself.
+      # `REMOTE` is the one thing it must be told, because a QR code cannot
+      # carry a relative address.
+      - run: |
+          flutter build web --release \
+            --base-href / \
+            --dart-define=API= \
+            --dart-define=REMOTE=https://${{ vars.DOMAIN || 'example.com' }} \
+            --no-tree-shake-icons
+        working-directory: apps/tv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tv-web
+          path: apps/tv/build/web
+          retention-days: 1
+
+  # The launcher for a box, signed if there is a key to sign it with.
+  #
+  # An unsigned build is still worth producing: it installs on a television and
+  # it proves the Android half compiles, which is the half nothing else in this
+  # workflow touches. What it cannot do is go to a shop, and the summary says
+  # which of the two happened.
+  apk:
+    needs: [dart]
+    runs-on: ubuntu-latest
+    env:
+      # Hoisted here rather than tested in a step's `if` directly: the `secrets`
+      # context is not dependable in every position, and an empty string is a
+      # question a plain env var can answer anywhere.
+      HAS_KEY: ${{ secrets.ANDROID_KEYSTORE != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Take the upload key out of the secrets
+        id: key
+        if: env.HAS_KEY == 'true'
+        env:
+          KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          # Base64 because a keystore is binary and a secret is text:
+          #   base64 -i upload-keystore.jks | pbcopy
+          echo "$KEYSTORE" | base64 --decode > apps/tv/android/upload-keystore.jks
+          cat > apps/tv/android/key.properties <<PROPS
+          storeFile=upload-keystore.jks
+          storePassword=$STORE_PASSWORD
+          keyAlias=$KEY_ALIAS
+          keyPassword=$KEY_PASSWORD
+          PROPS
+          echo "signed=true" >> "$GITHUB_OUTPUT"
+
+      - run: flutter pub get
+        working-directory: apps/tv
+
+      # A box is armv8 and nothing else here is, but a universal APK is what
+      # somebody sideloads without having to know that.
+      - run: |
+          flutter build apk --release \
+            --dart-define=API=https://api.${{ vars.DOMAIN || 'example.com' }} \
+            --dart-define=REMOTE=https://${{ vars.DOMAIN || 'example.com' }}
+        working-directory: apps/tv
+
+      - name: Say which key signed it
+        run: |
+          if [ "${{ steps.key.outputs.signed }}" = "true" ]; then
+            echo "Signed with the upload key." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "⚠ Signed with the **debug** key — set \`ANDROID_KEYSTORE\` and friends to sign it properly." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: seans-apk
+          path: apps/tv/build/app/outputs/flutter-apk/app-release.apk
+          # Long enough to install from, short enough that a public repository
+          # is not also a file host.
+          retention-days: 30
+
+      # The key does not outlive the job, but a runner is a machine and the file
+      # is a file.
+      - if: always()
+        run: rm -f apps/tv/android/upload-keystore.jks apps/tv/android/key.properties
+
+  images:
+    needs: [python, dart, flutter]
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [api, web, admin, remote, tv]
+    steps:
+      - uses: actions/checkout@v4
+
+      # Only the launcher needs it, and only into the path its Dockerfile
+      # expects.
+      - if: matrix.app == 'tv'
+        uses: actions/download-artifact@v4
+        with:
+          name: tv-web
+          path: apps/tv/build/web
+
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          # The repository root, like every image here: the uv workspace and the
+          # pub workspace both resolve from there, and one `.dockerignore`
+          # governs them all.
+          context: .
+          file: apps/${{ matrix.app }}/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/seans-${{ matrix.app }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/seans-${{ matrix.app }}:latest
+          # The web bundle has to be told where the launcher lives; it is the
+          # one address a static build cannot work out for itself.
+          build-args: |
+            NUXT_PUBLIC_TV_URL=https://tv.${{ vars.DOMAIN || 'example.com' }}
+          cache-from: type=gha,scope=${{ matrix.app }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.app }}
+
+  # Off until there is somewhere to deploy to. Set the repository variable
+  # `DEPLOY_ENABLED` to `true` once the server, the DNS and the secrets exist —
+  # everything above it runs and publishes regardless.
+  deploy:
+    needs: images
+    if: github.event_name != 'pull_request' && vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - run: pipx install --include-deps ansible-core
+
+      - name: Deploy
+        working-directory: deploy/ansible
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
+        run: |
+          ansible-playbook deploy.yml \
+            -i "${{ secrets.DEPLOY_HOST }}," \
+            -u "${{ secrets.DEPLOY_USER }}" \
+            -e registry="${{ env.REGISTRY }}" \
+            -e tag="${{ inputs.tag || github.sha }}" \
+            -e domain="${{ vars.DOMAIN }}" \
+            -e acme_email="${{ vars.ACME_EMAIL }}" \
+            -e registry_user="${{ github.actor }}" \
+            -e registry_token="${{ secrets.GITHUB_TOKEN }}" \
+            -e postgres_password="${{ secrets.POSTGRES_PASSWORD }}" \
+            -e self_update_url="${{ vars.SELF_UPDATE_URL }}"

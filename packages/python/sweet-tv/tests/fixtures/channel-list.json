@@ -1,0 +1,506 @@
+{
+ "channels": [
+  {
+   "id": 3554,
+   "slug": "3554-zradniki-hd",
+   "route": "free_channel",
+   "name": "SWEET.TV Originals HD",
+   "banner_url": "http://static.sweet.tv/images/cache/v2/channel_banner/COIb/3554-zradniki-hd.png",
+   "icon_small_url": "http://static.sweet.tv/images/cache/v2/channel_icon_small/COIb/3554-zradniki-hd.png",
+   "icon_v2_url": "http://static.sweet.tv/images/cache/v2/channel_icon/COIb/3554-zradniki-hd.png",
+   "original_banner_url": "http://static.sweet.tv/images/v2/banners/channels/3554-zradniki-hd.png",
+   "original_icon_small_url": "http://static.sweet.tv/images/v2/icons/channels/v2/3554-zradniki-hd.png",
+   "original_icon_v2_url": "http://static.sweet.tv/images/v2/icons/channels/v2/3554-zradniki-hd.png",
+   "colour": "#23D3DC",
+   "available_without_auth": true,
+   "is_fast_channel": true,
+   "catchup": true,
+   "catchup_duration": 7,
+   "category": [
+    27,
+    29,
+    30,
+    36,
+    1000
+   ],
+   "custom_seo": {
+    "title": null,
+    "page_title": null
+   },
+   "epg_now": "Відкривай український край - Львів"
+  },
+  {
+   "id": 3567,
+   "slug": "3567-sou-zradniki-novi-seriyi-shhocetverga-hd",
+   "route": "free_channel",
+   "name": "ЗРАДНИКИ 1-10 серія HD",
+   "banner_url": "http://static.sweet.tv/images/cache/v2/channel_banner/CO8b/3567-sou-zradniki-novi-seriyi-shhocetverga-hd.png",
+   "icon_small_url": "http://static.sweet.tv/images/cache/v2/channel_icon_small/CO8b/3567-sou-zradniki-novi-seriyi-shhocetverga-hd.png",
+   "icon_v2_url": "http://static.sweet.tv/images/cache/v2/channel_icon/CO8b/3567-sou-zradniki-novi-seriyi-shhocetverga-hd.png",
+   "original_banner_url": "http://static.sweet.tv/images/v2/banners/channels/3567-sou-zradniki-novi-seriyi-shhocetverga-hd.png",
+   "original_icon_small_url": "http://static.sweet.tv/images/v2/icons/channels/v2/3567-sou-zradniki-novi-seriyi-shhocetverga-hd.png",
+   "original_icon_v2_url": "http://static.sweet.tv/images/v2/icons/channels/v2/3567-sou-zradniki-novi-seriyi-shhocetverga-hd.png",
+   "colour": "#601B1E",
+   "available_without_auth": true,
+   "is_fast_channel": true,
+   "catchup": true,
+   "catchup_duration": 7,
+   "category": [
+    27,
+    29,
+    30,
+    36,
+    1000
+   ],
+   "custom_seo": {
+    "title": null,
+    "page_title": null
+   },
+   "epg_now": "Зрадники Серія 7"
+  },
+  {
+   "id": 3095,
+   "slug": "3095-dizel-shou-hd",
+   "route": "free_channel",
+   "name": "Дизель Шоу HD",
+   "banner_url": "http://static.sweet.tv/images/cache/v2/channel_banner/CJcY/3095-dizel-sou-hd.png",
+   "icon_small_url": "http://static.sweet.tv/images/cache/v2/channel_icon_small/CJcY/3095-dizel-sou-hd.png",
+   "icon_v2_url": "http://static.sweet.tv/images/cache/v2/channel_icon/CJcY/3095-dizel-sou-hd.png",
+   "original_banner_url": "http://static.sweet.tv/images/v2/banners/channels/3095-dizel-sou-hd.png",
+   "original_icon_small_url": "http://static.sweet.tv/images/v2/icons/channels/v2/3095-dizel-sou-hd.png",
+   "original_icon_v2_url": "http://static.sweet.tv/images/v2/icons/channels/v2/3095-dizel-sou-hd.png",
+   "colour": "#BC0D0D",
+   "available_without_auth": true,
+   "is_fast_channel": true,
+   "catchup": true,
+   "catchup_duration": 7,
+   "category": [
+    27,
+    29,
+    36,
+    1000
+   ],
+   "custom_seo": {
+    "title": null,
+    "page_title": null
+   },
+   "epg_now": "Дизель Шоу 2016, Випуск 20"
+  },
+  {
+   "id": 1979,
+   "slug": "1979-pes-hd",
+   "route": "free_channel",
+   "name": "Пес HD",
+   "banner_url": "http://static.sweet.tv/images/cache/v2/channel_banner/CLsP/1979-pes-hd.png",
+   "icon_small_url": "http://static.sweet.tv/images/cache/v2/channel_icon_small/CLsP/1979-pes-hd.png",
+   "icon_v2_url": "http://static.sweet.tv/images/cache/v2/channel_icon/CLsP/1979-pes-hd.png",
+   "original_banner_url": "http://static.sweet.tv/images/v2/banners/channels/1979-pes-hd.png",
+   "original_icon_small_url": "http://static.sweet.tv/images/v2/icons/channels/v2/1979-pes-hd.png",
+   "original_icon_v2_url": "http://static.sweet.tv/images/v2/icons/channels/v2/1979-pes-hd.png",
+   "colour": "#131721",
+   "available_without_auth": true,
+   "is_fast_channel": true,
+   "catchup": true,
+   "catchup_duration": 7,
+   "category": [
+    4,
+    27,
+    30,
+    1000
+   ],
+   "custom_seo": {
+    "title": null,
+    "page_title": null
+   },
+   "epg_now": "Пес, Сезон 2, Серія 24"
+  },
+  {
+   "id": 75,
+   "slug": "75-odin-za-vsikh-hd",
+   "route": "free_channel",
+   "name": "Один за всіх HD",
+   "banner_url": "http://static.sweet.tv/images/cache/v2/channel_banner/CEs=/75-odin-za-vseh-hd.png",
+   "icon_small_url": "http://static.sweet.tv/images/cache/v2/channel_icon_small/CEs=/75-odin-za-vseh-hd.png",
+   "icon_v2_url": "http://static.sweet.tv/images/cache/v2/channel_icon/CEs=/75-odin-za-vseh-hd.png",
+   "original_banner_url": "http://static.sweet.tv/images/v2/banners/channels/75-odin-za-vseh-hd.png",
+   "original_icon_small_url": "http://static.sweet.tv/images/v2/icons/channels/v2/75-odin-za-vseh-hd.png",
+   "original_icon_v2_url": "http://static.sweet.tv/images/v2/icons/channels/v2/75-odin-za-vseh-hd.png",
+   "colour": "#B82851",
+   "available_without_auth": true,
+   "is_fast_channel": true,
+   "catchup": true,
+   "catchup_duration": 7,
+   "category": [
+    20,
+    27,
+    36,
+    1000
+   ],
+   "custom_seo": {
+    "title": null,
+    "page_title": null
+   },
+   "epg_now": "Мати закохала."
+  },
+  {
+   "id": 3836,
+   "slug": "3836-klon-hd",
+   "route": "free_channel",
+   "name": "Клон HD",
+   "banner_url": "http://static.sweet.tv/images/cache/v2/channel_banner/CPwd/3836-klon-hd.png",
+   "icon_small_url": "http://static.sweet.tv/images/cache/v2/channel_icon_small/CPwd/3836-klon-hd.png",
+   "icon_v2_url": "http://static.sweet.tv/images/cache/v2/channel_icon/CPwd/3836-klon-hd.png",
+   "original_banner_url": "http://static.sweet.tv/images/v2/banners/channels/3836-klon-hd.png",
+   "original_icon_small_url": "http://static.sweet.tv/images/v2/icons/channels/v2/3836-klon-hd.png",
+   "original_icon_v2_url": "http://static.sweet.tv/images/v2/icons/channels/v2/3836-klon-hd.png",
+   "colour": "#000000",
+   "available_without_auth": true,
+   "is_fast_channel": true,
+   "catchup": true,
+   "catchup_duration": 7,
+   "category": [
+    27,
+    30,
+    1000
+   ],
+   "custom_seo": {
+    "title": null,
+    "page_title": null
+   },
+   "epg_now": "Сезон 1 Епізод 204"
+  }
+ ],
+ "categories": [
+  {
+   "id": 1000,
+   "slug": null,
+   "title": "Всi",
+   "caption": "Всi",
+   "order": 1,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/1000_UA.jpg",
+   "route": "free_category"
+  },
+  {
+   "id": 37,
+   "slug": "rekomendovane-uk",
+   "title": "Рекомендоване",
+   "caption": "Рекомендоване",
+   "order": 2,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/37_UA.jpg",
+   "route": "free_category",
+   "translations": [
+    {
+     "locale": "en",
+     "slug": "recommended-en"
+    },
+    {
+     "locale": "uk",
+     "slug": "rekomendovane-uk"
+    },
+    {
+     "locale": "ru",
+     "slug": "rekomendovannoe-ru"
+    }
+   ]
+  },
+  {
+   "id": 20,
+   "slug": "ukrayinski-telekanali",
+   "title": "Національні",
+   "caption": "Національні",
+   "order": 4,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/20_UA.jpg",
+   "route": "free_category",
+   "translations": [
+    {
+     "locale": "ru",
+     "slug": "ukrainskie-telekanaly"
+    },
+    {
+     "locale": "uk",
+     "slug": "ukrayinski-telekanali"
+    },
+    {
+     "locale": "en",
+     "slug": "nationwide-channels"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "slug": "filmovi-telekanali",
+   "title": "Фільмові",
+   "caption": "Фільмові",
+   "order": 7,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/4_UA.jpg",
+   "route": "free_category",
+   "translations": [
+    {
+     "locale": "uk",
+     "slug": "filmovi-telekanali"
+    },
+    {
+     "locale": "ru",
+     "slug": "filmovye-telekanaly"
+    },
+    {
+     "locale": "en",
+     "slug": "tv-channels-with-films"
+    }
+   ]
+  },
+  {
+   "id": 30,
+   "slug": "serialni-uk",
+   "title": "Серіальні",
+   "caption": "Серіальні",
+   "order": 8,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/30_UA.jpg",
+   "route": "free_category",
+   "translations": [
+    {
+     "locale": "en",
+     "slug": "series-en"
+    },
+    {
+     "locale": "uk",
+     "slug": "serialni-uk"
+    },
+    {
+     "locale": "ru",
+     "slug": "serialnye-ru"
+    }
+   ]
+  },
+  {
+   "id": 29,
+   "slug": "rozvazhalni-uk",
+   "title": "Розважальні",
+   "caption": "Розважальні",
+   "order": 9,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/29_UA.jpg",
+   "route": "free_category",
+   "translations": [
+    {
+     "locale": "ru",
+     "slug": "razvlekatelnye-ru"
+    },
+    {
+     "locale": "en",
+     "slug": "entertainment-en"
+    },
+    {
+     "locale": "uk",
+     "slug": "rozvazhalni-uk"
+    }
+   ]
+  },
+  {
+   "id": 36,
+   "slug": "shou-uk",
+   "title": "Шоу",
+   "caption": "Шоу",
+   "order": 10,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/36_UA.jpg",
+   "route": "free_category",
+   "translations": [
+    {
+     "locale": "uk",
+     "slug": "shou-uk"
+    },
+    {
+     "locale": "ru",
+     "slug": "shou-ru"
+    },
+    {
+     "locale": "en",
+     "slug": "show-en"
+    }
+   ]
+  },
+  {
+   "id": 9,
+   "slug": "piznavalni-telekanali",
+   "title": "Пізнавальні",
+   "caption": "Пізнавальні",
+   "order": 11,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/9_UA.jpg",
+   "route": "free_category",
+   "translations": [
+    {
+     "locale": "ru",
+     "slug": "poznavatelnye-telekanaly"
+    },
+    {
+     "locale": "uk",
+     "slug": "piznavalni-telekanali"
+    },
+    {
+     "locale": "en",
+     "slug": "cognitive-tv-channels"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "slug": "telekanali-dlya-ditey",
+   "title": "Дитячі",
+   "caption": "Дитячі",
+   "order": 12,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/2_UA.jpg",
+   "route": "free_category",
+   "translations": [
+    {
+     "locale": "en",
+     "slug": "tv-channels-for-children"
+    },
+    {
+     "locale": "ru",
+     "slug": "telekanaly-dlya-detey"
+    },
+    {
+     "locale": "uk",
+     "slug": "telekanali-dlya-ditey"
+    }
+   ]
+  },
+  {
+   "id": 16,
+   "slug": "sportivni-telekanali",
+   "title": "Спортивні",
+   "caption": "Спортивні",
+   "order": 13,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/16_UA.jpg",
+   "route": "free_category",
+   "translations": [
+    {
+     "locale": "en",
+     "slug": "sports-tv-channels"
+    },
+    {
+     "locale": "ru",
+     "slug": "sportivnye-telekanaly"
+    },
+    {
+     "locale": "uk",
+     "slug": "sportivni-telekanali"
+    }
+   ]
+  },
+  {
+   "id": 33,
+   "slug": "telemahazyny-uk",
+   "title": "Телемагазини",
+   "caption": "Телемагазини",
+   "order": 14,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/33_UA.jpg",
+   "route": "free_category",
+   "translations": [
+    {
+     "locale": "ru",
+     "slug": "telemagaziny-ru"
+    },
+    {
+     "locale": "uk",
+     "slug": "telemahazyny-uk"
+    },
+    {
+     "locale": "en",
+     "slug": "teleshops-en"
+    }
+   ]
+  },
+  {
+   "id": 28,
+   "slug": "kulinarni-uk",
+   "title": "Кулінарні",
+   "caption": "Кулінарні",
+   "order": 15,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/28_UA.jpg",
+   "route": "free_category",
+   "translations": [
+    {
+     "locale": "uk",
+     "slug": "kulinarni-uk"
+    },
+    {
+     "locale": "ru",
+     "slug": "kulinarnye-ru"
+    },
+    {
+     "locale": "en",
+     "slug": "culinary-en"
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "slug": "muzichni-telekanali",
+   "title": "Музичні",
+   "caption": "Музичні",
+   "order": 16,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/6_UA.jpg",
+   "route": "free_category",
+   "translations": [
+    {
+     "locale": "uk",
+     "slug": "muzichni-telekanali"
+    },
+    {
+     "locale": "en",
+     "slug": "music-tv-channels"
+    },
+    {
+     "locale": "ru",
+     "slug": "muzykalnye-telekanaly"
+    }
+   ]
+  },
+  {
+   "id": 22,
+   "slug": "inshi-telekanali",
+   "title": "Інше",
+   "caption": "Інше",
+   "order": 21,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/22_UA.jpg",
+   "route": "free_category",
+   "translations": [
+    {
+     "locale": "en",
+     "slug": "other-tv-channels"
+    },
+    {
+     "locale": "uk",
+     "slug": "inshi-telekanali"
+    },
+    {
+     "locale": "ru",
+     "slug": "drugie-telekanaly"
+    }
+   ]
+  },
+  {
+   "id": 8,
+   "slug": "novinni-telekanali",
+   "title": "Новинні",
+   "caption": "Новинні",
+   "order": 23,
+   "poster_url": "https://sweet-tv-static.sweet.tv/web/v2/tv/categories/8_UA.jpg",
+   "route": "free_category",
+   "translations": [
+    {
+     "locale": "ru",
+     "slug": "novostnye-ru"
+    },
+    {
+     "locale": "en",
+     "slug": "news-tv-channels"
+    },
+    {
+     "locale": "uk",
+     "slug": "novinni-telekanali"
+    }
+   ]
+  }
+ ]
+}

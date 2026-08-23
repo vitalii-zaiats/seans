@@ -1,0 +1,133 @@
+# Putting a build on the server.
+#
+#     ansible-playbook deploy.yml -i inventory.ini -e tag=<sha> …
+#
+# The server holds no checkout and compiles nothing: everything it runs was
+# built and pushed by `.github/workflows/deploy.yml`, and this copies three
+# files and pulls five images. That is the whole of it, and it is deliberate —
+# a deploy that builds is a deploy that can fail differently from CI.
+#
+# `--tags bootstrap` installs Docker. Left as a tag rather than run every time
+# because it is the one part that touches the machine rather than the app, and
+# most deploys should not be allowed to.
+
+- name: Deploy seans
+  hosts: all
+  become: true
+
+  vars:
+    app_dir: /opt/seans
+    # Every one of these is passed with `-e` by the workflow. Named here so a
+    # missing one fails on this line, with its own name, rather than four tasks
+    # later inside a template.
+    required:
+      registry: "{{ registry }}"
+      tag: "{{ tag }}"
+      domain: "{{ domain }}"
+      acme_email: "{{ acme_email }}"
+      postgres_password: "{{ postgres_password }}"
+
+  tasks:
+    - name: Install Docker
+      tags: [bootstrap, never]
+      block:
+        # One task for the key and the source, and not the older `apt_key` +
+        # `apt_repository` pair: both are deprecated and go away in
+        # ansible-core 2.25.
+        - name: Add Docker's repository
+          ansible.builtin.deb822_repository:
+            name: docker
+            types: [deb]
+            uris: https://download.docker.com/linux/ubuntu
+            suites: "{{ ansible_distribution_release }}"
+            components: [stable]
+            signed_by: https://download.docker.com/linux/ubuntu/gpg
+            state: present
+
+        - name: Install the engine and the compose plugin
+          ansible.builtin.apt:
+            name:
+              - docker-ce
+              - docker-ce-cli
+              - containerd.io
+              - docker-compose-plugin
+            state: present
+            update_cache: true
+
+    - name: Make the application directory
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+        mode: "0750"
+
+    # Three files and nothing else. The compose file names images rather than
+    # build contexts here — see the note at the top of `compose.prod.yaml`.
+    - name: Copy the compose file
+      ansible.builtin.copy:
+        src: ../../compose.prod.yaml
+        dest: "{{ app_dir }}/compose.yaml"
+        mode: "0640"
+      notify: Restart the stack
+
+    - name: Copy the front door's configuration
+      ansible.builtin.copy:
+        src: ../caddy/Caddyfile
+        dest: "{{ app_dir }}/deploy/caddy/Caddyfile"
+        mode: "0640"
+      notify: Restart the stack
+
+    - name: Write the environment
+      ansible.builtin.template:
+        src: env.j2
+        dest: "{{ app_dir }}/.env"
+        # It holds the database password. Nobody but root reads this.
+        mode: "0600"
+      notify: Restart the stack
+
+    - name: Sign in to the registry
+      ansible.builtin.command:
+        cmd: docker login ghcr.io -u {{ registry_user }} --password-stdin
+        stdin: "{{ registry_token }}"
+      changed_when: false
+      no_log: true
+
+    # `command` rather than `community.docker`: this playbook then needs no
+    # collections at all, which is what lets the workflow install plain
+    # ansible-core and be done.
+    - name: Pull this build
+      ansible.builtin.command:
+        cmd: docker compose pull
+        chdir: "{{ app_dir }}"
+      changed_when: true
+
+    # Not `restart`: `up -d` replaces only the containers whose image or
+    # configuration actually changed, so an unchanged front stays up and serving
+    # while the API behind it is swapped.
+    - name: Start what changed
+      ansible.builtin.command:
+        cmd: docker compose up -d --remove-orphans
+        chdir: "{{ app_dir }}"
+      changed_when: true
+
+    - name: Wait for the front door
+      ansible.builtin.uri:
+        url: "https://{{ domain }}/health"
+        status_code: 200
+      register: health
+      until: health is succeeded
+      retries: 20
+      delay: 6
+
+    # Yesterday's images are the rollback, so this keeps them: only layers
+    # nothing refers to at all are swept.
+    - name: Sweep dangling layers
+      ansible.builtin.command:
+        cmd: docker image prune -f
+      changed_when: true
+
+  handlers:
+    - name: Restart the stack
+      ansible.builtin.command:
+        cmd: docker compose up -d
+        chdir: "{{ app_dir }}"
+      changed_when: true

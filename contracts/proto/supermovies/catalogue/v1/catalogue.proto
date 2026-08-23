@@ -1,0 +1,369 @@
+// Films and series from kinostrain.com.
+//
+// Mirrors `apps/api/src/api/modules/catalogue/`. Like `tv`, this module holds
+// no table and knows nobody: it is a cache and a translation in front of
+// somebody else's site, so an upstream failure is UNAVAILABLE.
+//
+// Two shapes recur and are worth reading once. A **card** is a title in list
+// form — the catalogue, trending, the slider, a search hit all return the same
+// one. **Details** is the title page, and the difference is `seasons`, which is
+// where every player and episode lives.
+//
+// Poster URLs are rewritten to point at this API's own image path before they
+// are handed out, because the upstream host answers no CORS headers a browser
+// will accept.
+
+syntax = "proto3";
+
+package supermovies.catalogue.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// The sections upstream ships. `CONTENT_TYPE_UNSPECIFIED` is not "any" — it is
+// "a section this API has not learned yet", and every message carrying it also
+// carries `type_raw` with what upstream actually said, so a client can render
+// the row rather than drop it.
+enum ContentType {
+  CONTENT_TYPE_UNSPECIFIED = 0;
+  CONTENT_TYPE_MOVIE = 1;
+  CONTENT_TYPE_SERIAL = 2;
+  CONTENT_TYPE_CARTOON_MOVIE = 3;
+  CONTENT_TYPE_CARTOON_SERIES = 4;
+  CONTENT_TYPE_ANIME = 5;
+}
+
+service CatalogueService {
+  // The catalogue itself, filtered and paged the way upstream pages it.
+  rpc ListContent(ListContentRequest) returns (ContentPage);
+
+  // Genres and year buckets per section, with per-section counts. Cached: it
+  // changes when a genre is added, which is not often.
+  rpc GetFilters(GetFiltersRequest) returns (Filters);
+
+  // A home rail, richer than a catalogue card. Not paginated.
+  rpc GetTrending(GetTrendingRequest) returns (CardList);
+
+  // The hero row, with trailer ids and age ratings filled in.
+  rpc GetSlider(GetSliderRequest) returns (CardList);
+
+  // Titles matching a query.
+  rpc Search(SearchRequest) returns (SearchResponse);
+
+  // Cards for several slugs at once — what a "continue watching" row needs
+  // when the client knows the slugs and nothing else.
+  rpc GetCards(GetCardsRequest) returns (CardList);
+
+  // The directory of actors and directors.
+  rpc ListPersons(ListPersonsRequest) returns (PersonPage);
+
+  // One title in full.
+  rpc GetContent(GetContentRequest) returns (ContentDetails);
+}
+
+message ListContentRequest {
+  // Unset means every section.
+  optional ContentType type = 1;
+  // 1-based, as upstream counts. Unset means the first.
+  optional int32 page = 2;
+  // Slugs, not names.
+  repeated string genres = 3;
+  // A slug: `2024`, or `2006-2010`.
+  optional string year = 4;
+}
+
+// Upstream's own paging, kept as upstream sends it rather than translated into
+// the limit/offset envelope the rest of this API uses. The two are genuinely
+// different things and flattening them would be a claim we cannot back.
+message PageMeta {
+  int32 page = 1;
+  int32 per_page = 2;
+  int32 total = 3;
+  int32 total_pages = 4;
+  bool has_next_page = 5;
+}
+
+message ContentPage {
+  repeated Card items = 1;
+  PageMeta meta = 2;
+}
+
+message CardList {
+  repeated Card items = 1;
+}
+
+message Genre {
+  string name = 1;
+  string slug = 2;
+}
+
+message Year {
+  string name = 1;
+  string slug = 2;
+  bool is_range = 3;
+}
+
+// How far into a season upstream has actually got.
+message ReadySeason {
+  int32 number = 1;
+  int32 ready_episodes_count = 2;
+  optional int32 last_ready_episode = 3;
+  optional string last_url_suffix = 4;
+}
+
+// A title in list form.
+message Card {
+  string name = 1;
+  string original_name = 2;
+  string slug = 3;
+
+  // UNSPECIFIED for a section this API does not know yet; `type_raw` still
+  // holds what upstream said.
+  ContentType type = 4;
+  string type_raw = 5;
+
+  // `film` or `serial`, and independent of `type`: an anime can be either.
+  string format = 6;
+
+  string poster_url = 7;
+  repeated Genre genres = 8;
+  int32 seasons_count = 9;
+
+  optional double imdb_mark = 10;
+  optional int32 year_start = 11;
+  optional int32 year_end = 12;
+  // A label already assembled: `2019`, `2019 – 2023`, `2019 – …`.
+  optional string year_label = 13;
+
+  bool is_series = 14;
+  optional google.protobuf.Timestamp last_update_page = 15;
+  optional ReadySeason first_ready_season = 16;
+  optional ReadySeason last_ready_season = 17;
+
+  // Wide artwork and a synopsis. Trending and the slider only.
+  optional string slider_poster_url = 18;
+  optional string slider_url = 19;
+  optional string short_description = 20;
+
+  // A localised string like `1 год 50 хв`, not a machine-readable duration.
+  optional string time = 21;
+  optional string country = 22;
+  optional int32 age_restrictions = 23;
+  optional string trailer_youtube_id = 24;
+  optional int32 average_rating = 25;
+  optional int32 ratings_count = 26;
+}
+
+message GetFiltersRequest {}
+
+message Filters {
+  // Keyed by section slug.
+  map<string, SectionFilters> by_type = 1;
+  // Sections upstream grew that this API does not model yet. Empty normally,
+  // and the honest place to notice one before a client does.
+  repeated string unknown_types = 2;
+}
+
+message SectionFilters {
+  repeated Genre popular_genres = 1;
+  repeated Genre other_genres = 2;
+  repeated Year years = 3;
+  int32 total_count = 4;
+}
+
+message GetTrendingRequest {
+  optional ContentType type = 1;
+}
+
+message GetSliderRequest {
+  optional ContentType type = 1;
+}
+
+message SearchRequest {
+  // 1–200 characters.
+  string query = 1;
+  // 1–50. Unset takes upstream's own default.
+  optional int32 limit = 2;
+}
+
+message SearchResponse {
+  repeated Hit items = 1;
+}
+
+message Hit {
+  Card card = 1;
+  // The title with the matched span in `<mark>`. Absent more often than not.
+  optional string highlighted_name = 2;
+}
+
+message GetCardsRequest {
+  // At most 200.
+  repeated string slugs = 1;
+}
+
+message ListPersonsRequest {
+  optional int32 page = 1;
+}
+
+message PersonPage {
+  repeated Person items = 1;
+  PageMeta meta = 2;
+}
+
+message Person {
+  string name = 1;
+  string original_name = 2;
+  string slug = 3;
+  // As upstream numbers it. Not modelled as an enum because upstream has never
+  // documented the values, and inventing names for integers we are guessing at
+  // is worse than passing the integer through.
+  int32 gender = 4;
+  repeated string career_roles = 5;
+  optional string poster_url = 6;
+}
+
+message GetContentRequest {
+  string slug = 1;
+  // Which season to fill in. Upstream returns every season a series ever had
+  // and the episodes of exactly one — see `Season.is_loaded`.
+  optional int32 season = 2;
+}
+
+// Everything the title page shows.
+message ContentDetails {
+  // Numeric, and the one upstream's `/comments` takes — it will not take a slug.
+  int32 id = 1;
+  string name = 2;
+  string original_name = 3;
+  string slug = 4;
+
+  ContentType type = 5;
+  string type_raw = 6;
+  string format = 7;
+  bool is_series = 8;
+
+  string poster_url = 9;
+  optional string slider_url = 10;
+  repeated Genre genres = 11;
+
+  // A film is wrapped in a single pseudo-season, so this is never empty for a
+  // playable title.
+  repeated Season seasons = 12;
+
+  repeated Credit cast = 13;
+  repeated Credit directors = 14;
+
+  optional int32 average_rating = 15;
+  int32 ratings_count = 16;
+  int32 comments_count = 17;
+  optional double imdb_mark = 18;
+  optional int32 year_start = 19;
+  optional int32 year_end = 20;
+  optional int32 age_restrictions = 21;
+  optional string short_description = 22;
+  optional string time = 23;
+  optional string country = 24;
+  optional string trailer_youtube_id = 25;
+  optional Franchise franchise = 26;
+  bool is_playable = 27;
+}
+
+message Credit {
+  string name = 1;
+  string original_name = 2;
+  string slug = 3;
+  // The role played. Always absent for a director.
+  optional string character = 4;
+  optional string poster_url = 5;
+  int32 gender = 6;
+}
+
+message Episode {
+  int32 number = 1;
+  optional string name = 2;
+  optional google.protobuf.Timestamp air_date = 3;
+  // An unreleased episode is still listed, with nothing behind it.
+  bool ready = 4;
+}
+
+// The dub or release group — `DniproFilm`.
+message Source {
+  string name = 1;
+  string link = 2;
+}
+
+message Frame {
+  string url = 1;
+  string source = 2;
+  int32 position = 3;
+  optional int32 episode_number = 4;
+}
+
+// Proto has no map-of-map, so the two provider shapes below each need a message
+// to hold the inner one. That is a limitation of the encoding rather than a
+// change to the contract: the JSON is `{"provider": [...]}` and
+// `{"3": {"provider": [...]}}`, and these carry exactly that.
+message SourceList {
+  repeated Source sources = 1;
+}
+
+message ProviderSources {
+  map<string, SourceList> by_provider = 1;
+}
+
+// A season, or the single pseudo-season a film is wrapped in.
+message Season {
+  int32 id = 1;
+  int32 number = 2;
+  string description = 3;
+  string short_description = 4;
+  repeated Frame frames = 5;
+
+  // Exactly one of the next two is filled. Upstream ships both shapes under the
+  // same key, and flattening them would be a lie about which is which:
+  // `player_data` is a film's providers, `episode_players` is a series' —
+  // keyed by episode number, then by provider.
+  map<string, SourceList> player_data = 6;
+  map<int32, ProviderSources> episode_players = 7;
+
+  // What the site is willing to show. One listed here may carry no stream.
+  repeated string players = 8;
+  // What actually carries one, in the order above.
+  repeated string available_players = 9;
+
+  bool rights_blocked = 10;
+  int32 ready_episodes_count = 11;
+  repeated Episode episodes = 12;
+  optional google.protobuf.Timestamp release_date = 13;
+  optional string poster_url = 14;
+  optional string trailer_youtube_id = 15;
+  optional int32 last_ready_episode = 16;
+  optional string last_url_suffix = 17;
+
+  // Whether upstream actually filled this season in. A series returns every
+  // season it ever had and the episodes of one; the rest arrive empty, which
+  // reads exactly like "nothing to watch" and is not the same thing.
+  bool is_loaded = 18;
+
+  bool is_episodic = 19;
+  bool is_playable = 20;
+  repeated int32 playable_episodes = 21;
+}
+
+message FranchiseItem {
+  string name = 1;
+  string original_name = 2;
+  string slug = 3;
+  string format = 4;
+  bool is_current = 5;
+  optional int32 year = 6;
+  optional double imdb_mark = 7;
+  optional string poster_url = 8;
+  optional int32 season_number = 9;
+}
+
+message Franchise {
+  string name = 1;
+  string slug = 2;
+  optional string description = 3;
+  repeated FranchiseItem items = 4;
+}

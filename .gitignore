@@ -1,0 +1,52 @@
+# ── Python ───────────────────────────────────────────────────────────────────
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+dist/
+build/
+*.egg-info/
+
+# ── Dart / Flutter ───────────────────────────────────────────────────────────
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+*.iml
+# lockfiles: committed for apps, ignored for published libs
+packages/dart/*/pubspec.lock
+
+# ── Node / landing ───────────────────────────────────────────────────────────
+node_modules/
+apps/landing/dist/
+apps/admin/dist/
+.astro/
+
+# ── Editors / OS ─────────────────────────────────────────────────────────────
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.DS_Store
+
+# ── Local env ────────────────────────────────────────────────────────────────
+.env
+.env.local
+
+# ── Signing ──────────────────────────────────────────────────────────────────
+# The upload key and the passwords that open it. CI writes both from secrets;
+# neither has any business in a repository, least of all a public one.
+key.properties
+*.jks
+*.keystore
+
+# ── Node ─────────────────────────────────────────────────────────────────────
+.nuxt/
+.output/
+apps/*/dist/
+package-lock.json.bak
+
+# ── Generated assets ─────────────────────────────────────────────────────────
+tools/sfx-generator/out/

@@ -1,0 +1,45 @@
+// The chart palette, as custom properties.
+//
+// It is not the same thing as the Vuetify theme and it is not derived from it.
+// A UI colour is chosen to sit behind text; a series colour is chosen so that
+// two adjacent marks stay apart for a reader who cannot tell red from green.
+// Both sets are validated, separately, against the surface they are drawn on —
+// which is why the dark values below are their own steps rather than the light
+// ones lightened.
+//
+// Keyed off Vuetify's theme class, so the toggle in the app bar moves both at
+// once and neither can be left behind.
+
+.v-theme--light {
+  --chart-surface: #fcfcfb;
+  --chart-grid: #e1e0d9;
+  --chart-axis: #c3c2b7;
+  --chart-muted: #898781;
+  --chart-ink: #0b0b0b;
+  --chart-ink-soft: #52514e;
+
+  // Categorical slots 1 and 2. Worst adjacent CVD ΔE 24.7, normal-vision 33.6.
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  // The unfilled part of a breakdown bar: a track, not a third series.
+  --series-track: #e1e0d9;
+
+  --delta-up: #006300;
+  --delta-down: #d03b3b;
+}
+
+.v-theme--dark {
+  --chart-surface: #1a1a19;
+  --chart-grid: #2c2c2a;
+  --chart-axis: #383835;
+  --chart-muted: #898781;
+  --chart-ink: #ffffff;
+  --chart-ink-soft: #c3c2b7;
+
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-track: #2c2c2a;
+
+  --delta-up: #0ca30c;
+  --delta-down: #e66767;
+}

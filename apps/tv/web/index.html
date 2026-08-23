@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Каталог фільмів і серіалів, прямий ефір і застосунки приставки — у вікні браузера.">
+  <meta name="theme-color" content="#161826">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Сеанс">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>Сеанс</title>
+  <link rel="manifest" href="manifest.json">
+
+  <!--
+    The boot screen.
+
+    Inline, and above the bundle in the document, because that is the whole
+    point: it has to paint from the first response, before a single byte of the
+    3.4 MB app has arrived. A stylesheet would be a second request and a
+    webfont a third — this uses the platform's own sans, which is what the app
+    itself falls back to on a television anyway (see `theme/nocturne.dart`).
+
+    The sequence is the design archive's "Ambient Boot", with one thing
+    changed: nothing here is on a timer. Every step the bar takes is something
+    that actually happened — see `flutter_bootstrap.js`.
+  -->
+  <style>
+    :root {
+      --boot-bg: #161826;
+      --boot-text: #e9e9ed;
+      --boot-accent: #9184d9;
+      --boot-dim: #cfd3e5;
+      --boot-track: #595d6c;
+      --boot-quiet: #75798c;
+      --boot-glow: #3f424d;
+    }
+
+    html, body { margin: 0; padding: 0; background: var(--boot-bg); }
+
+    #boot {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      overflow: hidden;
+      background: var(--boot-bg);
+      color: var(--boot-text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      transition: opacity 700ms ease;
+    }
+
+    /* A soft rise behind the mark, rather than a flat ground. */
+    #boot .ground {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 46%, var(--boot-glow) 0%, var(--boot-bg) 62%);
+      opacity: 0;
+      animation: boot-in 1100ms ease 40ms forwards;
+    }
+
+    /* The band that sweeps the screen: the one thing on here that says the
+       machine is doing something, and it costs nothing to run. */
+    #boot .scan {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      animation: boot-in 600ms ease 120ms forwards;
+    }
+
+    #boot .scan i {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 34%;
+      background: linear-gradient(
+        180deg,
+        transparent,
+        color-mix(in oklab, var(--boot-accent) 9%, transparent),
+        transparent
+      );
+      animation: boot-scan 2.6s linear infinite;
+    }
+
+    #boot .mark {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      transition: transform 700ms cubic-bezier(0.2, 0, 0.1, 1);
+    }
+
+    /* `text-indent` matches the tracking: letter-spacing adds its space after
+       the last glyph too, and without this the word sits left of centre by
+       half a letter. */
+    #boot .word {
+      font-weight: 500;
+      font-size: clamp(34px, 4vw, 76px);
+      line-height: 1;
+      letter-spacing: 0.62em;
+      text-indent: 0.62em;
+      opacity: 0;
+      filter: blur(6px);
+      animation: boot-word 1500ms cubic-bezier(0.2, 0, 0.1, 1) 40ms forwards;
+    }
+
+    #boot .rule {
+      height: 2px;
+      width: 0;
+      background: linear-gradient(90deg, transparent, var(--boot-accent), transparent);
+      box-shadow: 0 0 28px color-mix(in oklab, var(--boot-accent) 55%, transparent);
+      animation: boot-rule 1500ms cubic-bezier(0.2, 0, 0.1, 1) 40ms forwards;
+    }
+
+    #boot .status {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: clamp(64px, 14vh, 150px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      opacity: 0;
+      animation: boot-in 700ms ease 700ms forwards;
+    }
+
+    #boot .what {
+      font-size: clamp(12px, 1vw, 16px);
+      letter-spacing: 0.3em;
+      color: var(--boot-dim);
+    }
+
+    #boot .track {
+      width: min(320px, 62vw);
+      height: 2px;
+      background: var(--boot-track);
+    }
+
+    #boot .track i {
+      display: block;
+      height: 2px;
+      width: 6%;
+      background: var(--boot-accent);
+      transition: width 900ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Only worth saying once the wait is long enough to be worth explaining. */
+    #boot .slow {
+      max-width: 34ch;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--boot-quiet);
+      opacity: 0;
+      animation: boot-in 900ms ease 8s forwards;
+    }
+
+    /* What the last step does: the mark grows a little and the whole thing goes. */
+    #boot.gone { opacity: 0; }
+    #boot.gone .mark { transform: scale(1.09); }
+
+    @keyframes boot-in { to { opacity: 1; } }
+
+    @keyframes boot-scan {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    @keyframes boot-word {
+      to { opacity: 1; filter: blur(0); letter-spacing: 0.22em; text-indent: 0.22em; }
+    }
+
+    @keyframes boot-rule {
+      50% { width: 120px; }
+      to { width: min(660px, 78vw); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #boot .scan { display: none; }
+      #boot .word { animation-duration: 1ms; }
+      #boot .rule { animation-duration: 1ms; }
+    }
+  </style>
+</head>
+<body>
+  <div id="boot" role="status" aria-label="Запуск застосунку">
+    <div class="ground"></div>
+    <div class="scan"><i></i></div>
+    <div class="mark">
+      <div class="word">SEANS</div>
+      <div class="rule"></div>
+    </div>
+    <div class="status">
+      <div class="what" id="boot-what">ЗАПУСК</div>
+      <div class="track"><i id="boot-bar"></i></div>
+      <div class="slow">Перший запуск довший: застосунок завантажується цілком і далі
+        відкривається миттєво.</div>
+    </div>
+  </div>
+
+  <!-- Not the generated one: `web/flutter_bootstrap.js` drives the screen above
+       off the loader's own milestones. -->
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

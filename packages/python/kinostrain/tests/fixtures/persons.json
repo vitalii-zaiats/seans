@@ -1,0 +1,252 @@
+{
+  "data": [
+    {
+      "name": "Інде Наварретт",
+      "originalName": "Inde Navarrette",
+      "slug": "inde-navarrette",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a46ce1da65be038616775.webp",
+      "gender": 1,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Джейк Джилленгол",
+      "originalName": "Jake Gyllenhaal",
+      "slug": "jake-gyllenhaal",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e21091c6a6e315045599.webp",
+      "gender": 2,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Аня Тейлор-Джой",
+      "originalName": "Anya Taylor-Joy",
+      "slug": "anya-taylor-joy",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e84927d3be7878167797.webp",
+      "gender": 1,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Раян Ґослінґ",
+      "originalName": "Ryan Gosling",
+      "slug": "ryan-gosling",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e21eaa8ace3243406606.webp",
+      "gender": 2,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Том Голланд",
+      "originalName": "Tom Holland",
+      "slug": "tom-holland",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e20ef05411d459772681.webp",
+      "gender": 2,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Міллі Алкок",
+      "originalName": "Milly Alcock",
+      "slug": "milly-alcock",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a67c9689855b258156166.webp",
+      "gender": 1,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Емілі Блант",
+      "originalName": "Emily Blunt",
+      "slug": "emily-blunt",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e7dd6fa1b33701917012.webp",
+      "gender": 1,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Олівія Вайлд",
+      "originalName": "Olivia Wilde",
+      "slug": "olivia-wilde",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e92e882240b814612862.webp",
+      "gender": 1,
+      "careerRoles": [
+        "actor",
+        "director"
+      ]
+    },
+    {
+      "name": "Каррі Баркер",
+      "originalName": "Curry Barker",
+      "slug": "curry-barker",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a46ce1fd29cb177273188.webp",
+      "gender": 2,
+      "careerRoles": [
+        "director"
+      ]
+    },
+    {
+      "name": "Меґан Ловлесс",
+      "originalName": "Megan Lawless",
+      "slug": "megan-lawless",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a46ce1e259ef899050673.webp",
+      "gender": 1,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Ребекка Ферґюсон",
+      "originalName": "Rebecca Ferguson",
+      "slug": "rebecca-ferguson",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e6339e4cffb336750718.webp",
+      "gender": 1,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Майкл Джонстон",
+      "originalName": "Michael Johnston",
+      "slug": "michael-johnston",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a46ce1d6bb93847526564.webp",
+      "gender": 2,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Гʼю Джекман",
+      "originalName": "Hugh Jackman",
+      "slug": "hugh-jackman",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e2107d439d5375537184.webp",
+      "gender": 2,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Емма Стоун",
+      "originalName": "Emma Stone",
+      "slug": "emma-stone",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e21eab78836966528495.webp",
+      "gender": 1,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Едвард Нортон",
+      "originalName": "Edward Norton",
+      "slug": "edward-norton",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e20e2586752662186408.webp",
+      "gender": 2,
+      "careerRoles": [
+        "actor",
+        "director"
+      ]
+    },
+    {
+      "name": "Яніна Узе",
+      "originalName": "Janina Uhse",
+      "slug": "janina-uhse",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a8012b9aad61996339276.webp",
+      "gender": 1,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Боб Оденкерк",
+      "originalName": "Bob Odenkirk",
+      "slug": "bob-odenkirk",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e220e5ca470155441500.webp",
+      "gender": 2,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Костя Ульман",
+      "originalName": "Kostja Ullmann",
+      "slug": "kostja-ullmann",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a8012b8b8943232912258.webp",
+      "gender": 2,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Крістофер Нолан",
+      "originalName": "Christopher Nolan",
+      "slug": "christopher-nolan",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e20dee7dda2759307529.webp",
+      "gender": 2,
+      "careerRoles": [
+        "director"
+      ]
+    },
+    {
+      "name": "Фархан Рана Раджпут",
+      "originalName": "Farhan Rana Rajpoot",
+      "slug": "farhan-rana-rajpoot-1",
+      "posterUrl": null,
+      "gender": 2,
+      "careerRoles": [
+        "director"
+      ]
+    },
+    {
+      "name": "Марія Бакалова",
+      "originalName": "Maria Bakalova",
+      "slug": "maria-bakalova",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69ef8d5cc936b456414438.webp",
+      "gender": 1,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Алан Річсон",
+      "originalName": "Alan Ritchson",
+      "slug": "alan-ritchson",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e93a15d4e43723228457.webp",
+      "gender": 2,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Сем Вортінґтон",
+      "originalName": "Sam Worthington",
+      "slug": "sam-worthington",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e2213fd8634725312156.webp",
+      "gender": 2,
+      "careerRoles": [
+        "actor"
+      ]
+    },
+    {
+      "name": "Зендея",
+      "originalName": "Zendaya",
+      "slug": "zendaya",
+      "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e2239dc773a119104647.webp",
+      "gender": 1,
+      "careerRoles": [
+        "actor"
+      ]
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "perPage": 24,
+    "total": 34219,
+    "totalPages": 1426
+  }
+}

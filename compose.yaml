@@ -1,0 +1,118 @@
+# The whole stack, locally.
+#
+#     docker compose up --build           postgres, migrations, API, every web app
+#     docker compose --profile tv up      ...and the television app's web build
+#
+# `apps/api/docker-compose.yml` is a different thing and still useful: it starts
+# the database *alone*, which is what you want when the API is running from a
+# checkout under `uv run`. Both files name the same project and the same volume,
+# so the data is the same data either way — but do not run both at once, since
+# they would fight over the container name.
+
+name: super-movies
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: super-movies-postgres
+    environment:
+      POSTGRES_USER: movies
+      POSTGRES_PASSWORD: movies
+      POSTGRES_DB: movies
+    ports:
+      # 5433 on purpose — 5432 is already taken on this machine by another
+      # stack, and a database you connect to by accident is worse than one that
+      # refuses.
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U movies -d movies"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # A one-shot, not a step in the API's start-up. Two API replicas both running
+  # `alembic upgrade head` on boot is a race with a schema at the end of it.
+  migrate:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      API_DATABASE_URL: postgresql+asyncpg://movies:movies@postgres:5432/movies
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      API_DATABASE_URL: postgresql+asyncpg://movies:movies@postgres:5432/movies
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  admin:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    environment:
+      API_UPSTREAM: api:8000
+    ports:
+      - "8081:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  remote:
+    build:
+      context: .
+      dockerfile: apps/remote/Dockerfile
+    environment:
+      API_UPSTREAM: api:8000
+    ports:
+      - "8082:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  # The catalogue in a browser. A static bundle like the two above — the Nuxt
+  # build has `ssr: false`, so there is no Node here either.
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      API_UPSTREAM: api:8000
+    ports:
+      - "8084:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  # Behind a profile because its image packages a bundle rather than building
+  # one — `cd apps/tv && flutter build web --release` first, or the build fails
+  # on a missing directory. `apps/tv/Dockerfile` says why.
+  tv:
+    profiles: ["tv"]
+    build:
+      context: .
+      dockerfile: apps/tv/Dockerfile
+    environment:
+      API_UPSTREAM: api:8000
+    ports:
+      - "8083:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  pgdata:

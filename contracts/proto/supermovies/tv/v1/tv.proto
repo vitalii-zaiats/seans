@@ -1,0 +1,113 @@
+// Free-to-air channels, their schedules, and a playable address.
+//
+// Mirrors `apps/api/src/api/modules/tv/`. This module holds no table: it is a
+// cache and a translation in front of sweet.tv, which is why an upstream that
+// fails is UNAVAILABLE — the request was fine and the thing behind us was not.
+
+syntax = "proto3";
+
+package supermovies.tv.v1;
+
+import "google/protobuf/timestamp.proto";
+
+service TvService {
+  // Every free channel, with its categories.
+  //
+  // Cached: the list changes when a channel is added, not per viewer.
+  rpc ListChannels(ListChannelsRequest) returns (ListChannelsResponse);
+
+  // One channel's programmes for one day.
+  rpc GetSchedule(GetScheduleRequest) returns (Schedule);
+
+  // A playable address for a channel.
+  //
+  // A lease rather than an address: it carries a session and goes stale after
+  // `refresh_in`. Store the channel id and ask again; do not store the URL.
+  //
+  // Play it directly, not through this API. The stream host answers
+  // `access-control-allow-origin: *` and ignores `Origin` and `Referer`, so
+  // relaying the video would spend bandwidth fixing a problem nobody has.
+  rpc OpenStream(OpenStreamRequest) returns (Stream);
+}
+
+message ListChannelsRequest {}
+
+message ListChannelsResponse {
+  repeated Channel items = 1;
+  // In the order the site shows them, which is not the order they arrive in.
+  repeated Category categories = 2;
+}
+
+message Category {
+  int32 id = 1;
+  string title = 2;
+  // Absent on the "all" pseudo-category, which has no page of its own.
+  optional string slug = 3;
+  bool is_all = 4;
+}
+
+message Channel {
+  int32 id = 1;
+  string slug = 2;
+  string name = 3;
+
+  // Rewritten to https. The catalogue hands these out as plain http, which a
+  // page on https refuses as mixed content.
+  optional string icon_url = 4;
+  optional string banner_url = 5;
+  optional string colour = 6;
+
+  repeated int32 categories = 7;
+
+  // How many days back the archive goes; `0` for live only.
+  int32 catchup_days = 8;
+
+  // What is on right now, as the list itself reports it — no times. It comes
+  // free with the list, so a whole grid can say what is on without one request
+  // per channel.
+  optional string now_playing = 9;
+}
+
+message GetScheduleRequest {
+  int32 channel_id = 1;
+  // `2026-08-23`, UTC. Unset means today. A calendar day rather than a
+  // Timestamp, for the reason the field name says.
+  optional string day = 2;
+}
+
+message Schedule {
+  int32 channel_id = 1;
+  string day = 2;
+  repeated Programme items = 3;
+}
+
+message Programme {
+  int32 id = 1;
+  string title = 2;
+  // Absolute, and aware. The upstream sends unix seconds and says nothing about
+  // a zone; whoever draws a grid decides which clock to show it on.
+  google.protobuf.Timestamp start = 3;
+  google.protobuf.Timestamp stop = 4;
+  // Whether the archive holds it. False for programmes rights do not cover.
+  bool available = 5;
+}
+
+message OpenStreamRequest {
+  int32 channel_id = 1;
+}
+
+message Stream {
+  int32 channel_id = 1;
+  string url = 2;
+
+  // The same stream over plain http. On Android it is the one that works: the
+  // stitching host presents a chain ending in the old Go Daddy Class 2 root
+  // signed with SHA-1, which Android rejects outright.
+  optional string plain_url = 3;
+
+  // Without the ad stitching, offered for casting. Undocumented upstream.
+  optional string direct_url = 4;
+
+  // Seconds until the lease goes stale.
+  int32 refresh_in = 5;
+}

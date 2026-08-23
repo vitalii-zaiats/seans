@@ -1,0 +1,97 @@
+# Serves the television app's web build.
+#
+# The same-origin trick the other two use is what makes this build work at all:
+# kinostrain.com sends no CORS headers a browser will accept, so everything the
+# app used to fetch directly now goes through our API — and the API has to look
+# like it is part of this origin for that to be true in a browser.
+
+# Resolved per request, not at start-up.
+#
+# `upstream api { server api:8000; }` looks harmless and is not: nginx resolves
+# that name when it loads the configuration, so a missing API container is not a
+# degraded site but a front that refuses to boot — the catalogue, the shell and
+# every static byte gone because the thing behind one prefix was not up yet.
+# Deploys are exactly when that happens.
+#
+# A variable in `proxy_pass` defers the lookup to the request, and 127.0.0.11 is
+# Docker's own DNS. The failure becomes what it should have been: 502 on the API
+# paths, and a site that still loads.
+resolver 127.0.0.11 valid=10s ipv6=off;
+
+server {
+    listen 8080;
+    server_name _;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # The bundle is built with `--base-href /box/`, because that is where it
+    # lives behind the single front door in `compose.edge.yaml`. That prefix is
+    # in every URL the page then asks for — so when this container is reached
+    # directly instead (its own port, `compose.yaml`), the same requests arrive
+    # carrying it and there is nothing at that path.
+    #
+    # Dropped here rather than fixed by building twice: one bundle, two
+    # addresses. `last` re-runs the location matching below, so everything after
+    # this line is written as if the prefix never existed — which is also what
+    # the front door sends, since it strips the prefix itself.
+    rewrite ^/box$ / last;
+    rewrite ^/box/(.*)$ /$1 last;
+
+    location /health {
+        access_log off;
+        return 200 "ok\n";
+    }
+
+    location /init {
+        set $api ${API_UPSTREAM};
+        proxy_pass http://$api;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    # The app's whole surface: the catalogue, the channels, pairing, and the
+    # remote-control event streams.
+    #
+    # `proxy` is in the list and is easy to leave out, because it is the one
+    # prefix the app never writes down: the API rewrites every poster URL to
+    # `/proxy/…` and the client just follows what it was handed. Miss it and the
+    # site loads with `try_files` answering `index.html` to every image request
+    # — 200, `text/html`, 7 kB, and not one picture on screen.
+    # Not in the prefix rule below: `/stream` carries its target in a query
+    # string and has no trailing slash to match on.
+    location /stream {
+        set $api ${API_UPSTREAM};
+        proxy_pass http://$api;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    location ~ ^/(auth|catalogue|tv|proxy|devices?|admin|playback)/ {
+        set $api ${API_UPSTREAM};
+        proxy_pass http://$api;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    # Flutter fingerprints its own assets and ships a service worker that keeps
+    # its own manifest. `main.dart.js` and `flutter_service_worker.js` are NOT
+    # fingerprinted, so caching them is how a box gets stuck on an old build.
+    location ~ ^/(flutter_service_worker\.js|main\.dart\.js|version\.json|flutter_bootstrap\.js)$ {
+        include /etc/nginx/app-headers.conf;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    location /assets/ {
+        include /etc/nginx/app-headers.conf;
+        add_header Cache-Control "public, max-age=2592000" always;
+        try_files $uri =404;
+    }
+
+    location = /index.html {
+        include /etc/nginx/app-headers.conf;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    location / {
+        include /etc/nginx/app-headers.conf;
+        try_files $uri $uri/ /index.html;
+    }
+}

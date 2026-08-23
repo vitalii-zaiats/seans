@@ -1,0 +1,123 @@
+// Driving a box from a phone, and hearing what it is doing.
+//
+// Mirrors `apps/api/src/api/modules/remote/`. The two streaming RPCs are the
+// reason this file is worth writing: over HTTP they are server-sent events, and
+// two of the gotchas in `CLAUDE.md` are artefacts of that rather than facts
+// about the problem — a browser's `EventSource` cannot send an `Authorization`
+// header, and `ASGITransport` never returns from an endless `client.stream()`.
+// Metadata solves the first; a streaming stub a test can drive solves the
+// second.
+//
+// A clean split of who names whom. A box never names itself — its session
+// already says which install it is, and a device that could name itself could
+// name somebody else's. A remote always names the box, and is only answered for
+// one it is signed in on.
+
+syntax = "proto3";
+
+package supermovies.remote.v1;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+service RemoteService {
+  // Every box you are signed in on — which is exactly the set you may drive.
+  //
+  // Signing a box in claims it; signing it out gives it up. That is why there
+  // is no separate list of "my devices" to fall out of step with reality.
+  rpc ListDevices(ListDevicesRequest) returns (ListDevicesResponse);
+
+  // Press a button on somebody's television.
+  //
+  // Hands the command to whoever is listening and does not wait to hear how it
+  // went — `listeners` in the reply is the honest version of "did that work".
+  // Rate limited per device; over the limit is RESOURCE_EXHAUSTED.
+  rpc SendCommand(SendCommandRequest) returns (Delivery);
+
+  // A remote watching what a box is doing.
+  //
+  // Opens with whatever the box last said, so a phone that just unlocked has
+  // something to draw before the next change arrives. That is resumption for
+  // the half where it makes sense: state is a fact, and the newest one is the
+  // true one.
+  rpc WatchDeviceState(WatchDeviceStateRequest) returns (stream DeviceState);
+
+  // The box, listening for buttons. Called by the television itself, with its
+  // own session — the stream carries no device id for the reason above.
+  //
+  // Deliberately not resumable. Replaying a command is exactly wrong: an
+  // instruction is about *now*, and a box that missed "play" while its Wi-Fi
+  // blinked must not act on it a minute later.
+  rpc WatchCommands(WatchCommandsRequest) returns (stream Command);
+
+  // The box saying what it is doing.
+  rpc ReportState(ReportStateRequest) returns (ReportStateResponse);
+}
+
+message ListDevicesRequest {}
+
+message ListDevicesResponse {
+  repeated Device items = 1;
+}
+
+message Device {
+  // The install's public uuid.
+  string id = 1;
+  string platform = 2;
+  string version = 3;
+  google.protobuf.Timestamp last_seen_at = 4;
+}
+
+message SendCommandRequest {
+  // Which box. NOT_FOUND covers both "no such device" and "not one of yours",
+  // because telling the two apart is a way to enumerate other people's.
+  string device_id = 1;
+
+  // The remote's own correlation id, echoed back. Without it a remote cannot
+  // tell a command that was lost from one that was ignored, and so cannot
+  // safely resend. 1–64 characters.
+  string id = 2;
+
+  // Lower-case, dots and underscores: `play`, `volume.set`, `seek_to`.
+  string method = 3;
+
+  // The command's arguments, which the server does not interpret. One of the
+  // two places `CLAUDE.md` allows a loose type, because this is app payload:
+  // a server with an opinion about it would need redeploying every time the
+  // player grew a field.
+  //
+  // Under 4 KiB serialised — a button press, not a file upload. The ceiling is
+  // the server's to enforce; nothing in proto expresses it.
+  google.protobuf.Struct params = 4;
+}
+
+message Delivery {
+  string id = 1;
+  // How many streams were open on that box. Zero means nobody heard it — which
+  // is not the same as the box refusing.
+  int32 listeners = 2;
+}
+
+message WatchDeviceStateRequest {
+  string device_id = 1;
+}
+
+message WatchCommandsRequest {}
+
+message Command {
+  string id = 1;
+  string method = 2;
+  google.protobuf.Struct params = 3;
+}
+
+message ReportStateRequest {
+  // Under 16 KiB serialised — a screenful of facts, not a catalogue.
+  google.protobuf.Struct state = 1;
+}
+
+message ReportStateResponse {}
+
+message DeviceState {
+  google.protobuf.Timestamp at = 1;
+  google.protobuf.Struct state = 2;
+}

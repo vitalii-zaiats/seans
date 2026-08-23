@@ -1,0 +1,147 @@
+/* The shape of a page that is only words.
+ *
+ * Shared by the two legal pages and nothing else. A reading measure, generous
+ * leading, and the same tokens as everywhere — a document that looked like it
+ * came from somewhere else would read as boilerplate, which is exactly what
+ * these two are not.
+ */
+
+.doc {
+  max-width: 74ch;
+  padding: clamp(28px, 4vw, 56px) var(--gutter) 0;
+}
+
+.doc header {
+  margin-bottom: clamp(28px, 4vw, 48px);
+}
+
+.doc .kick {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--accent-300);
+}
+
+.doc h1 {
+  margin: 12px 0 0;
+  font-weight: 500;
+  font-size: clamp(28px, 3.8vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.doc .lede {
+  margin: 16px 0 0;
+  font-size: clamp(15px, 1.3vw, 19px);
+  line-height: 1.6;
+  color: var(--neutral-300);
+  text-wrap: pretty;
+}
+
+.doc .when {
+  margin-top: 18px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--neutral-700);
+}
+
+.doc section {
+  padding-top: clamp(24px, 3vw, 36px);
+}
+
+.doc h2 {
+  margin: 0 0 14px;
+  font-weight: 500;
+  font-size: clamp(19px, 1.8vw, 24px);
+}
+
+.doc p {
+  margin: 0 0 14px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--neutral-400);
+  text-wrap: pretty;
+}
+
+.doc strong {
+  font-weight: 400;
+  color: var(--text);
+}
+
+.doc em {
+  font-style: normal;
+  color: var(--accent-300);
+}
+
+.doc a {
+  color: var(--accent-300);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: border-color 160ms ease;
+}
+
+.doc a:hover {
+  border-bottom-color: var(--accent);
+}
+
+.doc code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  color: var(--neutral-300);
+}
+
+/* A term and what it means, which is the shape most of both documents takes. */
+.doc .rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 14px;
+  border-top: 1px solid var(--hairline);
+}
+
+.doc .rows > div {
+  display: grid;
+  grid-template-columns: minmax(140px, 22%) 1fr;
+  gap: 8px 24px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.doc dt {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.doc dd {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--neutral-400);
+}
+
+.doc .plain {
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.doc .plain li {
+  padding-left: 18px;
+  border-left: 2px solid var(--neutral-800);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--neutral-400);
+}
+
+.doc .note {
+  font-size: 13px;
+  color: var(--neutral-600);
+}
+
+@media (max-width: 640px) {
+  .doc .rows > div {
+    grid-template-columns: 1fr;
+  }
+}

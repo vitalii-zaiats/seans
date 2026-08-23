@@ -1,0 +1,141 @@
+# One front door for the whole stack.
+#
+# `compose.yaml` gives every app a port of its own, which is right on a laptop
+# and useless through a tunnel: ngrok's free plan hands out **one** address, and
+# an app on a second port is an app nobody outside can reach. So this puts the
+# API and all four apps behind a single origin, and `compose.edge.yaml` is what
+# runs it.
+#
+# Same origin is not a convenience here, it is the whole design: every client in
+# this repo asks for `/catalogue/…` with no host, so a bundle built months ago
+# works through a tunnel whose address was invented a minute ago. Nothing has to
+# be rebuilt when the URL changes.
+#
+# **The one rule.** An app's prefix must never collide with an API path. That is
+# why the launcher lives at `/box/` rather than `/tv/` (the API owns `/tv/` —
+# live channels) and why the dashboard is at `/dashboard/` rather than `/admin/`
+# (the API owns that one — install statistics).
+
+upstream api {
+    server ${API_UPSTREAM};
+}
+
+# Docker's embedded DNS, so the app addresses below are resolved per request
+# rather than at start-up.
+#
+# Without this, nginx refuses to start when *any* named upstream is missing —
+# and the launcher's image sits behind a compose profile, so it is missing most
+# of the time. A tunnel that will not come up because of a container nobody
+# asked for is a bad trade; a 502 on one prefix is the honest failure.
+resolver 127.0.0.11 valid=10s ipv6=off;
+
+server {
+    listen 8080;
+    server_name _;
+
+    # A tunnel is a public address. Nothing here is meant to be indexed, and the
+    # apps set the same headers on their own responses — these are for what this
+    # server answers itself, and for anything proxied that forgets.
+    add_header X-Robots-Tag "noindex, nofollow" always;
+
+    # Posters are the biggest thing on the wire and the API streams them
+    # through; a tunnel is slower than a LAN, so let a client send more than one
+    # request at a time and do not hold a body while it is copied.
+    client_max_body_size 8m;
+    proxy_http_version 1.1;
+
+    location = /health {
+        access_log off;
+        return 200 "ok\n";
+    }
+
+    # ── the API ─────────────────────────────────────────────────────────────
+    #
+    # Spelled out rather than "everything that is not an app", because the two
+    # sets are decided by different people: these paths come from
+    # `contracts/openapi.json`, and the prefixes below come from this file.
+    # Where a rule has to be guessed, it should be guessed in favour of the app,
+    # so a new API path shows up as a 404 rather than as a page that silently
+    # stops working.
+
+    # `POST /init` — the first call an app makes, and the only bare path here.
+    location = /init {
+        proxy_pass http://api;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    # `/stream?url=…` — HLS through the API, because a media host pins CORS to
+    # itself. No trailing slash to match on: the target is in the query.
+    location = /stream {
+        proxy_pass http://api;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    # `GET /users`, `GET /devices` — the collection roots, without a trailing
+    # slash. Their sub-paths are covered by the prefix rule below.
+    location ~ ^/(users|devices)$ {
+        proxy_pass http://api;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    #   auth       sessions, guests, claims, device pairing
+    #   catalogue  films and series
+    #   tv         free-to-air channels
+    #   proxy      artwork from a host that will not let a browser have it
+    #   admin      install statistics
+    #   users      the account directory
+    #   device     driving a box from a phone — server-sent events among them
+    location ~ ^/(auth|catalogue|tv|proxy|admin|users|device|playback)/ {
+        proxy_pass http://api;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    # ── the apps ────────────────────────────────────────────────────────────
+    #
+    # Each is a static bundle behind its own nginx, and each is mounted under a
+    # prefix that its build was told about (`APP_BASE` for the Vite apps,
+    # `--base-href` for the Flutter one). The prefix is stripped on the way in,
+    # because inside the container the files sit at the root.
+    #
+    # `rewrite … break` + a variable in `proxy_pass` rather than the usual
+    # trailing slash: a variable is what defers the DNS lookup to request time,
+    # and once there is one, nginx stops rewriting the URI on its own.
+
+    # The phone page a QR code opens.
+    #
+    # Stripped like the others, and its router is none the wiser: a router reads
+    # the *browser's* address, which still says `/r/ABC123`, while the container
+    # is asked for `/ABC123` and answers with the bundle. Its own `try_files`
+    # would otherwise hand back `index.html` for a missing `/r/assets/…` and the
+    # browser would try to run an HTML page as a module.
+    location /r/ {
+        set $remote_app remote:8080;
+        rewrite ^/r/(.*)$ /$1 break;
+        proxy_pass http://$remote_app;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    location /dashboard/ {
+        set $admin_app admin:8080;
+        rewrite ^/dashboard/(.*)$ /$1 break;
+        proxy_pass http://$admin_app;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    # The launcher's own web build. Only up with `--profile tv`, and only right
+    # when the bundle was built for this prefix — see `compose.edge.yaml`.
+    location /box/ {
+        set $tv_app tv:8080;
+        rewrite ^/box/(.*)$ /$1 break;
+        proxy_pass http://$tv_app;
+        include /etc/nginx/proxy-api.conf;
+    }
+
+    # Everything else is the web launcher, which owns the root: it is the thing
+    # a person opening this address came for.
+    location / {
+        set $web_app web:8080;
+        proxy_pass http://$web_app;
+        include /etc/nginx/proxy-api.conf;
+    }
+}

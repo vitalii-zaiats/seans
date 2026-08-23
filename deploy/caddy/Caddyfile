@@ -1,0 +1,81 @@
+# The front door in production: one process, five names, certificates it gets
+# itself.
+#
+# Caddy rather than nginx + certbot because the whole of TLS here is the two
+# lines at the top — no renewal cron, no reload hook, no ACME webroot to keep
+# writable. Everything below is routing.
+#
+# **Browsers stay same-origin.** Each app's own nginx already proxies the API
+# paths it needs (`/catalogue/`, `/auth/`, `/init`, `/proxy/`), so a page served
+# from `seans.com` asks `seans.com` for its data. That is why there is no CORS
+# here and no base URL in any bundle: nothing has to be rebuilt when a hostname
+# changes.
+#
+# `api.` is therefore *not* what the web apps talk to. It is the public entrance
+# for clients that are not browsers — the Android box, the APK, anything with a
+# `--dart-define=API=`.
+
+{
+	# Where Let's Encrypt writes when something expires. Set it: an unset
+	# address means no warning before a certificate lapses.
+	email {$ACME_EMAIL}
+}
+
+# ── the site ─────────────────────────────────────────────────────────────────
+{$DOMAIN} {
+	encode zstd gzip
+
+	# Pairing lives here as well as on its own name, and this is the one the QR
+	# code should carry: it is the shortest, and a phone camera is pointed at it
+	# from across a room. The path stays `/r/…` because the remote app's own
+	# router owns that route — see `apps/remote/src/router.ts`.
+	handle /r/* {
+		reverse_proxy remote:8080
+	}
+
+	handle {
+		reverse_proxy web:8080
+	}
+}
+
+# ── the API, for clients that are not browsers ───────────────────────────────
+api.{$DOMAIN} {
+	encode zstd gzip
+
+	# The remote-control endpoints are server-sent events. Caddy stops buffering
+	# on its own for `text/event-stream`, so there is nothing to configure —
+	# unlike nginx, which needs `proxy_buffering off` spelled out.
+	reverse_proxy api:8000
+}
+
+# ── the launcher, as a web app ───────────────────────────────────────────────
+#
+# Built with `--base-href /` here, not `/box/`: it has a host to itself. See the
+# README for the two `--dart-define`s it needs.
+tv.{$DOMAIN} {
+	encode zstd gzip
+	reverse_proxy tv:8080
+}
+
+# ── the phone page a QR code opens ───────────────────────────────────────────
+#
+# Its own name, so `https://remote.seans.com/r/ABC123` works — the doubled `r`
+# is the app's own route, not a mistake. The short form above is the one worth
+# putting in a QR.
+remote.{$DOMAIN} {
+	encode zstd gzip
+	reverse_proxy remote:8080
+}
+
+# ── install statistics ───────────────────────────────────────────────────────
+admin.{$DOMAIN} {
+	encode zstd gzip
+
+	# Nothing here is for the public. Uncomment and put your own addresses in —
+	# left off rather than guessed, because a wrong range locks you out of your
+	# own dashboard and the way back is an SSH session.
+	# @outsiders not remote_ip 203.0.113.0/24
+	# respond @outsiders 403
+
+	reverse_proxy admin:8080
+}

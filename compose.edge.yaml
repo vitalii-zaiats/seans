@@ -1,0 +1,109 @@
+# Everything behind one address, for a tunnel.
+#
+#     docker compose -f compose.yaml -f compose.edge.yaml up --build
+#     docker compose -f compose.yaml -f compose.edge.yaml --profile ngrok up --build
+#
+# Then everything is on http://localhost:8090 — and on whatever address the
+# tunnel prints.
+#
+# An overlay rather than a second stack: `compose.yaml` still describes what the
+# services *are*, and this adds the one thing they are missing when the audience
+# is not on this machine — a front door. It also rebuilds the two Vite apps with
+# a prefix, because behind one origin they cannot both own `/`.
+#
+# **Why at all.** ngrok's free plan gives out one address. Five ports is five
+# addresses, so a tunnel to `web` alone would be a catalogue whose API is
+# unreachable. Everything through `edge:8080` is one URL that works.
+#
+# **What is at what.**
+#
+#     /               the web launcher            apps/web
+#     /r/<code>       the phone pairing page      apps/remote
+#     /dashboard/     install statistics          apps/admin
+#     /box/           the launcher's web build    apps/tv   (profile: tv)
+#     /catalogue/ /auth/ /init /proxy/ …          apps/api
+#
+# The ports `compose.yaml` publishes stay published — compose appends port
+# lists rather than replacing them — so 8081/8082/8084 keep working on this
+# machine while the tunnel serves the same containers on one address.
+#
+# **Nothing is rebuilt when the tunnel address changes.** Every client here asks
+# for `/catalogue/…` with no host, which is exactly why: the bundle does not
+# know what it is being served from and does not need to.
+
+services:
+  # The two Vite apps move off the root. Vite writes the prefix into every asset
+  # URL in `index.html`, so it is a build argument, not an environment variable
+  # — an image built here is an image for this layout.
+  #
+  # `/dashboard/` rather than `/admin/`, and `/box/` rather than `/tv/`: both of
+  # those belong to the API. `deploy/edge/nginx.conf.template` says more.
+  admin:
+    build:
+      args:
+        APP_BASE: /dashboard/
+
+  remote:
+    build:
+      args:
+        APP_BASE: /r/
+
+  edge:
+    image: nginx:1.29-alpine
+    environment:
+      API_UPSTREAM: api:8000
+    volumes:
+      - ./deploy/edge/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./deploy/nginx/proxy-api.conf:/etc/nginx/proxy-api.conf:ro
+      - ./deploy/nginx/app-headers.conf:/etc/nginx/app-headers.conf:ro
+    ports:
+      # The one port anything outside this machine needs.
+      #
+      # 8090 rather than 8080 for the reason postgres is on 5433: 8080 is the
+      # most popular port on any machine that has ever run a container, and a
+      # stack that will not start because something unrelated got there first is
+      # a bad first minute. `EDGE_PORT=8080 docker compose …` if it is free.
+      - "${EDGE_PORT:-8090}:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+      web:
+        condition: service_started
+      admin:
+        condition: service_started
+      remote:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:8080/health || exit 1"]
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+
+  # The tunnel, when it is wanted. Behind a profile because it needs an account:
+  #
+  #     export NGROK_AUTHTOKEN=…            from dashboard.ngrok.com
+  #     docker compose -f compose.yaml -f compose.edge.yaml --profile ngrok up
+  #     docker compose -f compose.yaml -f compose.edge.yaml logs ngrok | grep -o 'https://[^ ]*ngrok[^ ]*'
+  #
+  # The address is in the log rather than anywhere prettier: the agent's own
+  # inspector listens inside the container, and publishing it would be a second
+  # port for the sake of a string that is printed anyway.
+  #
+  # On the free plan the first page load shows ngrok's interstitial. Clicking
+  # "Visit Site" sets a cookie for that host, and every request after it — the
+  # API calls included — carries the cookie and goes straight through.
+  ngrok:
+    profiles: ["ngrok"]
+    image: ngrok/ngrok:latest
+    command: ["http", "edge:8080", "--log", "stdout"]
+    environment:
+      # Not `:?` — compose interpolates the whole file whether or not the
+      # profile is active, so a required variable here would stop the stack from
+      # starting for everybody who never asked for a tunnel. Empty is fine: the
+      # agent refuses with its own message, which is clearer than compose's.
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN:-}
+    depends_on:
+      edge:
+        condition: service_started
+    restart: unless-stopped

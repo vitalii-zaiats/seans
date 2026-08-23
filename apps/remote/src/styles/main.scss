@@ -1,0 +1,21 @@
+/* Everything Vuetify does not already do, which on a page this small is two
+   things: the type, and a background that does not flash white before the app
+   has mounted. */
+
+html {
+  background: #0b0b10;
+  /* A phone opened from a camera is held in one hand. Nothing here scrolls
+     sideways, and a rubber-banding horizontal overflow reads as breakage. */
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

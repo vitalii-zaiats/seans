@@ -1,0 +1,218 @@
+{
+  "data": {
+    "id": 4953,
+    "name": "Зловісні мерці у вогні",
+    "originalName": "Evil Dead Burn",
+    "slug": "zlovisni-merci-u-vogni",
+    "type": "movie",
+    "format": "film",
+    "imdbMark": 6.4,
+    "ratingsCount": 5,
+    "averageRating": 6,
+    "commentsCount": 1,
+    "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a72f599ed350513273648.webp",
+    "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a72f59ab3544602361697.webp",
+    "yearStart": 2026,
+    "yearEnd": null,
+    "genres": [
+      {
+        "name": "детектив",
+        "slug": "detektiv"
+      },
+      {
+        "name": "трилер",
+        "slug": "triler"
+      },
+      {
+        "name": "жахи",
+        "slug": "zahi"
+      },
+      {
+        "name": "фантастика та фентезі",
+        "slug": "fantastika-ta-fentezi"
+      }
+    ],
+    "ageRestrictions": 18,
+    "shortDescription": "Родинні сварки у віддаленому маєтку переходять у кривавий кошмар, коли заборонені записи про Книгу мертвих пробуджують дедайтів.",
+    "time": "1 год 50 хв",
+    "country": "США",
+    "seasons": [
+      {
+        "id": 7892,
+        "number": 1,
+        "description": "Вдова приїжджає до родини покійного чоловіка в їх старий заміський будинок, сподіваючись тихо відгорювати й хоча б трохи помиритися з непростими родичами. Але сімейні терки й давні образи швидко спливають на поверхню, а молодший брат копається в архівах діда‑дослідника, де знаходить записи про Книгу мертвих і дивний кинджал, який нібито здатен зупинити демонів.\n\nЯк тільки заборонений текст опиняється в руках, ситуація виходить з-під контролю: один за одним члени родини стають одержимими, перетворюються на кривавих дедайтів і перетворюють будинок на пастку без виходу. Герої намагаються просто вижити й зрозуміти, чи справді цей артефакт може їх врятувати, коли за кожними дверима чекає новий напад. Інтрига тримається на тому, хто залишиться людиною, коли демони буквально рвуть родинні зв’язки на шматки, і яку ціну доведеться заплатити за спробу загасити це “пекельне багаття”.",
+        "shortDescription": "Вдова приїжджає до родини чоловіка, але сімейне примирення зриває Книга мертвих, що випускає дедайтів просто всередині дому.",
+        "releaseDate": "2026-08-05",
+        "posterUrl": null,
+        "trailerYoutubeId": null,
+        "frames": [
+          {
+            "url": "https://api.kinostrain.com/uploads/season/frame/431a5f9efa3cc2af6dc6229374cdf5ff.webp",
+            "source": "backdrop",
+            "episodeNumber": null,
+            "position": 0
+          },
+          {
+            "url": "https://api.kinostrain.com/uploads/season/frame/6edf1d7260389d902522d345fc1c76cc.webp",
+            "source": "backdrop",
+            "episodeNumber": null,
+            "position": 1
+          },
+          {
+            "url": "https://api.kinostrain.com/uploads/season/frame/63ea7e2db2b335e7db98cd60e8d71df4.webp",
+            "source": "backdrop",
+            "episodeNumber": null,
+            "position": 2
+          },
+          {
+            "url": "https://api.kinostrain.com/uploads/season/frame/cfcc6ac165074ded4fc01ae3bf633f01.webp",
+            "source": "backdrop",
+            "episodeNumber": null,
+            "position": 3
+          },
+          {
+            "url": "https://api.kinostrain.com/uploads/season/frame/ea5fdbbf082a31b154dca6f5ee6be7d5.webp",
+            "source": "backdrop",
+            "episodeNumber": null,
+            "position": 4
+          },
+          {
+            "url": "https://api.kinostrain.com/uploads/season/frame/9b970b088c0d9afe19e925bd99838040.webp",
+            "source": "backdrop",
+            "episodeNumber": null,
+            "position": 5
+          },
+          {
+            "url": "https://api.kinostrain.com/uploads/season/frame/59e83512feb5e1913bb0591e88ddc0d1.webp",
+            "source": "backdrop",
+            "episodeNumber": null,
+            "position": 6
+          },
+          {
+            "url": "https://api.kinostrain.com/uploads/season/frame/f15ee58901d1efd383d42b6a4e9673b2.webp",
+            "source": "backdrop",
+            "episodeNumber": null,
+            "position": 7
+          }
+        ],
+        "playerData": {
+          "ashdi": [
+            {
+              "name": "DniproFilm",
+              "link": "https://ashdi.vip/vod/276636"
+            },
+            {
+              "name": "Колодій Трейлерів та kor0bochkina (18+)",
+              "link": "https://ashdi.vip/vod/275671"
+            }
+          ]
+        },
+        "players": [
+          "ashdi",
+          "tortuga",
+          "vidsrc"
+        ],
+        "rightsBlocked": false,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "episodes": null,
+        "urlSuffixes": null,
+        "lastUrlSuffix": null
+      }
+    ],
+    "cast": [
+      {
+        "name": "Сухейла Якуб",
+        "originalName": "Souheila Yacoub",
+        "slug": "souheila-yacoub",
+        "character": "Alice",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a72f59c5813c754800343.webp",
+        "gender": 1
+      },
+      {
+        "name": "Танді Райт",
+        "originalName": "Tandi Wright",
+        "slug": "tandi-wright",
+        "character": "Susan",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a72f59eae94e546084678.webp",
+        "gender": 1
+      },
+      {
+        "name": "Хантер Дуен",
+        "originalName": "Hunter Doohan",
+        "slug": "hunter-doohan",
+        "character": "Joseph",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a0f254288c88683905724.webp",
+        "gender": 2
+      },
+      {
+        "name": "Люсіан Б'юкенен",
+        "originalName": "Luciane Buchanan",
+        "slug": "luciane-buchanan",
+        "character": "Thya",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69f21fbcee06d664892705.webp",
+        "gender": 1
+      },
+      {
+        "name": "Ерролл Шанд",
+        "originalName": "Erroll Shand",
+        "slug": "erroll-shand",
+        "character": "Edgar",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a72f59f0b7a3391098661.webp",
+        "gender": 2
+      },
+      {
+        "name": "Мод Дейві",
+        "originalName": "Maude Davey",
+        "slug": "maude-davey",
+        "character": "Polly",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a72f59f5c743017199725.webp",
+        "gender": 1
+      },
+      {
+        "name": "Джордж Пуллар",
+        "originalName": "George Pullar",
+        "slug": "george-pullar",
+        "character": "Will",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a72f5a02d42f972595215.webp",
+        "gender": 2
+      },
+      {
+        "name": "Грета ван ден Брінк",
+        "originalName": "Greta van den Brink",
+        "slug": "greta-van-den-brink",
+        "character": "Jessica",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a72f5a0ab730406046826.webp",
+        "gender": 1
+      },
+      {
+        "name": "Кіану Карім",
+        "originalName": "Keanu Karim",
+        "slug": "keanu-karim",
+        "character": "Jared",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a72f5a1609dd923133587.webp",
+        "gender": 2
+      },
+      {
+        "name": "Перемога Ндукве",
+        "originalName": "Victory Ndukwe",
+        "slug": "victory-ndukwe",
+        "character": "Leo",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a72f5a1c49a8229842765.webp",
+        "gender": 2
+      }
+    ],
+    "directors": [
+      {
+        "name": "Себастьєн Ванічек",
+        "originalName": "Sébastien Vaniček",
+        "slug": "sebastien-vanicek",
+        "character": null,
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a72f5a2419ee707770550.webp",
+        "gender": 2
+      }
+    ],
+    "trailerYoutubeId": "27FsdfrKlhw",
+    "franchise": null
+  }
+}

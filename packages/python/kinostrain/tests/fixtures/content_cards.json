@@ -1,0 +1,76 @@
+{
+  "data": [
+    {
+      "name": "Ліхтарі",
+      "originalName": "Lanterns",
+      "slug": "lihtari",
+      "type": "serial",
+      "format": "serial",
+      "imdbMark": 8.3,
+      "averageRating": 10,
+      "ratingsCount": 4,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a6d0c829375e589030065.webp",
+      "yearStart": 2026,
+      "yearEnd": 2026,
+      "time": "55 хв",
+      "lastUpdatePage": "2026-08-16T00:00:00+03:00",
+      "genres": [
+        {
+          "name": "детектив",
+          "slug": "detektiv"
+        },
+        {
+          "name": "драма",
+          "slug": "drama"
+        }
+      ],
+      "seasonsCount": 1,
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 1,
+        "readyEpisodesCount": 1,
+        "lastUrlSuffix": "a"
+      },
+      "lastReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 1,
+        "readyEpisodesCount": 1,
+        "lastUrlSuffix": "a"
+      }
+    },
+    {
+      "name": "Гріфіни / Сім'янин",
+      "originalName": "Family Guy",
+      "slug": "grifini-sim-anin",
+      "type": "cartoon-series",
+      "format": "serial",
+      "imdbMark": 8.1,
+      "averageRating": 7,
+      "ratingsCount": 1,
+      "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a143c928d754548070773.webp",
+      "yearStart": 1999,
+      "yearEnd": 2025,
+      "time": "22 хв",
+      "lastUpdatePage": "2025-07-17T00:00:00+03:00",
+      "genres": [
+        {
+          "name": "комедія",
+          "slug": "komedia"
+        }
+      ],
+      "seasonsCount": 23,
+      "firstReadySeason": {
+        "number": 1,
+        "lastReadyEpisode": 7,
+        "readyEpisodesCount": 7,
+        "lastUrlSuffix": null
+      },
+      "lastReadySeason": {
+        "number": 23,
+        "lastReadyEpisode": 20,
+        "readyEpisodesCount": 20,
+        "lastUrlSuffix": null
+      }
+    }
+  ]
+}

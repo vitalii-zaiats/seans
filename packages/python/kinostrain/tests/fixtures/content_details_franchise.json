@@ -1,0 +1,220 @@
+{
+  "data": {
+    "id": 458,
+    "name": "Одна миля: Розділ другий",
+    "originalName": "One Mile: Chapter Two",
+    "slug": "odna-mila-rozdil-drugij",
+    "type": "movie",
+    "format": "film",
+    "imdbMark": 5,
+    "ratingsCount": 0,
+    "averageRating": null,
+    "commentsCount": 0,
+    "posterUrl": "https://api.kinostrain.com/uploads/content/poster/69ea22beb8391382167784.webp",
+    "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/69e93097a51cf489901130.webp",
+    "yearStart": 2026,
+    "yearEnd": null,
+    "genres": [
+      {
+        "name": "драма",
+        "slug": "drama"
+      },
+      {
+        "name": "екшн",
+        "slug": "eksn"
+      },
+      {
+        "name": "кримінал",
+        "slug": "kriminal"
+      }
+    ],
+    "ageRestrictions": 18,
+    "shortDescription": "Колишній спецпризначенець Данні повертається на віддалений острів, де минулого разу він втручався в діяльність закритої групи поселенців.",
+    "time": "1 год 20 хв",
+    "country": "Канада, США",
+    "seasons": [
+      {
+        "id": 626,
+        "number": 1,
+        "description": "Колишній спецпризначенець Данні повертається на віддалений острів, де минулого разу він втручався в діяльність закритої групи поселенців. Тепер група здійснює акт помсти й викрадає його дочку Алекс, використовуючи її як приманку в іграх, спланованих спеціально проти нього. Данні вступає в односторонню погоню, пробираючись крізь військово оснащені рубежі, засідки та місцевих поборників нової ідеології, які вивчили його методи й намагаються прогнозувати кожен його крок. Конфлікт будується навколо протистояння батька, що відчуває власну вину, і жорстко структурованої комуні, яка вбачає в його дочці інструмент для відновлення балансу влади та відплати за минулі втручання.",
+        "shortDescription": "Батько‑спецпризначенець повертається на острів, щоб врятувати дочку від мстивої групи, яка вивчила його тактику.",
+        "releaseDate": null,
+        "posterUrl": null,
+        "trailerYoutubeId": null,
+        "frames": [
+          {
+            "url": "https://api.kinostrain.com/uploads/season/frame/769e08a0eb759d7e0f8bb963a232bd53.webp",
+            "source": "backdrop",
+            "episodeNumber": null,
+            "position": 0
+          },
+          {
+            "url": "https://api.kinostrain.com/uploads/season/frame/4b1c6983076f2e9a5ac32eb5cabca54e.webp",
+            "source": "backdrop",
+            "episodeNumber": null,
+            "position": 1
+          },
+          {
+            "url": "https://api.kinostrain.com/uploads/season/frame/9699a9114b99846b31ba753980f83535.webp",
+            "source": "backdrop",
+            "episodeNumber": null,
+            "position": 2
+          }
+        ],
+        "playerData": {
+          "ashdi": [
+            {
+              "name": "ГайдаМайк",
+              "link": "https://ashdi.vip/vod/244756"
+            },
+            {
+              "name": "KyivstarTV",
+              "link": "https://ashdi.vip/vod/279657"
+            }
+          ],
+          "vidsrc": [
+            {
+              "name": "Оригінал",
+              "link": "https://vsembed.su/embed/movie?imdb=tt24326462"
+            }
+          ]
+        },
+        "players": [
+          "ashdi",
+          "tortuga",
+          "vidsrc"
+        ],
+        "rightsBlocked": false,
+        "lastReadyEpisode": null,
+        "readyEpisodesCount": 0,
+        "episodes": null,
+        "urlSuffixes": null,
+        "lastUrlSuffix": null
+      }
+    ],
+    "cast": [
+      {
+        "name": "Раян Філліппі",
+        "originalName": "Ryan Phillippe",
+        "slug": "ryan-phillippe",
+        "character": "Danny",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e9307683152941471177.webp",
+        "gender": 2
+      },
+      {
+        "name": "Амелі Хоферле",
+        "originalName": "Amélie Hoeferle",
+        "slug": "amelie-hoeferle",
+        "character": "Alex",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e9307741933458273942.webp",
+        "gender": 1
+      },
+      {
+        "name": "Сара Кеннінг",
+        "originalName": "Sara Canning",
+        "slug": "sara-canning",
+        "character": "Janine",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e930777e3bd741485516.webp",
+        "gender": 1
+      },
+      {
+        "name": "Сейдж Ліндер",
+        "originalName": "Sage Linder",
+        "slug": "sage-linder",
+        "character": "Lily Copeland",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e93078ca333102626628.webp",
+        "gender": 1
+      },
+      {
+        "name": "Беверлі Елліотт",
+        "originalName": "Beverley Elliott",
+        "slug": "beverley-elliott",
+        "character": "Abigail Dixon",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e9307a9c8b1721770732.webp",
+        "gender": 1
+      },
+      {
+        "name": "Філ Берк",
+        "originalName": "Phil Burke",
+        "slug": "phil-burke",
+        "character": "Angus",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e9307be88a8495462783.webp",
+        "gender": 2
+      },
+      {
+        "name": "Габріель Хасінто",
+        "originalName": "Gabrielle Jacinto",
+        "slug": "gabrielle-jacinto",
+        "character": "Carrie",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e9307ccba6c661246878.webp",
+        "gender": 1
+      },
+      {
+        "name": "К. Томас Хауелл",
+        "originalName": "C. Thomas Howell",
+        "slug": "c-thomas-howell",
+        "character": "Stanley Dixon",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e9307e07d18628359583.webp",
+        "gender": 2
+      },
+      {
+        "name": "Кіана Велсен",
+        "originalName": "Keana Velsen",
+        "slug": "keana-velsen",
+        "character": "Birthing Woman",
+        "posterUrl": null,
+        "gender": 0
+      },
+      {
+        "name": "Ґарфілд Вілсон",
+        "originalName": "Garfield Wilson",
+        "slug": "garfield-wilson",
+        "character": "Curtis",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e9309946a74200167866.webp",
+        "gender": 2
+      }
+    ],
+    "directors": [
+      {
+        "name": "Адам Девідсон",
+        "originalName": "Adam Davidson",
+        "slug": "adam-davidson",
+        "character": null,
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69e930802cded374561250.webp",
+        "gender": 2
+      }
+    ],
+    "trailerYoutubeId": "QZUFUvULWqs",
+    "franchise": {
+      "name": "One Mile Collection",
+      "slug": "one-mile-collection",
+      "description": null,
+      "items": [
+        {
+          "name": "Одна миля: Глава перша / Одна миля: Розділ перший",
+          "originalName": "One Mile: Chapter One",
+          "slug": "odna-mila-glava-persa-odna-mila-rozdil-persij",
+          "format": "film",
+          "year": 2026,
+          "imdbMark": 5.7,
+          "posterUrl": "https://api.kinostrain.com/uploads/content/poster/69ea22bdec856650077031.webp",
+          "seasonNumber": null,
+          "lastUrlSuffix": null,
+          "isCurrent": false
+        },
+        {
+          "name": "Одна миля: Розділ другий",
+          "originalName": "One Mile: Chapter Two",
+          "slug": "odna-mila-rozdil-drugij",
+          "format": "film",
+          "year": 2026,
+          "imdbMark": 5,
+          "posterUrl": "https://api.kinostrain.com/uploads/content/poster/69ea22beb8391382167784.webp",
+          "seasonNumber": null,
+          "lastUrlSuffix": null,
+          "isCurrent": true
+        }
+      ]
+    }
+  }
+}

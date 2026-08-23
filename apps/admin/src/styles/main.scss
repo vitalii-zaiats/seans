@@ -1,0 +1,18 @@
+@use './tokens';
+
+html {
+  // Vuetify's app bar is fixed; without this the page jumps a hair when a
+  // short view is replaced by a scrolling one.
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+}
+
+// A focus ring that survives a dark theme. Vuetify draws its own on its own
+// components; this is for the bare elements the charts are built from.
+:focus-visible {
+  outline: 2px solid rgb(var(--v-theme-primary));
+  outline-offset: 2px;
+}

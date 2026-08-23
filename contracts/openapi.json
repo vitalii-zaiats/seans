@@ -1,0 +1,5080 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "super movies api",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/init": {
+      "post": {
+        "tags": [
+          "installs"
+        ],
+        "summary": "Init",
+        "description": "Announce this install and collect everything it needs to start.\n\nSafe to call on every launch: the install row is updated rather than\nduplicated, and a session token sent along in `Authorization: Bearer` is\nkept rather than replaced.",
+        "operationId": "init_init_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InitOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Me",
+        "description": "Who the token belongs to. 401 when there is no token, or it is stale.",
+        "operationId": "me_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountOut"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Forget",
+        "description": "The way back to local-only. Deletes the account and its sessions.",
+        "operationId": "forget_auth_me_delete",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Rename",
+        "operationId": "rename_auth_me_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RenameRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/guest": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Start Guest",
+        "description": "A guest on demand, for a client that has no install to announce.\n\nDeliberately unconditional: calling it while already signed in starts a\n*second*, empty identity rather than handing back the first.",
+        "operationId": "start_guest_auth_guest_post",
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/claim": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Claim",
+        "description": "Keep the account, add the login.\n\nEverything watched as a guest stays where it is — this writes an email and a\npassword onto that same row, and rotates the token.",
+        "operationId": "claim_auth_claim_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Register",
+        "description": "An account with no guest behind it.\n\nFor somebody who ran the app locally and told us nothing until now: there is\nno history to keep, so making a guest first and claiming it would be theatre.",
+        "operationId": "register_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Login",
+        "operationId": "login_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Identity"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Logout",
+        "operationId": "logout_auth_logout_post",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/auth/device": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Start Device Link",
+        "description": "Begin a pairing. Deliberately open: nobody is signed in yet.\n\nA box that already announced itself may send its token anyway — the install\nit belongs to is carried onto the session it eventually collects, so\n\"sign this device out\" means something later.\n\nThe body is optional so that a build shipped before it existed still works.\nThose get the `User-Agent`, which is what this always used and which reads\nas a paragraph of browser trivia on the approval screen; anything that can\nname itself should.",
+        "operationId": "start_device_link_auth_device_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/DeviceLinkRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceLinkOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/device/{code}": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Device Link Status",
+        "description": "What is being asked for, for the page that is about to say yes.",
+        "operationId": "device_link_status_auth_device__code__get",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Code"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceLinkStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/device/approve": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Approve Device Link",
+        "description": "Say yes, as somebody. The only step that needs an identity, and it is\nthe phone's.",
+        "operationId": "approve_device_link_auth_device_approve_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceApproval"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceLinkStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/device/collect": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Collect Device Link",
+        "description": "The television asking whether it may come in yet.",
+        "operationId": "collect_device_link_auth_device_collect_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceCollect"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceSession"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "List Users",
+        "operationId": "list_users_users_get",
+        "parameters": [
+          {
+            "name": "guests",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "only guests, or only claimed",
+              "title": "Guests"
+            },
+            "description": "only guests, or only claimed"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{public_id}/role": {
+      "patch": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Set Role",
+        "operationId": "set_role_users__public_id__role_patch",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/devices": {
+      "get": {
+        "tags": [
+          "remote"
+        ],
+        "summary": "Devices",
+        "description": "Every box you are signed in on — which is exactly the set you may drive.\n\nSigning a box in claims it; signing it out gives it up. That is why there is\nno separate list of \"my devices\" to fall out of step with reality.",
+        "operationId": "devices_devices_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/device/{public_id}/rpc": {
+      "post": {
+        "tags": [
+          "remote"
+        ],
+        "summary": "Send",
+        "description": "Press a button on somebody's television.\n\n`202`, not `200`: this hands the command to whoever is listening and does\nnot wait to hear how it went. `listeners` in the answer is the honest\nversion of \"did that work\" — zero means nobody was connected.",
+        "operationId": "send_device__public_id__rpc_post",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommandIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/device/{public_id}/events": {
+      "get": {
+        "tags": [
+          "remote"
+        ],
+        "summary": "Watch",
+        "description": "A remote watching what a box is doing.\n\nOpens with whatever the box last said, so a phone that just unlocked has\nsomething to draw before the next change arrives.",
+        "operationId": "watch_device__public_id__events_get",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/device/events": {
+      "get": {
+        "tags": [
+          "remote"
+        ],
+        "summary": "Commands",
+        "description": "The box, listening for buttons.",
+        "operationId": "commands_device_events_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/device/state": {
+      "post": {
+        "tags": [
+          "remote"
+        ],
+        "summary": "Report",
+        "description": "The box saying what it is doing.",
+        "operationId": "report_device_state_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tv/channels": {
+      "get": {
+        "tags": [
+          "tv"
+        ],
+        "summary": "Channels",
+        "description": "Every free channel, with its categories.\n\nCached: the list changes when a channel is added, not per viewer. Each entry\nalready carries what is on right now, so a grid needs no request per row.",
+        "operationId": "channels_tv_channels_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tv/channels/{channel_id}/schedule": {
+      "get": {
+        "tags": [
+          "tv"
+        ],
+        "summary": "Schedule",
+        "description": "One channel's programmes for one day.\n\nA day upstream never published comes back empty rather than as an error — a\nchannel simply has no schedule that far out.",
+        "operationId": "schedule_tv_channels__channel_id__schedule_get",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Channel Id"
+            }
+          },
+          {
+            "name": "day",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Defaults to today",
+              "title": "Day"
+            },
+            "description": "Defaults to today"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tv/channels/{channel_id}/stream": {
+      "post": {
+        "tags": [
+          "tv"
+        ],
+        "summary": "Stream",
+        "description": "A playable address for a channel.\n\nA lease rather than an address: it carries a session and goes stale after\n`refresh_in`. Ask again rather than storing it.\n\n**`use_proxy` is for browsers and only for browsers.** The stitched playlist\ncomes from a host that does not answer `access-control-allow-origin`, so a\npage cannot read it; set the flag and every address here comes back pointing\nat `/stream`, which can. A native build — Android, a box, a desktop — has no\nsuch rule and should leave it off: the video then goes host-to-viewer\ninstead of through us, which is faster and costs us nothing.",
+        "operationId": "stream_tv_channels__channel_id__stream_post",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Channel Id"
+            }
+          },
+          {
+            "name": "use_proxy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Point the addresses at `/stream` instead of the host itself",
+              "default": false,
+              "title": "Use Proxy"
+            },
+            "description": "Point the addresses at `/stream` instead of the host itself"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api__modules__tv__schemas__StreamOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalogue/content": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "Catalog",
+        "description": "A page of the catalogue.\n\n`genres` and `year` take slugs from `/catalogue/filters`, not display names.\nNever cached: the ordering is by what changed, so a held page would show\nsomebody yesterday's answer.",
+        "operationId": "catalog_catalogue_content_get",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ContentType"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Type"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            }
+          },
+          {
+            "name": "genres",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Slugs, not names",
+              "title": "Genres"
+            },
+            "description": "Slugs, not names"
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "A slug: 2024, or 2006-2010",
+              "title": "Year"
+            },
+            "description": "A slug: 2024, or 2006-2010"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalogue/filters": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "Filters",
+        "description": "Genres and year buckets per section, with per-section counts.\n\nCached: it changes when a genre is added, which is not often.",
+        "operationId": "filters_catalogue_filters_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FiltersOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalogue/trending": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "Trending",
+        "description": "A home rail, richer than a catalogue card. Not paginated.",
+        "operationId": "trending_catalogue_trending_get",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ContentType"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Type"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardList"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalogue/slider": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "Slider",
+        "description": "The hero row, with trailer ids and age ratings filled in.",
+        "operationId": "slider_catalogue_slider_get",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ContentType"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Type"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardList"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalogue/search": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "Search",
+        "description": "Titles matching `q`.\n\nAnything under two characters comes back empty without a round trip, which\nis what makes this safe to call on every keystroke.",
+        "operationId": "search_catalogue_search_get",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "title": "Q"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 50,
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HitList"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalogue/cards": {
+      "post": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "Cards",
+        "description": "Cards for several slugs at once.\n\nA `POST` because the list can be long and a stored watchlist is not\nsomething to put in a URL. Neither the order nor an entry for every slug is\nguaranteed — upstream answers with what it has.",
+        "operationId": "cards_catalogue_cards_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_cards_catalogue_cards_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardList"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalogue/persons": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "Persons",
+        "description": "The directory of actors and directors.",
+        "operationId": "persons_catalogue_persons_get",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Page"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/catalogue/content/{slug}": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "Content",
+        "description": "One title in full.\n\nA series lists **every** season but fills in the episodes and players of\none. Pass `season` to fill in a different one — the rest come back empty\neither way, and `is_loaded` is what tells \"not fetched yet\" from \"nothing to\nwatch\".",
+        "operationId": "content_catalogue_content__slug__get",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Slug"
+            }
+          },
+          {
+            "name": "season",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Season"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailsOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/stats/installs": {
+      "get": {
+        "tags": [
+          "stats"
+        ],
+        "summary": "Installs",
+        "description": "Totals, a day-by-day series, and the three breakdowns, over one window.",
+        "operationId": "installs_admin_stats_installs_get",
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 365,
+              "minimum": 1,
+              "description": "Window length, in whole UTC days",
+              "default": 30,
+              "title": "Days"
+            },
+            "description": "Window length, in whole UTC days"
+          },
+          {
+            "name": "active_days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 365,
+              "minimum": 1,
+              "description": "How recently an install must have launched",
+              "default": 7,
+              "title": "Active Days"
+            },
+            "description": "How recently an install must have launched"
+          },
+          {
+            "name": "top",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 50,
+              "minimum": 1,
+              "description": "Rows per breakdown",
+              "default": 8,
+              "title": "Top"
+            },
+            "description": "Rows per breakdown"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverviewOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/stats/installs/recent": {
+      "get": {
+        "tags": [
+          "stats"
+        ],
+        "summary": "Recent",
+        "description": "The installs themselves, most recently seen first.",
+        "operationId": "recent_admin_stats_installs_recent_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 25,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "android",
+                    "linux",
+                    "windows",
+                    "web"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Platform"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "A full install uuid, or part of a version or vendor",
+              "title": "Q"
+            },
+            "description": "A full install uuid, or part of a version or vendor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecordPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rooms": {
+      "get": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Listing",
+        "description": "The public rooms, busiest-first, with what is playing in each.\n\nNo identity needed to read it: a public room is an invitation, and an\ninvitation nobody can see is not one.",
+        "operationId": "listing_rooms_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoomPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Open Room",
+        "description": "Start a room and take the host's seat in it.\n\n`user` is whoever the request turned out to belong to, and `None` is a\nsupported answer — this deliberately does not mint a guest on the way, the\nway nothing else in this API does either.",
+        "operationId": "open_room_rooms_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeatOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rooms/join": {
+      "post": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Join",
+        "description": "Take a seat, by code.\n\nSomebody signed in who is already in this room comes back to the seat they\nhad — the host's, if that is what it was. Everybody else gets a new one.",
+        "operationId": "join_rooms_join_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeatOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rooms/{public_id}": {
+      "get": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Room",
+        "description": "One room — a title and a poster, for somebody deciding whether to join.\n\nAnswered for a private room too. Whoever asks had to be told the id by\nsomebody, and what comes back has no way in attached: the code is withheld\nunless they are already seated.",
+        "operationId": "room_rooms__public_id__get",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoomOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Close",
+        "description": "That's the end of it. Everybody with a stream open is told, once.",
+        "operationId": "close_rooms__public_id__delete",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rooms/{public_id}/state": {
+      "post": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Report",
+        "description": "The host saying where the film is. Only the host may.\n\nWritten down and published in one go: the row is what a latecomer and the\nlisting read, the stream is what everybody already watching hears.",
+        "operationId": "report_rooms__public_id__state_post",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShowingOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rooms/{public_id}/leave": {
+      "post": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Leave",
+        "description": "Give the seat up. The host leaving ends the room for everybody.",
+        "operationId": "leave_rooms__public_id__leave_post",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rooms/{public_id}/events": {
+      "get": {
+        "tags": [
+          "together"
+        ],
+        "summary": "Watch",
+        "description": "Everything the room says, for as long as it says anything.\n\n    state    where the film is, and what it is\n    members  who is here\n    closed   the last thing this stream will ever say\n\nThe reading happens here rather than inside the generator, and on purpose: a\nsession held open for the life of an SSE stream is a database connection\nheld open for the life of an SSE stream, and there are as many of those as\nthere are people watching. Everything below the `return` runs on the bus\nalone.",
+        "operationId": "watch_rooms__public_id__events_get",
+        "parameters": [
+          {
+            "name": "public_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Public Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/proxy/{path}": {
+      "get": {
+        "tags": [
+          "proxy"
+        ],
+        "summary": "Image",
+        "description": "One file from the upstream this proxy mirrors.\n\nStreamed rather than read into memory: a poster is small, but nothing here\nknows that, and buffering somebody else's file before answering is how a\nproxy becomes the slowest thing in the chain.",
+        "operationId": "image_proxy__path__get",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Path"
+            }
+          },
+          {
+            "name": "accept",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Accept"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/playback/resolve": {
+      "post": {
+        "tags": [
+          "playback"
+        ],
+        "summary": "Resolve",
+        "description": "Open the player page and read what is playable off it.\n\n404 when the page loads and holds nothing — which is an ordinary state for a\ntitle the catalogue lists but nobody has uploaded yet, and a different thing\nfrom the page being unreachable.",
+        "operationId": "resolve_playback_resolve_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolveIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResolveOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stream": {
+      "get": {
+        "tags": [
+          "stream"
+        ],
+        "summary": "Relay",
+        "description": "One playlist, or one segment.\n\n`HEAD` answers the same headers with no body — players use it to size a file\nbefore deciding how to ask for it.",
+        "operationId": "relay_stream_get",
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 2000,
+              "description": "An absolute http(s) URL",
+              "title": "Url"
+            },
+            "description": "An absolute http(s) URL"
+          },
+          {
+            "name": "range",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Range"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "ops"
+        ],
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccountOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "display_name": {
+            "type": "string",
+            "title": "Display Name"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "is_guest": {
+            "type": "boolean",
+            "title": "Is Guest"
+          },
+          "is_admin": {
+            "type": "boolean",
+            "title": "Is Admin"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "display_name",
+          "email",
+          "is_guest",
+          "is_admin"
+        ],
+        "title": "AccountOut"
+      },
+      "AccountPage": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AccountOut"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "items"
+        ],
+        "title": "AccountPage"
+      },
+      "Body_cards_catalogue_cards_post": {
+        "properties": {
+          "slugs": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 200,
+            "title": "Slugs"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slugs"
+        ],
+        "title": "Body_cards_catalogue_cards_post"
+      },
+      "CardList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CardOut"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "CardList"
+      },
+      "CardOut": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "original_name": {
+            "type": "string",
+            "title": "Original Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContentType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type_raw": {
+            "type": "string",
+            "title": "Type Raw"
+          },
+          "format": {
+            "type": "string",
+            "title": "Format"
+          },
+          "poster_url": {
+            "type": "string",
+            "title": "Poster Url"
+          },
+          "genres": {
+            "items": {
+              "$ref": "#/components/schemas/GenreOut"
+            },
+            "type": "array",
+            "title": "Genres"
+          },
+          "seasons_count": {
+            "type": "integer",
+            "title": "Seasons Count"
+          },
+          "imdb_mark": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Imdb Mark"
+          },
+          "year_start": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year Start"
+          },
+          "year_end": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year End"
+          },
+          "year_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year Label"
+          },
+          "is_series": {
+            "type": "boolean",
+            "title": "Is Series"
+          },
+          "last_update_page": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Update Page"
+          },
+          "first_ready_season": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReadySeasonOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "last_ready_season": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReadySeasonOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "slider_poster_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slider Poster Url"
+          },
+          "slider_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slider Url"
+          },
+          "short_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Description"
+          },
+          "time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time"
+          },
+          "country": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country"
+          },
+          "age_restrictions": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Age Restrictions"
+          },
+          "trailer_youtube_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trailer Youtube Id"
+          },
+          "average_rating": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Average Rating"
+          },
+          "ratings_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ratings Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "original_name",
+          "slug",
+          "type",
+          "type_raw",
+          "format",
+          "poster_url",
+          "genres",
+          "seasons_count",
+          "imdb_mark",
+          "year_start",
+          "year_end",
+          "year_label",
+          "is_series",
+          "last_update_page",
+          "first_ready_season",
+          "last_ready_season",
+          "slider_poster_url",
+          "slider_url",
+          "short_description",
+          "time",
+          "country",
+          "age_restrictions",
+          "trailer_youtube_id",
+          "average_rating",
+          "ratings_count"
+        ],
+        "title": "CardOut",
+        "description": "A title in list form — the catalogue, trending, the slider, a search hit."
+      },
+      "CardPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CardOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "meta"
+        ],
+        "title": "CardPage"
+      },
+      "CategoryOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          },
+          "is_all": {
+            "type": "boolean",
+            "title": "Is All"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "slug",
+          "is_all"
+        ],
+        "title": "CategoryOut"
+      },
+      "ChannelList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ChannelOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/CategoryOut"
+            },
+            "type": "array",
+            "title": "Categories"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "categories"
+        ],
+        "title": "ChannelList"
+      },
+      "ChannelOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "icon_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Icon Url"
+          },
+          "banner_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Banner Url"
+          },
+          "colour": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Colour"
+          },
+          "categories": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Categories"
+          },
+          "catchup_days": {
+            "type": "integer",
+            "title": "Catchup Days"
+          },
+          "now_playing": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Now Playing"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "icon_url",
+          "banner_url",
+          "colour",
+          "categories",
+          "catchup_days",
+          "now_playing"
+        ],
+        "title": "ChannelOut"
+      },
+      "ClaimRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 8,
+            "title": "Password"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "ClaimRequest",
+        "description": "Turn the guest you already are into an account you can log back into."
+      },
+      "CommandIn": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "method": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[a-z][a-z0-9_.]*$",
+            "title": "Method"
+          },
+          "params": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "type": "object",
+            "title": "Params"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "method"
+        ],
+        "title": "CommandIn",
+        "description": "One button press.\n\n`id` is the remote's own, and comes back in the answer — without it a remote\ncannot tell a command that was lost from one that was ignored, and cannot\nsafely resend."
+      },
+      "ContentType": {
+        "type": "string",
+        "enum": [
+          "movie",
+          "serial",
+          "cartoon-movie",
+          "cartoon-series",
+          "anime"
+        ],
+        "title": "ContentType",
+        "description": "The five content sections the API exposes.\n\nThe value is what goes into the `type` query parameter and what the server\nechoes back in card and detail payloads."
+      },
+      "CreditOut": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "original_name": {
+            "type": "string",
+            "title": "Original Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "character": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Character"
+          },
+          "poster_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Poster Url"
+          },
+          "gender": {
+            "type": "integer",
+            "title": "Gender"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "original_name",
+          "slug",
+          "character",
+          "poster_url",
+          "gender"
+        ],
+        "title": "CreditOut"
+      },
+      "DayOut": {
+        "properties": {
+          "day": {
+            "type": "string",
+            "format": "date",
+            "title": "Day"
+          },
+          "created": {
+            "type": "integer",
+            "title": "Created"
+          },
+          "seen": {
+            "type": "integer",
+            "title": "Seen"
+          }
+        },
+        "type": "object",
+        "required": [
+          "day",
+          "created",
+          "seen"
+        ],
+        "title": "DayOut"
+      },
+      "DeliveryOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "listeners": {
+            "type": "integer",
+            "title": "Listeners"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "listeners"
+        ],
+        "title": "DeliveryOut"
+      },
+      "DetailsOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "original_name": {
+            "type": "string",
+            "title": "Original Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ContentType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type_raw": {
+            "type": "string",
+            "title": "Type Raw"
+          },
+          "format": {
+            "type": "string",
+            "title": "Format"
+          },
+          "is_series": {
+            "type": "boolean",
+            "title": "Is Series"
+          },
+          "poster_url": {
+            "type": "string",
+            "title": "Poster Url"
+          },
+          "slider_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slider Url"
+          },
+          "genres": {
+            "items": {
+              "$ref": "#/components/schemas/GenreOut"
+            },
+            "type": "array",
+            "title": "Genres"
+          },
+          "seasons": {
+            "items": {
+              "$ref": "#/components/schemas/SeasonOut"
+            },
+            "type": "array",
+            "title": "Seasons"
+          },
+          "cast": {
+            "items": {
+              "$ref": "#/components/schemas/CreditOut"
+            },
+            "type": "array",
+            "title": "Cast"
+          },
+          "directors": {
+            "items": {
+              "$ref": "#/components/schemas/CreditOut"
+            },
+            "type": "array",
+            "title": "Directors"
+          },
+          "average_rating": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Average Rating"
+          },
+          "ratings_count": {
+            "type": "integer",
+            "title": "Ratings Count"
+          },
+          "comments_count": {
+            "type": "integer",
+            "title": "Comments Count"
+          },
+          "imdb_mark": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Imdb Mark"
+          },
+          "year_start": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year Start"
+          },
+          "year_end": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year End"
+          },
+          "age_restrictions": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Age Restrictions"
+          },
+          "short_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Description"
+          },
+          "time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time"
+          },
+          "country": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Country"
+          },
+          "trailer_youtube_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trailer Youtube Id"
+          },
+          "franchise": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FranchiseOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "is_playable": {
+            "type": "boolean",
+            "title": "Is Playable"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "original_name",
+          "slug",
+          "type",
+          "type_raw",
+          "format",
+          "is_series",
+          "poster_url",
+          "slider_url",
+          "genres",
+          "seasons",
+          "cast",
+          "directors",
+          "average_rating",
+          "ratings_count",
+          "comments_count",
+          "imdb_mark",
+          "year_start",
+          "year_end",
+          "age_restrictions",
+          "short_description",
+          "time",
+          "country",
+          "trailer_youtube_id",
+          "franchise",
+          "is_playable"
+        ],
+        "title": "DetailsOut",
+        "description": "Everything the title page shows."
+      },
+      "DeviceApproval": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 12,
+            "minLength": 1,
+            "title": "Code"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "title": "DeviceApproval"
+      },
+      "DeviceCollect": {
+        "properties": {
+          "secret": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "secret"
+        ],
+        "title": "DeviceCollect"
+      },
+      "DeviceLinkOut": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "secret": {
+            "type": "string",
+            "title": "Secret"
+          },
+          "verify_path": {
+            "type": "string",
+            "title": "Verify Path"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "secret",
+          "verify_path",
+          "expires_in"
+        ],
+        "title": "DeviceLinkOut",
+        "description": "What a television is told when it asks to be signed in.\n\n`verify_path` rather than a URL: the server has no idea what address this\ninstall is reached on, and the client that draws the QR does."
+      },
+      "DeviceLinkRequest": {
+        "properties": {
+          "device_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device Name"
+          }
+        },
+        "type": "object",
+        "title": "DeviceLinkRequest",
+        "description": "What the television calls itself.\n\nOptional, and the whole body is too: a build that predates this sends no\nbody at all and is answered exactly as before. What it gets then is a name\nderived from its `User-Agent`, which for a browser is 117 characters of\n`Mozilla/5.0 (Macintosh; ...)` — technically a name, and useless to the\nperson deciding whether this is their own living room."
+      },
+      "DeviceLinkStatus": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "device_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device Name"
+          },
+          "approved": {
+            "type": "boolean",
+            "title": "Approved"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "device_name",
+          "approved",
+          "expires_in"
+        ],
+        "title": "DeviceLinkStatus",
+        "description": "What the phone is about to approve, before it approves it."
+      },
+      "DeviceList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DeviceOut"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "DeviceList"
+      },
+      "DeviceOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "platform": {
+            "type": "string",
+            "title": "Platform"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "last_seen_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Last Seen At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "platform",
+          "version",
+          "last_seen_at"
+        ],
+        "title": "DeviceOut"
+      },
+      "DeviceSession": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "linked"
+            ],
+            "title": "Status"
+          },
+          "identity": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Identity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "DeviceSession",
+        "description": "Not yet, or here you go.\n\n`pending` is the ordinary answer for as long as somebody is walking to their\nphone, so it is a status rather than an error — a television polling this\nshould not have to read 404s to know it is still waiting."
+      },
+      "EpisodeOut": {
+        "properties": {
+          "number": {
+            "type": "integer",
+            "title": "Number"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "air_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Air Date"
+          },
+          "ready": {
+            "type": "boolean",
+            "title": "Ready"
+          }
+        },
+        "type": "object",
+        "required": [
+          "number",
+          "name",
+          "air_date",
+          "ready"
+        ],
+        "title": "EpisodeOut"
+      },
+      "FiltersOut": {
+        "properties": {
+          "by_type": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/SectionFiltersOut"
+            },
+            "type": "object",
+            "title": "By Type"
+          },
+          "unknown_types": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Unknown Types"
+          }
+        },
+        "type": "object",
+        "required": [
+          "by_type",
+          "unknown_types"
+        ],
+        "title": "FiltersOut"
+      },
+      "FrameOut": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "position": {
+            "type": "integer",
+            "title": "Position"
+          },
+          "episode_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Episode Number"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url",
+          "source",
+          "position",
+          "episode_number"
+        ],
+        "title": "FrameOut"
+      },
+      "FranchiseItemOut": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "original_name": {
+            "type": "string",
+            "title": "Original Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "format": {
+            "type": "string",
+            "title": "Format"
+          },
+          "is_current": {
+            "type": "boolean",
+            "title": "Is Current"
+          },
+          "year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Year"
+          },
+          "imdb_mark": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Imdb Mark"
+          },
+          "poster_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Poster Url"
+          },
+          "season_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Season Number"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "original_name",
+          "slug",
+          "format",
+          "is_current",
+          "year",
+          "imdb_mark",
+          "poster_url",
+          "season_number"
+        ],
+        "title": "FranchiseItemOut"
+      },
+      "FranchiseOut": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/FranchiseItemOut"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "slug",
+          "description",
+          "items"
+        ],
+        "title": "FranchiseOut"
+      },
+      "GenreOut": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "slug"
+        ],
+        "title": "GenreOut"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthOut": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "version"
+        ],
+        "title": "HealthOut"
+      },
+      "HitList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/HitOut"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "HitList"
+      },
+      "HitOut": {
+        "properties": {
+          "card": {
+            "$ref": "#/components/schemas/CardOut"
+          },
+          "highlighted_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Highlighted Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "card",
+          "highlighted_name"
+        ],
+        "title": "HitOut",
+        "description": "A search hit: a thinner card, plus what the server matched."
+      },
+      "Identity": {
+        "properties": {
+          "session": {
+            "$ref": "#/components/schemas/SessionOut"
+          },
+          "account": {
+            "$ref": "#/components/schemas/AccountOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "session",
+          "account"
+        ],
+        "title": "Identity",
+        "description": "A user together with the session that proves it.\n\nReturned when a session is created. Every later response carries the account\nalone — the token is the client's to keep."
+      },
+      "InitIn": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id"
+          },
+          "platform": {
+            "$ref": "#/components/schemas/Platform"
+          },
+          "vendor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vendor"
+          },
+          "ver": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Ver"
+          }
+        },
+        "type": "object",
+        "required": [
+          "platform",
+          "ver"
+        ],
+        "title": "InitIn",
+        "description": "What the app says about itself on start-up."
+      },
+      "InitOut": {
+        "properties": {
+          "install": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InstallOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "account": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AccountOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "session": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SessionOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "update": {
+            "$ref": "#/components/schemas/UpdateOut"
+          },
+          "features": {
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "type": "object",
+            "title": "Features"
+          },
+          "server_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Server Time"
+          }
+        },
+        "type": "object",
+        "required": [
+          "install",
+          "account",
+          "session",
+          "update",
+          "features",
+          "server_time"
+        ],
+        "title": "InitOut"
+      },
+      "InstallOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "first_run": {
+            "type": "boolean",
+            "title": "First Run"
+          },
+          "registered_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Registered At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "first_run",
+          "registered_at"
+        ],
+        "title": "InstallOut"
+      },
+      "JoinRequest": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 12,
+            "minLength": 1,
+            "title": "Code"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "title": "JoinRequest"
+      },
+      "JsonValue": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "items": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "type": "array"
+          },
+          {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "type": "object"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest"
+      },
+      "MediaModel": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "movie",
+              "episode",
+              "channel",
+              "other"
+            ],
+            "title": "Kind"
+          },
+          "id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "poster": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Poster"
+          },
+          "season": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Season"
+          },
+          "episode": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Episode"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "id",
+          "title"
+        ],
+        "title": "MediaModel",
+        "description": "What is on. The same shape going in and coming out.\n\nThe server does not look any of this up: the client that is already drawing\nthe poster is the one that knows what to call it, and a room can hold a film,\nan episode or a live channel with equal indifference. `id` is whatever that\nclient calls it — a catalogue slug, a channel id — and is handed back to\neverybody else so their player can open the same thing."
+      },
+      "OpenRequest": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 120,
+            "title": "Title",
+            "default": ""
+          },
+          "is_public": {
+            "type": "boolean",
+            "title": "Is Public",
+            "default": true
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "media": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MediaModel"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "OpenRequest",
+        "description": "Start a room.\n\nNothing here is required to be signed in for, and `display_name` is how\nsomebody who is not says what to call them."
+      },
+      "OverviewOut": {
+        "properties": {
+          "generated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Generated At"
+          },
+          "window": {
+            "$ref": "#/components/schemas/WindowOut"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "created": {
+            "$ref": "#/components/schemas/TrendOut"
+          },
+          "active": {
+            "$ref": "#/components/schemas/TrendOut"
+          },
+          "daily": {
+            "items": {
+              "$ref": "#/components/schemas/DayOut"
+            },
+            "type": "array",
+            "title": "Daily"
+          },
+          "platforms": {
+            "items": {
+              "$ref": "#/components/schemas/SliceOut"
+            },
+            "type": "array",
+            "title": "Platforms"
+          },
+          "versions": {
+            "items": {
+              "$ref": "#/components/schemas/SliceOut"
+            },
+            "type": "array",
+            "title": "Versions"
+          },
+          "vendors": {
+            "items": {
+              "$ref": "#/components/schemas/SliceOut"
+            },
+            "type": "array",
+            "title": "Vendors"
+          }
+        },
+        "type": "object",
+        "required": [
+          "generated_at",
+          "window",
+          "total",
+          "created",
+          "active",
+          "daily",
+          "platforms",
+          "versions",
+          "vendors"
+        ],
+        "title": "OverviewOut"
+      },
+      "PageMetaOut": {
+        "properties": {
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "per_page": {
+            "type": "integer",
+            "title": "Per Page"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          },
+          "has_next_page": {
+            "type": "boolean",
+            "title": "Has Next Page"
+          }
+        },
+        "type": "object",
+        "required": [
+          "page",
+          "per_page",
+          "total",
+          "total_pages",
+          "has_next_page"
+        ],
+        "title": "PageMetaOut"
+      },
+      "PersonOut": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "original_name": {
+            "type": "string",
+            "title": "Original Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "gender": {
+            "type": "integer",
+            "title": "Gender"
+          },
+          "career_roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Career Roles"
+          },
+          "poster_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Poster Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "original_name",
+          "slug",
+          "gender",
+          "career_roles",
+          "poster_url"
+        ],
+        "title": "PersonOut"
+      },
+      "PersonPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PersonOut"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMetaOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "meta"
+        ],
+        "title": "PersonPage"
+      },
+      "Platform": {
+        "type": "string",
+        "enum": [
+          "android",
+          "linux",
+          "windows",
+          "web"
+        ],
+        "title": "Platform",
+        "description": "Where the app is running. Members are lower-case because SQLAlchemy\npersists an enum by its *name*, and the wire value is the lower-case one."
+      },
+      "PlaybackOut": {
+        "properties": {
+          "position": {
+            "type": "number",
+            "title": "Position"
+          },
+          "paused": {
+            "type": "boolean",
+            "title": "Paused"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "position",
+          "paused",
+          "at"
+        ],
+        "title": "PlaybackOut",
+        "description": "Where the film is, and when that was true.\n\n`at` is the server's clock, and `position` is already wound forward to it —\na client seeks to `position` and does not have to work out how long the\nanswer spent in flight. See `events.Playback.wound_to`."
+      },
+      "ProgrammeOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start"
+          },
+          "stop": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Stop"
+          },
+          "available": {
+            "type": "boolean",
+            "title": "Available"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "start",
+          "stop",
+          "available"
+        ],
+        "title": "ProgrammeOut"
+      },
+      "ReadySeasonOut": {
+        "properties": {
+          "number": {
+            "type": "integer",
+            "title": "Number"
+          },
+          "ready_episodes_count": {
+            "type": "integer",
+            "title": "Ready Episodes Count"
+          },
+          "last_ready_episode": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Ready Episode"
+          },
+          "last_url_suffix": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Url Suffix"
+          }
+        },
+        "type": "object",
+        "required": [
+          "number",
+          "ready_episodes_count",
+          "last_ready_episode",
+          "last_url_suffix"
+        ],
+        "title": "ReadySeasonOut"
+      },
+      "RecordOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "platform": {
+            "type": "string",
+            "title": "Platform"
+          },
+          "vendor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vendor"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "registered_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Registered At"
+          },
+          "last_seen_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Last Seen At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "platform",
+          "vendor",
+          "version",
+          "registered_at",
+          "last_seen_at"
+        ],
+        "title": "RecordOut",
+        "description": "One install. `id` is the uuid the client generated, never the row's."
+      },
+      "RecordPage": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RecordOut"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "items"
+        ],
+        "title": "RecordPage"
+      },
+      "RegisterRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 8,
+            "title": "Password"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "RegisterRequest",
+        "description": "The same, for somebody who was never a guest — see `AccountService`."
+      },
+      "RenameRequest": {
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Display Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "display_name"
+        ],
+        "title": "RenameRequest"
+      },
+      "ReportRequest": {
+        "properties": {
+          "media": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MediaModel"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "position": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Position",
+            "default": 0.0
+          },
+          "paused": {
+            "type": "boolean",
+            "title": "Paused",
+            "default": false
+          }
+        },
+        "type": "object",
+        "title": "ReportRequest",
+        "description": "The host saying where the film has got to.\n\n**The whole picture, not a patch.** A report with no `media` means nothing\nis on, not \"same as before\" — so a heartbeat carries what it is playing\nevery time. That is a few hundred bytes every few seconds, and it is what\nmakes this endpoint idempotent: whatever arrives last is what the room is,\nwith no way for a dropped message to leave a stale title over a new film."
+      },
+      "ResolveIn": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2000,
+            "title": "Url"
+          },
+          "season": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Season"
+          },
+          "episode": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Episode"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "title": "ResolveIn"
+      },
+      "ResolveOut": {
+        "properties": {
+          "streams": {
+            "items": {
+              "$ref": "#/components/schemas/api__modules__playback__router__StreamOut"
+            },
+            "type": "array",
+            "title": "Streams"
+          }
+        },
+        "type": "object",
+        "required": [
+          "streams"
+        ],
+        "title": "ResolveOut",
+        "description": "Every stream on the page, best guess first.\n\nA list rather than one address: a page carries several qualities and\nsometimes several dubs, and which of those a client wants is the client's\nbusiness. The first is the one to play when nobody has an opinion."
+      },
+      "Role": {
+        "type": "string",
+        "enum": [
+          "user",
+          "admin"
+        ],
+        "title": "Role",
+        "description": "Lower-case members: SQLAlchemy persists an enum by its *name*."
+      },
+      "RoleRequest": {
+        "properties": {
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "role"
+        ],
+        "title": "RoleRequest"
+      },
+      "RoomOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "is_public": {
+            "type": "boolean",
+            "title": "Is Public"
+          },
+          "is_open": {
+            "type": "boolean",
+            "title": "Is Open"
+          },
+          "host": {
+            "type": "string",
+            "title": "Host"
+          },
+          "showing": {
+            "$ref": "#/components/schemas/ShowingOut"
+          },
+          "members": {
+            "type": "integer",
+            "title": "Members"
+          },
+          "watching": {
+            "type": "integer",
+            "title": "Watching"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "title",
+          "is_public",
+          "is_open",
+          "host",
+          "showing",
+          "members",
+          "watching",
+          "created_at"
+        ],
+        "title": "RoomOut",
+        "description": "A room, as the listing and the room page draw it.\n\n`code` is null when the caller has no business with it — a private room they\nare not in. For a public room it is not withheld: being listed *is* an\ninvitation, and the code is how one is accepted."
+      },
+      "RoomPage": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RoomOut"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "items"
+        ],
+        "title": "RoomPage"
+      },
+      "ScheduleOut": {
+        "properties": {
+          "channel_id": {
+            "type": "integer",
+            "title": "Channel Id"
+          },
+          "day": {
+            "type": "string",
+            "format": "date",
+            "title": "Day"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ProgrammeOut"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "channel_id",
+          "day",
+          "items"
+        ],
+        "title": "ScheduleOut"
+      },
+      "SeasonOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "number": {
+            "type": "integer",
+            "title": "Number"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "short_description": {
+            "type": "string",
+            "title": "Short Description"
+          },
+          "frames": {
+            "items": {
+              "$ref": "#/components/schemas/FrameOut"
+            },
+            "type": "array",
+            "title": "Frames"
+          },
+          "player_data": {
+            "additionalProperties": {
+              "items": {
+                "$ref": "#/components/schemas/SourceOut"
+              },
+              "type": "array"
+            },
+            "type": "object",
+            "title": "Player Data"
+          },
+          "episode_players": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "items": {
+                  "$ref": "#/components/schemas/SourceOut"
+                },
+                "type": "array"
+              },
+              "type": "object"
+            },
+            "type": "object",
+            "title": "Episode Players"
+          },
+          "players": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Players"
+          },
+          "available_players": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Available Players"
+          },
+          "rights_blocked": {
+            "type": "boolean",
+            "title": "Rights Blocked"
+          },
+          "ready_episodes_count": {
+            "type": "integer",
+            "title": "Ready Episodes Count"
+          },
+          "episodes": {
+            "items": {
+              "$ref": "#/components/schemas/EpisodeOut"
+            },
+            "type": "array",
+            "title": "Episodes"
+          },
+          "release_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Release Date"
+          },
+          "poster_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Poster Url"
+          },
+          "trailer_youtube_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trailer Youtube Id"
+          },
+          "last_ready_episode": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Ready Episode"
+          },
+          "last_url_suffix": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Url Suffix"
+          },
+          "is_loaded": {
+            "type": "boolean",
+            "title": "Is Loaded"
+          },
+          "is_episodic": {
+            "type": "boolean",
+            "title": "Is Episodic"
+          },
+          "is_playable": {
+            "type": "boolean",
+            "title": "Is Playable"
+          },
+          "playable_episodes": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Playable Episodes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "description",
+          "short_description",
+          "frames",
+          "player_data",
+          "episode_players",
+          "players",
+          "available_players",
+          "rights_blocked",
+          "ready_episodes_count",
+          "episodes",
+          "release_date",
+          "poster_url",
+          "trailer_youtube_id",
+          "last_ready_episode",
+          "last_url_suffix",
+          "is_loaded",
+          "is_episodic",
+          "is_playable",
+          "playable_episodes"
+        ],
+        "title": "SeasonOut",
+        "description": "A season, or the single pseudo-season a film is wrapped in.\n\n`player_data` is keyed by provider for a film; `episode_players` is keyed by\nepisode number and then by provider for a series. Exactly one of them is\nfilled — upstream ships both shapes under the same key, and flattening them\nwould be a lie about which is which."
+      },
+      "SeatOut": {
+        "properties": {
+          "room": {
+            "$ref": "#/components/schemas/RoomOut"
+          },
+          "token": {
+            "type": "string",
+            "title": "Token"
+          },
+          "me": {
+            "$ref": "#/components/schemas/WatcherOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "room",
+          "token",
+          "me"
+        ],
+        "title": "SeatOut",
+        "description": "A room and the seat you have just taken in it.\n\n`token` is the only credential this feature has, and this is the one and\nonly time it is said out loud. It stands for the seat, not for you: an\nanonymous host who loses it loses the room, which is the honest cost of\nnever having said who you are."
+      },
+      "SectionFiltersOut": {
+        "properties": {
+          "popular_genres": {
+            "items": {
+              "$ref": "#/components/schemas/GenreOut"
+            },
+            "type": "array",
+            "title": "Popular Genres"
+          },
+          "other_genres": {
+            "items": {
+              "$ref": "#/components/schemas/GenreOut"
+            },
+            "type": "array",
+            "title": "Other Genres"
+          },
+          "years": {
+            "items": {
+              "$ref": "#/components/schemas/YearOut"
+            },
+            "type": "array",
+            "title": "Years"
+          },
+          "total_count": {
+            "type": "integer",
+            "title": "Total Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "popular_genres",
+          "other_genres",
+          "years",
+          "total_count"
+        ],
+        "title": "SectionFiltersOut"
+      },
+      "SessionOut": {
+        "properties": {
+          "token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Token"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "token",
+          "expires_at"
+        ],
+        "title": "SessionOut",
+        "description": "`token` is null when the one you sent still works — keep using it."
+      },
+      "ShowingOut": {
+        "properties": {
+          "media": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MediaModel"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "playback": {
+            "$ref": "#/components/schemas/PlaybackOut"
+          }
+        },
+        "type": "object",
+        "required": [
+          "media",
+          "playback"
+        ],
+        "title": "ShowingOut",
+        "description": "`media` is null in a room where nobody has put anything on yet."
+      },
+      "SliceOut": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "installs": {
+            "type": "integer",
+            "title": "Installs"
+          },
+          "active": {
+            "type": "integer",
+            "title": "Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "installs",
+          "active"
+        ],
+        "title": "SliceOut"
+      },
+      "SourceOut": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "link": {
+            "type": "string",
+            "title": "Link"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "link"
+        ],
+        "title": "SourceOut"
+      },
+      "StateIn": {
+        "properties": {
+          "state": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JsonValue"
+            },
+            "type": "object",
+            "title": "State"
+          }
+        },
+        "type": "object",
+        "title": "StateIn",
+        "description": "What the box is doing. The server does not interpret it."
+      },
+      "TrendOut": {
+        "properties": {
+          "value": {
+            "type": "integer",
+            "title": "Value"
+          },
+          "previous": {
+            "type": "integer",
+            "title": "Previous"
+          },
+          "change": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Change"
+          }
+        },
+        "type": "object",
+        "required": [
+          "value",
+          "previous",
+          "change"
+        ],
+        "title": "TrendOut"
+      },
+      "UpdateOut": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "none",
+              "optional",
+              "required"
+            ],
+            "title": "Action"
+          },
+          "channel": {
+            "type": "string",
+            "enum": [
+              "store",
+              "self",
+              "auto"
+            ],
+            "title": "Channel"
+          },
+          "current": {
+            "type": "string",
+            "title": "Current"
+          },
+          "latest": {
+            "type": "string",
+            "title": "Latest"
+          },
+          "minimum": {
+            "type": "string",
+            "title": "Minimum"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "action",
+          "channel",
+          "current",
+          "latest",
+          "minimum",
+          "url"
+        ],
+        "title": "UpdateOut"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WatcherOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "is_host": {
+            "type": "boolean",
+            "title": "Is Host"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "is_host"
+        ],
+        "title": "WatcherOut",
+        "description": "One person in the room. `id` names the seat, never the account."
+      },
+      "WindowOut": {
+        "properties": {
+          "days": {
+            "type": "integer",
+            "title": "Days"
+          },
+          "active_days": {
+            "type": "integer",
+            "title": "Active Days"
+          },
+          "since": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Since"
+          },
+          "until": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Until"
+          }
+        },
+        "type": "object",
+        "required": [
+          "days",
+          "active_days",
+          "since",
+          "until"
+        ],
+        "title": "WindowOut",
+        "description": "What every number below was measured over."
+      },
+      "YearOut": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "is_range": {
+            "type": "boolean",
+            "title": "Is Range"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "slug",
+          "is_range"
+        ],
+        "title": "YearOut"
+      },
+      "api__modules__playback__router__StreamOut": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url",
+          "label",
+          "source"
+        ],
+        "title": "StreamOut"
+      },
+      "api__modules__tv__schemas__StreamOut": {
+        "properties": {
+          "channel_id": {
+            "type": "integer",
+            "title": "Channel Id"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "plain_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plain Url"
+          },
+          "direct_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Direct Url"
+          },
+          "refresh_in": {
+            "type": "integer",
+            "title": "Refresh In"
+          }
+        },
+        "type": "object",
+        "required": [
+          "channel_id",
+          "url",
+          "plain_url",
+          "direct_url",
+          "refresh_in"
+        ],
+        "title": "StreamOut",
+        "description": "A lease, not an address.\n\nIt carries a session and goes stale after `refresh_in`. Store the channel id\nand ask again; do not store the URL."
+      }
+    }
+  }
+}

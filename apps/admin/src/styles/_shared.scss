@@ -1,0 +1,25 @@
+// Prepended to every style block in the app — so it must emit no CSS of its
+// own, only things that are free until used.
+
+// Where the layout stops being a single column. Named rather than repeated:
+// a magic number in six components is six chances to change five of them.
+$stack-below: 900px;
+$narrow: 600px;
+
+@mixin stacked {
+  @media (max-width: $stack-below) {
+    @content;
+  }
+}
+
+@mixin narrow {
+  @media (max-width: $narrow) {
+    @content;
+  }
+}
+
+// Columns of figures have to line up; prose set in the same face must not.
+@mixin figures {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}

@@ -1,0 +1,13 @@
+name: cors_proxy
+description: A development proxy that lets the web build reach hosts which do not answer to its origin.
+version: 0.1.0
+publish_to: none
+
+resolution: workspace
+
+environment:
+  sdk: ^3.8.0
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.0

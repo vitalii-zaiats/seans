@@ -1,0 +1,152 @@
+// The admin dashboard's numbers.
+//
+// Mirrors `apps/api/src/api/modules/stats/`. Every RPC is PERMISSION_DENIED for
+// a caller without the admin role: how many copies of the app exist, and on
+// what, is not something a signed-in stranger gets to read.
+
+syntax = "proto3";
+
+package supermovies.stats.v1;
+
+import "google/protobuf/timestamp.proto";
+
+service StatsService {
+  // Totals, a day-by-day series, and three breakdowns, over one window.
+  //
+  // One call rather than five because they are useless apart: a total with no
+  // window is a number nobody can act on, and a breakdown drawn over a
+  // different stretch of time than the chart above it is a bug that looks like
+  // data.
+  rpc GetInstallOverview(GetInstallOverviewRequest) returns (InstallOverview);
+
+  // The installs themselves, most recently seen first.
+  //
+  // Paged separately from the overview on purpose: scrolling a table should not
+  // re-measure a month.
+  rpc ListInstalls(ListInstallsRequest) returns (ListInstallsResponse);
+}
+
+message GetInstallOverviewRequest {
+  // Window length in whole UTC days, 1–365. Default 30.
+  int32 days = 1;
+  // How recently an install must have launched to count as active, 1–365.
+  // Default 7.
+  int32 active_days = 2;
+  // Rows per breakdown, 1–50. Default 8.
+  int32 top = 3;
+}
+
+message InstallOverview {
+  google.protobuf.Timestamp generated_at = 1;
+  Window window = 2;
+
+  // Every install ever written down, ignoring the window.
+  int32 total = 3;
+
+  Trend created = 4;
+  Trend active = 5;
+
+  // One entry per day of the window, silent days included. A series that
+  // skipped them would draw a quiet week as a straight line between two busy
+  // days instead of a floor.
+  repeated Day daily = 6;
+
+  repeated Slice platforms = 7;
+  repeated Slice versions = 8;
+  repeated Slice vendors = 9;
+}
+
+// What every number above was measured over. Whole UTC days: a window ending
+// "now" puts a partial day at the right-hand end of every chart, and a partial
+// day always looks like a collapse.
+message Window {
+  int32 days = 1;
+  int32 active_days = 2;
+  google.protobuf.Timestamp since = 3;
+  // Exclusive — midnight after the last day, so two windows never share one.
+  google.protobuf.Timestamp until = 4;
+}
+
+// A number, and the same number over the window immediately before it.
+message Trend {
+  int32 value = 1;
+  int32 previous = 2;
+  // The move as a fraction: `0.12` is up twelve percent.
+  //
+  // Absent when `previous` is zero. Zero to anything is not "+100%" and not
+  // infinite growth either — it is a comparison that cannot be made, and a
+  // client that gets nothing here prints a dash instead of a rate.
+  optional double change = 3;
+}
+
+message Day {
+  // `2026-08-23`. A calendar day in UTC, with no time and no zone — a Timestamp
+  // at midnight would invite somebody to convert it.
+  string day = 1;
+
+  // Installs first written down that day. The honest "new" number.
+  int32 created = 2;
+
+  // Installs whose *most recent* launch fell on that day.
+  //
+  // A floor, not a count of activity: the row keeps one `last_seen_at`, so an
+  // install that ran on Monday and again on Friday is counted on Friday only,
+  // and yesterday's number shrinks as they come back. Right for "who has gone
+  // quiet", wrong for "daily actives" — which would need a table this schema
+  // deliberately does not keep.
+  int32 seen = 3;
+}
+
+// One bar of a breakdown — a platform, a version, an installer.
+message Slice {
+  // Absent where the dimension genuinely has no value: outside android there is
+  // no installer package to report, and an invented "unknown" would be a claim
+  // about those rows rather than a gap in them.
+  optional string name = 1;
+  int32 installs = 2;
+  // How many of them have launched since the activity cutoff.
+  int32 active = 3;
+}
+
+message ListInstallsRequest {
+  // 1–200. Default 25.
+  int32 limit = 1;
+  int32 offset = 2;
+  // Unset means every platform. A value this build has never heard of is
+  // INVALID_ARGUMENT rather than an empty page: "nobody is on Solaris" and
+  // "there is no such platform" are different answers and a dashboard would
+  // draw them the same.
+  optional Platform platform = 3;
+  // A whole install uuid, or part of a version or an installer package. A uuid
+  // is matched exactly — matching it as a prefix would mean casting the column
+  // to text, which is spelled differently on each dialect and buys nothing.
+  optional string query = 4;
+}
+
+message ListInstallsResponse {
+  repeated InstallRecord items = 1;
+  int32 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message InstallRecord {
+  // The uuid the client generated, never the row's own id.
+  string id = 1;
+  string platform = 2;
+  optional string vendor = 3;
+  string version = 4;
+  google.protobuf.Timestamp registered_at = 5;
+  google.protobuf.Timestamp last_seen_at = 6;
+}
+
+// Spelled out again rather than imported from `supermovies.installs.v1` —
+// see the README. If one side ever renames a value, the mismatch surfaces
+// here, at the seam, instead of leaking through to the wire.
+enum Platform {
+  PLATFORM_UNSPECIFIED = 0;
+  PLATFORM_ANDROID = 1;
+  PLATFORM_LINUX = 2;
+  PLATFORM_WINDOWS = 3;
+  PLATFORM_WEB = 4;
+}

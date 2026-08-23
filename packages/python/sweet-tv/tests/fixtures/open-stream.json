@@ -1,0 +1,21 @@
+{
+ "result": "OK",
+ "scheme": "HTTP_HLS",
+ "http_stream": {
+  "host": {
+   "address": "stitch-ua5.fastad.pro",
+   "port": 80
+  },
+  "url": "/main.m3u8?c=3554&dt=2&o=aHR0cHM6Ly9obHMxMy5zd2VldC50di9zdHJlYW0vNG41emV6dnFjOXY3em1lZ2VpeDh5c3BreXpucTVxY2FreWJ5NTU2amQ0YzJ5eTNycnlrZWZwNXg1a2t4aG00aWhkYTdxNmd6anA4dHdwa2dyOHhobnVkbWc1cXQ1emF5cXp5c3c1bnRtZ3dwcDhtNHZxbmY3Znp2NDNkOWt6ajJhNm11ZjR0azd4ZWRqeWd5dmlhYWJ1NnpmY2RycWQ4dTZzZ2doNnZwcXR2d2pzMjk5MjRqOHVhOXRqenlqZ3Yzdzd0cDZoaHV6Y3NzPT09PQ%3D%3D&p=1&sid=1472494492817373788&u=14019264996521934633&t=t"
+ },
+ "stream_id": 1796626390,
+ "update_interval": 300,
+ "buffer_params": {
+  "min_buffer_ms": 0,
+  "max_buffer_ms": 0,
+  "buffer_for_playback_ms": 0,
+  "buffer_for_playback_after_rebuffer_ms": 0
+ },
+ "url": "https://stitch-ua5.fastad.pro/main.m3u8?c=3554&dt=2&o=aHR0cHM6Ly9obHMxMy5zd2VldC50di9zdHJlYW0vNG41emV6dnFjOXY3em1lZ2VpeDh5c3BreXpucTVxY2FreWJ5NTU2amQ0YzJ5eTNycnlrZWZwNXg1a2t4aG00aWhkYTdxNmd6anA4dHdwa2dyOHhobnVkbWc1cXQ1emF5cXp5c3c1bnRtZ3dwcDhtNHZxbmY3Znp2NDNkOWt6ajJhNm11ZjR0azd4ZWRqeWd5dmlhYWJ1NnpmY2RycWQ4dTZzZ2doNnZwcXR2d2pzMjk5MjRqOHVhOXRqenlqZ3Yzdzd0cDZoaHV6Y3NzPT09PQ%3D%3D&p=1&sid=1472494492817373788&u=14019264996521934633&t=t",
+ "chrome_cast_url": "https://hls13.sweet.tv/stream/a7kk7w9s96w4ubsfr7f6gk4eciixm2bm6wnsaqnz5nf4wd9kmkasj5cmumewqu6egicwux6ntggev4isuwsk5vgsthm2nr64p2rcinq7gjbinqwh6zgtrxjnfqhfrcvdaq6jnwgyhscy48nfsk988qz75yhh9spvb236q24vb8f4dmit6hn24hqtxravzat2gvuns6mqf7sa===="
+}

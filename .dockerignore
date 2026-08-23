@@ -1,0 +1,53 @@
+# Every image in this repo builds from the *root*: two of them have to, because
+# the uv workspace and the pub workspace both resolve from here, and a build
+# context that starts inside one app cannot see the packages it depends on. So
+# this file matters more than usual — without it the context is the whole tree,
+# node_modules and .dart_tool included.
+
+.git/
+.github/
+
+# ── Python ───────────────────────────────────────────────────────────────────
+.venv/
+**/__pycache__/
+**/*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+**/*.egg-info/
+
+# ── Node ─────────────────────────────────────────────────────────────────────
+**/node_modules/
+**/dist/
+# Nuxt's working directories: regenerated inside the image, and copying a
+# host-built `.output` in would ship whatever was last built on somebody's
+# laptop rather than what the Dockerfile just produced.
+**/.nuxt/
+**/.output/
+
+# ── Dart / Flutter ───────────────────────────────────────────────────────────
+**/.dart_tool/
+**/build/
+# ...except the one build output an image actually packages. `apps/tv/Dockerfile`
+# says why it takes a bundle rather than producing one.
+!apps/tv/build/web/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+# Points at one machine's SDK. Baking it in makes a build that only works there.
+apps/tv/android/local.properties
+
+# ── Editors, OS, secrets ─────────────────────────────────────────────────────
+.idea/
+.vscode/
+**/.DS_Store
+**/.env
+**/.env.local
+*.iml
+
+# ── Things no image ever needs ───────────────────────────────────────────────
+tools/
+
+# Markdown is deliberately NOT excluded. Every Python package here declares
+# `readme = "README.md"`, and hatchling refuses to build a wheel when the file
+# the metadata names is missing — so dropping them turns a docs tidy-up into a
+# failed image build.

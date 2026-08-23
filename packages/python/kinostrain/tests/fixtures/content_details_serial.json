@@ -1,0 +1,213 @@
+{
+  "data": {
+    "id": 4814,
+    "name": "Зовнішні мілини",
+    "originalName": "Outer Banks",
+    "slug": "zovnisni-milini",
+    "type": "serial",
+    "format": "serial",
+    "imdbMark": 7.5,
+    "ratingsCount": 0,
+    "averageRating": null,
+    "commentsCount": 0,
+    "posterUrl": "https://api.kinostrain.com/uploads/content/poster/6a6d0c1cafe8f361019875.webp",
+    "sliderUrl": "https://api.kinostrain.com/uploads/content/slider/6a6d0c1d73f17543870416.webp",
+    "yearStart": 2020,
+    "yearEnd": 2026,
+    "genres": [
+      {
+        "name": "драма",
+        "slug": "drama"
+      },
+      {
+        "name": "детектив",
+        "slug": "detektiv"
+      },
+      {
+        "name": "трилер",
+        "slug": "triler"
+      },
+      {
+        "name": "екшн",
+        "slug": "eksn"
+      },
+      {
+        "name": "романтичний",
+        "slug": "romanticnij"
+      },
+      {
+        "name": "кримінал",
+        "slug": "kriminal"
+      }
+    ],
+    "ageRestrictions": 18,
+    "shortDescription": "Група підлітків із прибережного містечка вирушає на пошуки легендарного скарбу, пов’язаного зі зникненням батька одного з них.",
+    "time": "50 хв",
+    "country": "США",
+    "seasons": [
+      {
+        "id": 7737,
+        "number": 1,
+        "description": "На островах Аутер-Бенкс у Північній Кароліні підліток Джон Бі живе без батька, який зник під час пошуків затонулого корабля Royal Merchant. Разом із друзями – Джей-Джеєм, Поупом і Кіарою – він знаходить підказки, що можуть привести до легендарного золота. Розслідування швидко втягуює компанію в конфлікт із заможними мешканцями острова, небезпечними злочинцями та людьми, які також полюють за скарбом. До групи приєднується Сара Кемерон, дочка впливової родини. Пошуки золота поступово перетворюються на боротьбу за виживання, а Джон Бі дедалі ближче підходить до правди про зникнення свого батька.",
+        "shortDescription": "Група підлітків із прибережного містечка вирушає на пошуки легендарного скарбу, пов’язаного зі зникненням батька одного з них.",
+        "releaseDate": "2020-04-15",
+        "posterUrl": null,
+        "trailerYoutubeId": null,
+        "frames": [
+          {
+            "url": "https://api.kinostrain.com/uploads/season/frame/fdf829b43b5e26a3326585644929de13.webp",
+            "source": "still",
+            "episodeNumber": 1,
+            "position": 0
+          },
+          {
+            "url": "https://api.kinostrain.com/uploads/season/frame/cc90fa951b2b01490918c9358aeb6888.webp",
+            "source": "still",
+            "episodeNumber": 2,
+            "position": 1
+          }
+        ],
+        "playerData": {
+          "1": {
+            "ashdi": [
+              {
+                "name": "Le-Doyen",
+                "link": "https://ashdi.vip/vod/140685"
+              },
+              {
+                "name": "DniproFilm",
+                "link": "https://ashdi.vip/vod/89983"
+              },
+              {
+                "name": "Субтитри",
+                "link": "https://ashdi.vip/vod/145797"
+              }
+            ]
+          },
+          "2": {
+            "ashdi": [
+              {
+                "name": "Le-Doyen",
+                "link": "https://ashdi.vip/vod/140686"
+              },
+              {
+                "name": "DniproFilm",
+                "link": "https://ashdi.vip/vod/89984"
+              },
+              {
+                "name": "Субтитри",
+                "link": "https://ashdi.vip/vod/145798"
+              }
+            ]
+          },
+          "3": {
+            "ashdi": [
+              {
+                "name": "Le-Doyen",
+                "link": "https://ashdi.vip/vod/140687"
+              },
+              {
+                "name": "DniproFilm",
+                "link": "https://ashdi.vip/vod/90148"
+              },
+              {
+                "name": "Субтитри",
+                "link": "https://ashdi.vip/vod/145799"
+              }
+            ]
+          }
+        },
+        "players": [
+          "ashdi",
+          "tortuga",
+          "vidsrc"
+        ],
+        "rightsBlocked": false,
+        "lastReadyEpisode": 10,
+        "readyEpisodesCount": 10,
+        "episodes": [
+          {
+            "number": 1,
+            "name": "Пілотний епізод",
+            "airDate": "2020-04-15",
+            "ready": true
+          },
+          {
+            "number": 2,
+            "name": "Щасливий компас",
+            "airDate": "2020-04-15",
+            "ready": true
+          },
+          {
+            "number": 3,
+            "name": "Заборонена зона",
+            "airDate": "2020-04-15",
+            "ready": true
+          }
+        ],
+        "urlSuffixes": null,
+        "lastUrlSuffix": null
+      },
+      {
+        "id": 7738,
+        "number": 2,
+        "description": null,
+        "shortDescription": null,
+        "releaseDate": null,
+        "posterUrl": null,
+        "trailerYoutubeId": null,
+        "playerData": null,
+        "players": null,
+        "lastReadyEpisode": 10,
+        "readyEpisodesCount": 10,
+        "lastUrlSuffix": null
+      }
+    ],
+    "cast": [
+      {
+        "name": "Чейз Стокс",
+        "originalName": "Chase Stokes",
+        "slug": "chase-stokes",
+        "character": "John B. Routledge",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a6d0c21bc366038472825.webp",
+        "gender": 2
+      },
+      {
+        "name": "Медлін Клайн",
+        "originalName": "Madelyn Cline",
+        "slug": "madelyn-cline",
+        "character": "Sarah Cameron",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/69eb326e367f5566885576.webp",
+        "gender": 1
+      },
+      {
+        "name": "Медісон Бейлі",
+        "originalName": "Madison Bailey",
+        "slug": "madison-bailey",
+        "character": "Kiara Carrera",
+        "posterUrl": "https://api.kinostrain.com/uploads/person/poster/6a6d0c224ba84921908810.webp",
+        "gender": 1
+      }
+    ],
+    "directors": [
+      {
+        "name": "Майкл Г. Джефферсон",
+        "originalName": "Michael G. Jefferson",
+        "slug": "michael-g-jefferson",
+        "character": null,
+        "posterUrl": null,
+        "gender": 2
+      },
+      {
+        "name": "Джонас Пейт",
+        "originalName": "Jonas Pate",
+        "slug": "jonas-pate",
+        "character": null,
+        "posterUrl": null,
+        "gender": 2
+      }
+    ],
+    "trailerYoutubeId": "ZGtD8ZbgkZY",
+    "franchise": null
+  }
+}

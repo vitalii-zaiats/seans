@@ -1,0 +1,238 @@
+// Guests, claims, logins, tokens — and a television asking a phone to sign it in.
+//
+// Mirrors `apps/api/src/api/modules/accounts/`. Two services, matching the two
+// routers that module exports: what any caller may do, and what an admin may.
+
+syntax = "proto3";
+
+package supermovies.accounts.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// A guest and a member are the same row. The difference is whether it has been
+// claimed; the role is orthogonal to that.
+enum Role {
+  ROLE_UNSPECIFIED = 0;
+  ROLE_USER = 1;
+  ROLE_ADMIN = 2;
+}
+
+// Whether a television's request has been approved yet.
+enum LinkStatus {
+  LINK_STATUS_UNSPECIFIED = 0;
+  // The ordinary answer for as long as somebody is walking to their phone. A
+  // status rather than an error: a box polling this should not have to read
+  // NOT_FOUND to learn it is still waiting.
+  LINK_STATUS_PENDING = 1;
+  LINK_STATUS_LINKED = 2;
+}
+
+service AccountService {
+  // Who the token belongs to. UNAUTHENTICATED when there is none, or it is
+  // stale. Only reads: in an API where "the user declined an account" is a
+  // supported state, a call that creates one as a side effect of being asked a
+  // question is a trap.
+  rpc GetMe(GetMeRequest) returns (Account);
+
+  // A guest on demand, for a client with no install to announce.
+  //
+  // Deliberately unconditional: calling it while already signed in starts a
+  // second, empty identity rather than handing back the first.
+  rpc StartGuest(StartGuestRequest) returns (Identity);
+
+  // Turn the guest you already are into an account you can log back into.
+  //
+  // Fills the columns in on the row that already owns the history — no copying,
+  // no merging, no "import your guest data" screen. Rotates the token, so the
+  // one you were holding stops working.
+  rpc Claim(ClaimRequest) returns (Identity);
+
+  // The same, for somebody who was never a guest.
+  rpc Register(RegisterRequest) returns (Identity);
+
+  rpc LogIn(LogInRequest) returns (Identity);
+
+  // Takes the token back. Rows, not JWTs, so logging out actually logs out.
+  rpc LogOut(LogOutRequest) returns (LogOutResponse);
+
+  rpc Rename(RenameRequest) returns (Account);
+
+  // The way back to local-only: deletes the account and its sessions. No soft
+  // delete — an account somebody asked us to forget is not one we keep a copy
+  // of.
+  rpc Forget(ForgetRequest) returns (ForgetResponse);
+
+  // --- a phone signing a television in ------------------------------------
+  //
+  // Typing an email with a remote is miserable, so the set is made elsewhere:
+  // the box shows a code, a phone opens it, whoever is signed in there
+  // approves, and the box collects a session of its own.
+  //
+  // Two secrets, and they are not the same one. `code` is short because it is
+  // read off a screen and carried in a QR, so it is guessable in bulk — which
+  // is why knowing it only lets a phone *approve*. `secret` never leaves the
+  // television, and only its holder can collect the session. An approval a
+  // stranger tricked somebody into giving still hands the token to the box that
+  // asked, and to nothing else.
+
+  // The television asks. Called with the box's own session, so the link knows
+  // which install it belongs to.
+  rpc RequestDeviceLink(RequestDeviceLinkRequest) returns (DeviceLink);
+
+  // What the phone is about to approve, before it approves it.
+  rpc GetDeviceLink(GetDeviceLinkRequest) returns (DeviceLinkStatus);
+
+  // The phone approves. Needs a signed-in caller — that is whose account the
+  // television ends up on.
+  rpc ApproveDeviceLink(ApproveDeviceLinkRequest) returns (DeviceLinkStatus);
+
+  // The television collects. Handed over once; a second call with the same
+  // secret gets nothing.
+  rpc CollectDeviceSession(CollectDeviceSessionRequest) returns (DeviceSession);
+}
+
+// The admin's view of who exists. Every RPC here is PERMISSION_DENIED for a
+// caller without the role.
+service UserAdminService {
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+
+  // A guest cannot be made an admin — claim the account first. The last admin
+  // cannot be demoted, because an instance with none has no way back in.
+  rpc SetRole(SetRoleRequest) returns (Account);
+}
+
+// The public id, never the row's own. Sequential ids leak how many users exist
+// and make one guessable from another.
+message Account {
+  string id = 1;
+  string display_name = 2;
+  optional string email = 3;
+  bool is_guest = 4;
+  bool is_admin = 5;
+}
+
+message SessionInfo {
+  // Absent when the caller already had one that still works.
+  optional string token = 1;
+  google.protobuf.Timestamp expires_at = 2;
+}
+
+// A user together with the session that proves it. Returned when a session is
+// created; every other response carries the account alone, because the token is
+// the client's to keep.
+message Identity {
+  SessionInfo session = 1;
+  Account account = 2;
+}
+
+message GetMeRequest {}
+
+message StartGuestRequest {}
+
+message ClaimRequest {
+  string email = 1;
+  // At least 8 characters. Hashed with scrypt — memory-hard on purpose,
+  // unlike the session tokens, which are 256 random bits and need no work
+  // factor at all.
+  string password = 2;
+  optional string display_name = 3;
+}
+
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+  optional string display_name = 3;
+  // Only a shell setting up the first administrator sends this; over the wire
+  // it is ignored, because an endpoint that mints admins is not an endpoint.
+  // Left here so the shape matches `AccountService.register`, which does take
+  // it — see `uv run api admin`.
+  reserved 4;
+}
+
+message LogInRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LogOutRequest {}
+
+message LogOutResponse {}
+
+message RenameRequest {
+  // Trimmed, and 1–80 characters once trimmed. Whitespace alone is refused
+  // rather than accepted as a blank name.
+  string display_name = 1;
+}
+
+message ForgetRequest {}
+
+message ForgetResponse {}
+
+message ListUsersRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+  // Unset lists everyone; true lists only guests, false only claimed accounts.
+  optional bool guests = 3;
+}
+
+message ListUsersResponse {
+  repeated Account items = 1;
+  // The envelope every listing uses. Spelled out here rather than imported —
+  // see the README.
+  int32 total = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message SetRoleRequest {
+  // The public id, as `Account.id` carries it.
+  string account_id = 1;
+  Role role = 2;
+}
+
+message RequestDeviceLinkRequest {
+  // What to tell the person before they approve — "Android TV", "macOS". Not
+  // proof of anything, but it is the difference between approving your own
+  // living room and approving somebody else's.
+  optional string device_name = 1;
+}
+
+message DeviceLink {
+  // Short, and read aloud sometimes: no O/0 or I/1 in the alphabet that makes
+  // it.
+  string code = 1;
+  // Never leaves the box. The only thing that can collect the session.
+  string secret = 2;
+  // `/r/H7KQ2M` — a path, not a URL. The server has no idea what address this
+  // install is reached on, and whatever draws the QR does. The code sits in the
+  // path rather than a query so the whole thing survives being read aloud,
+  // retyped, or shortened by something in between.
+  string verify_path = 3;
+  // Seconds. Never negative: an expired code has no time left, it has none.
+  int32 expires_in = 4;
+}
+
+message GetDeviceLinkRequest {
+  string code = 1;
+}
+
+message ApproveDeviceLinkRequest {
+  string code = 1;
+}
+
+message DeviceLinkStatus {
+  string code = 1;
+  optional string device_name = 2;
+  bool approved = 3;
+  int32 expires_in = 4;
+}
+
+message CollectDeviceSessionRequest {
+  string secret = 1;
+}
+
+message DeviceSession {
+  LinkStatus status = 1;
+  // Set only when `status` is LINKED.
+  optional Identity identity = 2;
+}

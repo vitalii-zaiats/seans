@@ -1,0 +1,9 @@
+// Vuetify's own SASS variables. Kept deliberately small: the theme (colours,
+// light/dark) is configured in TypeScript, where it can be read alongside the
+// chart palette that has to agree with it. This file is for the handful of
+// things Vuetify only exposes at build time.
+@use 'vuetify/settings' with (
+  // The same stack the charts label their axes in, so a tick and a table cell
+  // are set in one typeface rather than two that nearly match.
+  $body-font-family: (system-ui, -apple-system, 'Segoe UI', sans-serif)
+);

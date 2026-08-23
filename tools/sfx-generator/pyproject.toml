@@ -1,0 +1,13 @@
+[project]
+name = "sfx-generator"
+version = "0.1.0"
+description = "Процедурний генератор UI-звуків та амбієнт-петель для Android TV"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "soundfile>=0.12",
+]
+
+[tool.uv]
+package = false

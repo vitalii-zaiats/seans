@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:super_movies_api/super_movies_api.dart';
 
@@ -24,8 +26,36 @@ class PairingCubit extends Cubit<PairingState> {
   final SuperMoviesApi _api;
   final Startup _startup;
 
+  /// Completed to stop the poll that is running, if one is.
+  ///
+  /// One per run rather than one per cubit: a code can be asked for again —
+  /// "показати новий код" on the account screen does exactly that — and a
+  /// single completer, once used, would stop every later poll the moment it
+  /// started.
+  ///
+  /// `isClosed` alone does not do this job. It silences the *emit*; the loop
+  /// underneath carries on asking. A pairing screen opened in a browser and
+  /// left behind went on polling `/auth/device/collect` every two seconds
+  /// until the code expired, for a code nobody was going to approve.
+  Completer<void>? _polling;
+
+  /// Stop asking. Safe to call when nothing is running, and twice.
+  ///
+  /// Public because leaving the screen is not the only way to abandon a
+  /// pairing: the wizard offers "continue as a guest" right beside the code,
+  /// and that walks on while this cubit stays alive underneath.
+  void stop() {
+    final polling = _polling;
+    _polling = null;
+    if (polling != null && !polling.isCompleted) polling.complete();
+  }
+
   /// Ask for a code, put it on screen, and wait.
   Future<void> start() async {
+    // Whatever was being asked for is superseded by what is about to be.
+    stop();
+    final gone = _polling = Completer<void>();
+
     emit(const PairingState(status: PairingStatus.asking));
 
     final DeviceLink link;
@@ -48,6 +78,7 @@ class PairingCubit extends Cubit<PairingState> {
       final identity = await _api.awaitDeviceLink(
         link.secret,
         timeout: Duration(seconds: link.expiresIn),
+        until: gone.future,
       );
       if (isClosed) return;
 
@@ -80,5 +111,11 @@ class PairingCubit extends Cubit<PairingState> {
       if (isClosed) return;
       emit(state.copyWith(status: PairingStatus.failed, error: error.message));
     }
+  }
+
+  @override
+  Future<void> close() {
+    stop();
+    return super.close();
   }
 }

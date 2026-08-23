@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:iptv/iptv.dart';
@@ -170,8 +171,16 @@ class TvCubit extends Cubit<TvState> {
   };
 
   Future<String> _sweetUrl(int channelId) async {
-    final stream = await _api.stream(channelId);
-    return stream.plainUrl ?? stream.url;
+    // A browser cannot read the stitched playlist — its host answers no
+    // `access-control-allow-origin` — so on the web the addresses come back
+    // pointing at `/stream` instead. A box asks for them untouched and plays
+    // them host to viewer.
+    final stream = await _api.stream(channelId, useProxy: kIsWeb);
+    // And on the web `plainUrl` is the wrong one to prefer: it is the same
+    // stream over plain http, which exists because Android rejects the
+    // stitching host's certificate chain. A page served over https cannot load
+    // it at all.
+    return kIsWeb ? stream.url : (stream.plainUrl ?? stream.url);
   }
 
   /// What is on this channel and what follows, when the source knows.

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ashdi_finder/ashdi_finder.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'package:super_movies_api/super_movies_api.dart';
 
@@ -10,32 +11,36 @@ import 'package:super_movies_api/super_movies_api.dart';
 /// tried in turn until one yields an `.m3u8`, so a title whose first provider
 /// has gone quiet still plays.
 class StreamResolver {
-  StreamResolver({http.Client? client, AshdiResolver? ashdi})
-    : _client = client ?? http.Client(),
-      _ownsClient = client == null,
-      _ashdi =
-          ashdi ??
-          AshdiResolver(
-            referer: _referer,
-            fetch: (url, {referer}) async {
-              final response = await (client ?? http.Client()).get(
-                url,
-                headers: {
-                  // The embed page serves a different body — or none — to a
-                  // request that does not look like the site's own iframe.
-                  'Referer': ?referer,
-                  'User-Agent': _userAgent,
-                },
-              );
-              if (response.statusCode != 200) {
-                throw AshdiException(
-                  'player page answered ${response.statusCode}',
-                  url: url,
-                );
-              }
-              return utf8.decode(response.bodyBytes, allowMalformed: true);
-            },
-          );
+  StreamResolver({
+    http.Client? client,
+    AshdiResolver? ashdi,
+    SuperMoviesApi? api,
+  }) : _client = client ?? http.Client(),
+       _ownsClient = client == null,
+       _api = api,
+       _ashdi =
+           ashdi ??
+           AshdiResolver(
+             referer: _referer,
+             fetch: (url, {referer}) async {
+               final response = await (client ?? http.Client()).get(
+                 url,
+                 headers: {
+                   // The embed page serves a different body — or none — to a
+                   // request that does not look like the site's own iframe.
+                   'Referer': ?referer,
+                   'User-Agent': _userAgent,
+                 },
+               );
+               if (response.statusCode != 200) {
+                 throw AshdiException(
+                   'player page answered ${response.statusCode}',
+                   url: url,
+                 );
+               }
+               return utf8.decode(response.bodyBytes, allowMalformed: true);
+             },
+           );
 
   static const _referer = 'https://kinostrain.com/';
 
@@ -52,6 +57,39 @@ class StreamResolver {
   final http.Client _client;
   final bool _ownsClient;
   final AshdiResolver _ashdi;
+
+  /// Handed over on the web, and only used there — see [_throughApi].
+  final SuperMoviesApi? _api;
+
+  /// Whether the reading happens on the server instead of here.
+  ///
+  /// A browser cannot open a player page: its host sends no CORS header, and
+  /// the page answers differently — or not at all — without a `Referer`, which
+  /// a page is not allowed to set. Neither rule applies to a box, and there the
+  /// direct path is better: one request instead of two, and no server in the
+  /// middle of somebody's film.
+  bool get _viaApi => kIsWeb && _api != null;
+
+  /// The same reading, done by `POST /playback/resolve`, with the playlist
+  /// pointed at `/stream` so the browser may fetch it and its segments.
+  Future<ResolvedStream?> _throughApi(
+    DubOption option, {
+    int? season,
+    int? episode,
+  }) async {
+    final found = await _api!.resolvePlayback(
+      option.source.link,
+      season: season,
+      episode: episode,
+    );
+    if (found.isEmpty) return null;
+    return ResolvedStream(
+      url: _api.streamed(found.first.url),
+      provider: option.provider,
+      dub: option.source.name,
+      embedUrl: option.source.link,
+    );
+  }
 
   /// Every dub the site offers for [season] at [episode], in display order.
   ///
@@ -74,6 +112,10 @@ class StreamResolver {
     int? season,
     int? episode,
   }) async {
+    if (_viaApi) {
+      return _throughApi(option, season: season, episode: episode);
+    }
+
     final stream = await _ashdi.resolveStream(
       option.source.link,
       season: season,
@@ -102,6 +144,16 @@ class StreamResolver {
         if (!source.link.contains('ashdi.vip')) continue;
 
         try {
+          if (_viaApi) {
+            final found = await _throughApi(
+              DubOption(provider: provider, source: source),
+              season: season.isEpisodic ? null : season.number,
+              episode: season.isEpisodic ? null : episode,
+            );
+            if (found != null) return found;
+            continue;
+          }
+
           final stream = await _ashdi.resolveStream(
             source.link,
             season: season.isEpisodic ? null : season.number,

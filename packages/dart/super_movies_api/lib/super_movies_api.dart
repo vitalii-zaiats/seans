@@ -48,6 +48,7 @@ export 'src/models/details.dart'
         SeasonFrame;
 export 'src/models/device_link.dart' show DeviceLink, DeviceLinkStatus;
 export 'src/models/launch.dart' show AppPlatform, Launch, playStore;
+export 'src/models/playback.dart' show PlaybackStream;
 export 'src/models/start.dart' show Install, Start;
 export 'src/models/tv.dart'
     show TvCategory, TvChannel, TvChannels, TvProgramme, TvSchedule, TvStream;

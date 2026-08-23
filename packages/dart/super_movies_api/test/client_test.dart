@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:super_movies_api/super_movies_api.dart';
 import 'package:test/test.dart';
 
@@ -407,6 +409,37 @@ void deviceLinkTests() {
 
       await api.startDeviceLink();
       expect(transport.lastBody, isEmpty);
+    });
+
+    test('polling stops when it is told to, and not a request later', () async {
+      // Nobody ever approves in this test — the poll would otherwise run to its
+      // timeout, which is exactly what a pairing screen left open in a browser
+      // used to do: `/auth/device/collect` every two seconds for ten minutes.
+      final transport = FakeTransport.json({
+        'status': 'pending',
+        'identity': null,
+      });
+      final api = apiFor(transport, token: 'tv');
+      final leave = Completer<void>();
+
+      final polling = api.awaitDeviceLink(
+        'sec-1',
+        every: const Duration(milliseconds: 20),
+        timeout: const Duration(seconds: 30),
+        until: leave.future,
+      );
+
+      await Future<void>.delayed(const Duration(milliseconds: 90));
+      final asked = transport.requests.length;
+      expect(asked, greaterThan(1), reason: 'it should have been polling');
+
+      leave.complete();
+      expect(await polling, isNull);
+
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      // At most the one that was already in flight when it was told. Without
+      // the `until` this would have kept climbing for the whole timeout.
+      expect(transport.requests.length, lessThanOrEqualTo(asked + 1));
     });
 
     test('pending is an answer, not an error', () async {

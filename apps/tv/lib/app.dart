@@ -127,6 +127,9 @@ class _LauncherAppState extends State<LauncherApp> {
     client: WebProxy.wrap(
       widget.settings.value.useDoh ? _doh.client() : http.Client(),
     ),
+    // Only the web build uses it, and only because a browser may not read a
+    // player page itself. The box keeps reading them directly.
+    api: widget.api,
   );
 
   late final NetworkProbe _probe = NetworkProbe(api: widget.api);

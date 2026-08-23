@@ -24,8 +24,7 @@ class AndroidBox implements Box {
   /// server treats that as "updates itself", which is exactly right: nobody
   /// else is going to update an APK somebody copied onto the box.
   @override
-  Future<String?> installer() async =>
-      _calls.invokeMethod<String>('installer');
+  Future<String?> installer() async => _calls.invokeMethod<String>('installer');
 
   /// Everything with a way in, by label, this launcher excepted.
   @override

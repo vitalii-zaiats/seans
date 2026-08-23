@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 
 import '../core/home_hero.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// What the launcher looks like and when it steps aside.

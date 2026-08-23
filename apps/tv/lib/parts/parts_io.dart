@@ -21,7 +21,9 @@ final class NativeParts implements Parts {
   NativeParts();
 
   @override
-  late final Box box = Platform.isAndroid ? const AndroidBox() : const AbsentBox();
+  late final Box box = Platform.isAndroid
+      ? const AndroidBox()
+      : const AbsentBox();
 
   @override
   List<SingleChildWidget> providers() {

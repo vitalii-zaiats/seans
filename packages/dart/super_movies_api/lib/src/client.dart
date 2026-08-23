@@ -10,6 +10,7 @@ import 'models/catalogue.dart';
 import 'models/details.dart';
 import 'models/device_link.dart';
 import 'models/launch.dart';
+import 'models/playback.dart';
 import 'models/start.dart';
 import 'models/tv.dart';
 import 'transport.dart';
@@ -228,21 +229,40 @@ final class SuperMoviesApi {
     return _remember(Identity.fromJson(identity));
   }
 
-  /// Polls [collectDeviceLink] until somebody approves, the code expires, or
-  /// [timeout] runs out. `null` means nobody got there in time.
+  /// Polls [collectDeviceLink] until somebody approves, the code expires,
+  /// [timeout] runs out, or [until] completes. `null` means none of the above
+  /// ended in an identity.
   ///
   /// A poll rather than a push on purpose: the pairing has to work when the
   /// only thing between the two devices is this API.
+  ///
+  /// **Pass [until] from anything that can go away.** Without it this runs to
+  /// the deadline whatever happens to the caller — and the caller is a screen.
+  /// Somebody who opened the pairing page in a browser and left it went on
+  /// asking `/auth/device/collect` every two seconds for ten minutes, three
+  /// hundred requests for a code nobody was going to approve. Awaiting a
+  /// `Future` cannot cancel it; the loop has to be told.
   Future<Identity?> awaitDeviceLink(
     String secret, {
     Duration every = const Duration(seconds: 2),
     Duration timeout = const Duration(minutes: 10),
+    Future<void>? until,
   }) async {
+    var stopped = false;
+    // Watched rather than awaited: the loop has to keep running until it fires.
+    unawaited(until?.then((_) => stopped = true));
+
     final deadline = DateTime.now().add(timeout);
-    while (DateTime.now().isBefore(deadline)) {
+    while (!stopped && DateTime.now().isBefore(deadline)) {
       final identity = await collectDeviceLink(secret);
       if (identity != null) return identity;
-      await Future<void>.delayed(every);
+      if (stopped) break;
+
+      // Raced, not just checked afterwards: a plain `delayed` would hold the
+      // loop open for another two seconds past the moment it was told to stop,
+      // and on a screen that has already gone that is two seconds of requests
+      // nobody will read.
+      await Future.any([Future<void>.delayed(every), ?until]);
     }
     return null;
   }
@@ -352,11 +372,57 @@ final class SuperMoviesApi {
   /// `POST /tv/channels/{id}/stream` — a playable address.
   ///
   /// A lease, not an address: it carries a session and goes stale after
-  /// [TvStream.refreshIn]. Ask again rather than storing it, and play it
-  /// directly — the stream host allows any origin and ignores `Referer`, so
-  /// relaying the video would spend bandwidth on a problem nobody has.
-  Future<TvStream> stream(int channelId) async =>
-      TvStream.fromJson(await _send('POST', '/tv/channels/$channelId/stream'));
+  /// [TvStream.refreshIn]. Ask again rather than storing it.
+  ///
+  /// [useProxy] is for browsers and only for browsers. The stitched playlist
+  /// comes from a host that answers no `access-control-allow-origin`, so a page
+  /// cannot read it; with the flag every address comes back pointing at
+  /// `/stream`, which it can. A box should leave it off — the video then goes
+  /// host to viewer instead of through us, which is faster and costs us
+  /// nothing.
+  Future<TvStream> stream(int channelId, {bool useProxy = false}) async =>
+      TvStream.fromJson(
+        await _send(
+          'POST',
+          _query('/tv/channels/$channelId/stream', {
+            'use_proxy': useProxy ? 'true' : null,
+          }),
+        ),
+      );
+
+  /// `POST /playback/resolve` — a player page, read for the stream inside it.
+  ///
+  /// The catalogue hands out embed pages rather than streams, and on the web a
+  /// page cannot read one: the host sends no CORS header, and it wants a
+  /// `Referer` a browser is not allowed to set. The server has neither problem.
+  ///
+  /// [url] is one of the links already in a season's `playerData`. [season] and
+  /// [episode] pick a leaf out of a serial's playlist; without them the first
+  /// one wins, which is right for a film and wrong for episode nine.
+  Future<List<PlaybackStream>> resolvePlayback(
+    String url, {
+    int? season,
+    int? episode,
+  }) async {
+    final answer = await _post('/playback/resolve', {
+      'url': url,
+      'season': season,
+      'episode': episode,
+    });
+    return answer.listOf('streams', PlaybackStream.fromJson);
+  }
+
+  /// The address of [url] as a browser is allowed to fetch it.
+  ///
+  /// `/stream` relays the playlist and its segments and rewrites the URLs
+  /// inside an `.m3u8` so the nested requests come back through it too —
+  /// without which a player reads the master through us and then fetches every
+  /// segment straight from the origin, which is the request CORS blocks.
+  ///
+  /// Absolute, because a `<video>` is handed this and there is no page to
+  /// resolve it against on every platform.
+  String streamed(String url) =>
+      uriFor('/stream?url=${Uri.encodeQueryComponent(url)}').toString();
 
   /// Closes the underlying [Transport]. Skip it when the transport is shared —
   /// closing is the owner's job.

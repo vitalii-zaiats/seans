@@ -43,29 +43,33 @@ server {
         return 200 "ok\n";
     }
 
-    location /init {
+    # The app's whole JSON surface, in one line: it is versioned and moves as
+    # one, so `/api/` is the whole of it. This used to be a list of the app's
+    # own prefixes — `auth`, `catalogue`, `tv`, `playback` — and when the API
+    # went to `/api/v1` the list matched nothing, `try_files` answered
+    # `index.html` to every call, and the page loaded with no catalogue at all.
+    location /api/ {
         set $api ${API_UPSTREAM};
         proxy_pass http://$api;
         include /etc/nginx/proxy-api.conf;
     }
 
-    # The app's whole surface: the catalogue, the channels, pairing, and the
-    # remote-control event streams.
+    # The relays, and they are deliberately *not* under `/api/`: they take a URL
+    # and hand back bytes, so there is no schema to version.
     #
-    # `proxy` is in the list and is easy to leave out, because it is the one
-    # prefix the app never writes down: the API rewrites every poster URL to
-    # `/proxy/…` and the client just follows what it was handed. Miss it and the
-    # site loads with `try_files` answering `index.html` to every image request
-    # — 200, `text/html`, 7 kB, and not one picture on screen.
-    # Not in the prefix rule below: `/stream` carries its target in a query
-    # string and has no trailing slash to match on.
+    # `/proxy/` is the one prefix the app never writes down — the API rewrites
+    # every poster URL to `/proxy/…` and the client follows what it was handed.
+    # Miss it and the site loads with `try_files` answering `index.html` to
+    # every image request: 200, `text/html`, 7 kB, and not one picture on
+    # screen. `/stream` carries its target in a query string and has no
+    # trailing slash, which is why it is matched on its own.
     location /stream {
         set $api ${API_UPSTREAM};
         proxy_pass http://$api;
         include /etc/nginx/proxy-api.conf;
     }
 
-    location ~ ^/(auth|catalogue|tv|proxy|devices?|admin|playback)/ {
+    location /proxy/ {
         set $api ${API_UPSTREAM};
         proxy_pass http://$api;
         include /etc/nginx/proxy-api.conf;

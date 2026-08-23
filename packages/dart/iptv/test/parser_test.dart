@@ -65,8 +65,7 @@ https://x.test/a.m3u8
     });
 
     test('CRLF endings are not part of the URL', () {
-      const text =
-          '#EXTM3U\r\n#EXTINF:-1,Канал\r\nhttps://x.test/a.m3u8\r\n';
+      const text = '#EXTM3U\r\n#EXTINF:-1,Канал\r\nhttps://x.test/a.m3u8\r\n';
 
       expect(parsePlaylist(text).channels.single.url, 'https://x.test/a.m3u8');
     });
@@ -147,10 +146,10 @@ https://x.test/b.m3u8
 https://x.test/c.m3u8
 ''';
 
-      expect(
-        parsePlaylist(text).channels.map((c) => c.name),
-        ['Перший', 'Третій'],
-      );
+      expect(parsePlaylist(text).channels.map((c) => c.name), [
+        'Перший',
+        'Третій',
+      ]);
     });
   });
 
@@ -182,10 +181,10 @@ https://x.test/c.m3u8
       final playlist = parsePlaylist(text);
 
       expect(playlist.groups, ['Новини', 'Спорт']);
-      expect(
-        groupChannels(playlist.channels)['Новини']!.map((c) => c.name),
-        ['A', 'C'],
-      );
+      expect(groupChannels(playlist.channels)['Новини']!.map((c) => c.name), [
+        'A',
+        'C',
+      ]);
     });
 
     test('an ungrouped channel lands somewhere rather than vanishing', () {
@@ -229,8 +228,11 @@ https://x.test/c.m3u8
       await expectLater(
         loader.load(IptvSource.freeTvUkraine),
         throwsA(
-          isA<IptvException>()
-              .having((e) => e.cause, 'cause', isA<SocketFailure>()),
+          isA<IptvException>().having(
+            (e) => e.cause,
+            'cause',
+            isA<SocketFailure>(),
+          ),
         ),
       );
     });

@@ -37,7 +37,8 @@ class IptvSource {
   static const freeTvUkraine = IptvSource(
     id: 'free-tv-ua',
     title: 'Free-TV · Україна',
-    url: 'https://raw.githubusercontent.com/Free-TV/IPTV/master'
+    url:
+        'https://raw.githubusercontent.com/Free-TV/IPTV/master'
         '/playlists/playlist_ukraine.m3u8',
   );
 

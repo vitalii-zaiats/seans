@@ -70,7 +70,19 @@ jobs:
       - run: dart pub get
       - run: dart analyze packages/dart
       - run: dart format --set-exit-if-changed packages/dart
-      - run: dart test packages/dart
+      # Each package, from inside itself.
+      #
+      # `dart test packages/dart` looks like the same thing and is not: a test
+      # that opens `test/fixtures/…` resolves that against the working
+      # directory, so from the repository root it reads a path that does not
+      # exist and fails on a file rather than on the code.
+      - name: Test each package where it lives
+        run: |
+          for package in packages/dart/*/; do
+            [ -d "$package/test" ] || continue
+            echo "── $package"
+            (cd "$package" && dart test)
+          done
 
   # The one image that cannot build itself: `apps/tv/Dockerfile` packages a
   # bundle rather than producing one, because a Flutter SDK in a build stage is

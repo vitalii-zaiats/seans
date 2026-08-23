@@ -118,7 +118,12 @@ Stream<T> reconnecting<T>(
     void retryAfter(Object? error) {
       current = null;
       if (stopped) return;
-      final wait = backoff(attempt++, first: first, ceiling: ceiling, random: dice);
+      final wait = backoff(
+        attempt++,
+        first: first,
+        ceiling: ceiling,
+        random: dice,
+      );
       onRetry?.call(error, wait);
       waiting = Timer(wait, connect);
     }

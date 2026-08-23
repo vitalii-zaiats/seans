@@ -51,7 +51,9 @@ void main() {
 
   test('a keepalive is invisible', () async {
     // This is what a quiet stream looks like for hours at a time.
-    final events = await parse(': open\n\n: ping\n\n: ping\n\nevent: state\ndata: {}\n\n');
+    final events = await parse(
+      ': open\n\n: ping\n\n: ping\n\nevent: state\ndata: {}\n\n',
+    );
 
     expect(events, hasLength(1));
     expect(events.single.event, 'state');

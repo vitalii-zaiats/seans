@@ -81,22 +81,30 @@ void main() {
   group('reconnecting', () {
     test('opens again when a stream simply ends', () async {
       var opened = 0;
-      final stream = reconnecting(() {
-        opened++;
-        return Stream.value(opened);
-      }, first: _quick, ceiling: _quick);
+      final stream = reconnecting(
+        () {
+          opened++;
+          return Stream.value(opened);
+        },
+        first: _quick,
+        ceiling: _quick,
+      );
 
       expect(await stream.take(3).toList(), [1, 2, 3]);
     });
 
     test('opens again after a transient failure', () async {
       var opened = 0;
-      final stream = reconnecting(() {
-        opened++;
-        return opened < 3
-            ? Stream<int>.error(refusal(503))
-            : Stream.value(opened);
-      }, first: _quick, ceiling: _quick);
+      final stream = reconnecting(
+        () {
+          opened++;
+          return opened < 3
+              ? Stream<int>.error(refusal(503))
+              : Stream.value(opened);
+        },
+        first: _quick,
+        ceiling: _quick,
+      );
 
       expect(await stream.first, 3);
     });

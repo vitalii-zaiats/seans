@@ -114,9 +114,11 @@ One pub workspace, rooted at `pubspec.yaml`.
 
 ```bash
 dart pub get
-dart test packages/dart
 dart analyze packages/dart
 dart format packages/dart
+# From inside the package, not from the root: a test that opens
+# `test/fixtures/…` resolves it against the working directory.
+cd packages/dart/iptv && dart test
 ```
 
 ## Style

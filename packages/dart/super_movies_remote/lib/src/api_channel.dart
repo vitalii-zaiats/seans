@@ -110,9 +110,13 @@ final class ApiRemoteChannel implements RemoteChannel {
   }
 
   @override
-  Future<Delivery> send(String deviceId, Command command) async => Delivery.fromJson(
-    await _calls.post('/device/${Uri.encodeComponent(deviceId)}/rpc', command.toJson()),
-  );
+  Future<Delivery> send(String deviceId, Command command) async =>
+      Delivery.fromJson(
+        await _calls.post(
+          '/device/${Uri.encodeComponent(deviceId)}/rpc',
+          command.toJson(),
+        ),
+      );
 
   @override
   Stream<DeviceState> states(String deviceId) => _frames(
@@ -193,17 +197,18 @@ Stream<T> _frames<T>(
   required String want,
   required T Function(JsonMap json) parse,
   OnMalformed? onMalformed,
-}) => reconnecting(
-  () => events.connect(calls.uriFor(path), headers: calls.headers()),
-).transform(
-  StreamTransformer<ServerSentEvent, T>.fromHandlers(
-    handleData: (event, sink) {
-      if (event.event != want) return;
-      try {
-        sink.add(parse(jsonDecode(event.data) as JsonMap));
-      } catch (error) {
-        onMalformed?.call(event, error);
-      }
-    },
-  ),
-);
+}) =>
+    reconnecting(
+      () => events.connect(calls.uriFor(path), headers: calls.headers()),
+    ).transform(
+      StreamTransformer<ServerSentEvent, T>.fromHandlers(
+        handleData: (event, sink) {
+          if (event.event != want) return;
+          try {
+            sink.add(parse(jsonDecode(event.data) as JsonMap));
+          } catch (error) {
+            onMalformed?.call(event, error);
+          }
+        },
+      ),
+    );

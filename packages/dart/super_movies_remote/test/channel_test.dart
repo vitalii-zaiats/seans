@@ -102,7 +102,9 @@ void main() {
         channel: ApiRemoteChannel(
           baseUrl: base,
           token: () => 'phone',
-          transport: FakeTransport.json({'detail': 'no such device'}, statusCode: 404),
+          transport: FakeTransport.json({
+            'detail': 'no such device',
+          }, statusCode: 404),
           events: FakeEventStream(),
         ),
       );
@@ -193,7 +195,10 @@ void main() {
     });
 
     test('reports its state', () async {
-      final transport = FakeTransport.json(const <String, Object?>{}, statusCode: 204);
+      final transport = FakeTransport.json(
+        const <String, Object?>{},
+        statusCode: 204,
+      );
       final receiver = Receiver(
         channel: ApiReceiverChannel(
           baseUrl: base,
@@ -224,10 +229,9 @@ void main() {
 
       final played = <String>[];
       final unknown = <String>[];
-      final subscription = receiver.serve(
-        {'play': (command) => played.add(command.params['id']! as String)},
-        onUnknown: (command) => unknown.add(command.method),
-      );
+      final subscription = receiver.serve({
+        'play': (command) => played.add(command.params['id']! as String),
+      }, onUnknown: (command) => unknown.add(command.method));
       await pumpUntil(() => events.listening);
 
       events.emit('command', {
@@ -256,13 +260,10 @@ void main() {
 
       final failures = <String>[];
       final after = <String>[];
-      final subscription = receiver.serve(
-        {
-          'play': (_) => throw StateError('no player'),
-          'pause': (command) => after.add(command.method),
-        },
-        onError: (command, error, _) => failures.add(command.method),
-      );
+      final subscription = receiver.serve({
+        'play': (_) => throw StateError('no player'),
+        'pause': (command) => after.add(command.method),
+      }, onError: (command, error, _) => failures.add(command.method));
       await pumpUntil(() => events.listening);
 
       events.emit('command', {'id': '1', 'method': 'play'});
@@ -396,7 +397,10 @@ void main() {
     });
 
     test('a state field of the wrong type reads as absent', () {
-      final state = DeviceState(at: DateTime.utc(2026), data: {'playing': 'yes'});
+      final state = DeviceState(
+        at: DateTime.utc(2026),
+        data: {'playing': 'yes'},
+      );
 
       expect(state.value<bool>('playing'), isNull);
       expect(state.flag('playing'), isFalse);

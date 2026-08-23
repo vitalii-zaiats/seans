@@ -175,6 +175,11 @@ collections: plain `ansible-core` is enough.
 
 `GITHUB_TOKEN` covers the registry — no secret needed for GHCR.
 
+**The images land private even though the repository is public.** That is GHCR's
+default and it does not stop a deploy: the playbook logs in with the same run's
+token. It does stop `docker pull ghcr.io/…/seans-api` by hand, so make each
+package public in its own settings if that is wanted.
+
 The deploy key is committed, encrypted, under `deploy/ansible/secrets/`. That
 directory's README says what that costs in a public repository and how to rotate
 it.

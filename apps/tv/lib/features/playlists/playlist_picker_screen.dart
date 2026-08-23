@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../core/navigate.dart';
+import '../../core/remote/focus_area.dart';
 import '../../data/playlist_store.dart';
 import '../../theme/nocturne.dart';
 import '../../widgets/chip_row.dart';
 import '../../widgets/focusable.dart';
-import 'name_entry_screen.dart';
 
 /// Which playlists one title belongs to.
 ///
@@ -30,16 +31,10 @@ class PlaylistPickerScreen extends StatefulWidget {
 class _PlaylistPickerScreenState extends State<PlaylistPickerScreen> {
   PlaylistStore get _store => context.read<PlaylistStore>();
 
+  /// Naming the new list and filing this title into it both happen on the
+  /// screen that address opens; all that is left here is to redraw.
   Future<void> _createAndAdd() async {
-    final name = await NameEntryScreen.show(
-      context,
-      title: 'Назва плейлиста',
-      confirmLabel: 'Створити',
-    );
-    if (name == null || name.isEmpty || !mounted) return;
-
-    final playlist = await _store.create(name);
-    await _store.toggle(playlist.id, widget.slug);
+    await openRoute<void>(context, '/title/${widget.slug}/add/new');
     if (mounted) setState(() {});
   }
 
@@ -81,7 +76,7 @@ class _PlaylistPickerScreenState extends State<PlaylistPickerScreen> {
                 itemCount: 1,
                 builder: (context, index) => TvChip(
                   label: 'Створити новий',
-                  autofocus: playlists.isEmpty,
+                  preferred: playlists.isEmpty,
                   onSelect: _createAndAdd,
                 ),
               ),
@@ -89,31 +84,28 @@ class _PlaylistPickerScreenState extends State<PlaylistPickerScreen> {
 
               Expanded(
                 child: playlists.isEmpty
-                    ? Text(
-                        'Плейлистів ще немає — створіть перший.',
-                        style: TextStyle(
-                          fontSize: context.sp(18),
-                          color: Nocturne.neutral600,
+                    ? const _NoPlaylists()
+                    : FocusArea(
+                        landing: true,
+                        child: ListView.builder(
+                          clipBehavior: Clip.none,
+                          itemCount: playlists.length,
+                          itemBuilder: (context, index) {
+                            final playlist = playlists[index];
+                            return _Row(
+                              playlist: playlist,
+                              holds: playlist.contains(widget.slug),
+                              preferred: index == 0,
+                              onToggle: () async {
+                                await _store.toggle(playlist.id, widget.slug);
+                                if (mounted) setState(() {});
+                              },
+                            );
+                          },
                         ),
-                      )
-                    : ListView.builder(
-                        clipBehavior: Clip.none,
-                        itemCount: playlists.length,
-                        itemBuilder: (context, index) {
-                          final playlist = playlists[index];
-                          return _Row(
-                            playlist: playlist,
-                            holds: playlist.contains(widget.slug),
-                            autofocus: index == 0,
-                            onToggle: () async {
-                              await _store.toggle(playlist.id, widget.slug);
-                              if (mounted) setState(() {});
-                            },
-                          );
-                        },
                       ),
               ),
-
+              SizedBox(height: context.px(10)),
               Text(
                 'OK додати або прибрати  ·  ⌫ назад',
                 style: TextStyle(
@@ -129,17 +121,35 @@ class _PlaylistPickerScreenState extends State<PlaylistPickerScreen> {
   }
 }
 
+/// Nothing to file into yet, and nothing focusable — so the area anchors,
+/// and the remote still has somewhere to be.
+class _NoPlaylists extends StatelessWidget {
+  const _NoPlaylists();
+
+  @override
+  Widget build(BuildContext context) => FocusArea(
+    anchor: true,
+    child: Align(
+      alignment: Alignment.topLeft,
+      child: Text(
+        'Плейлистів ще немає — створіть перший.',
+        style: TextStyle(fontSize: context.sp(18), color: Nocturne.neutral600),
+      ),
+    ),
+  );
+}
+
 class _Row extends StatefulWidget {
   const _Row({
     required this.playlist,
     required this.holds,
-    required this.autofocus,
+    required this.preferred,
     required this.onToggle,
   });
 
   final Playlist playlist;
   final bool holds;
-  final bool autofocus;
+  final bool preferred;
   final VoidCallback onToggle;
 
   @override
@@ -154,7 +164,7 @@ class _RowState extends State<_Row> {
     return Padding(
       padding: EdgeInsets.only(bottom: context.px(10)),
       child: Focusable(
-        autofocus: widget.autofocus,
+        preferred: widget.preferred,
         scaleOnFocus: 1,
         onSelect: widget.onToggle,
         onFocusChange: (focused) {

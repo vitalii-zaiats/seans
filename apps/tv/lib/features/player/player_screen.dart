@@ -1,5 +1,3 @@
-import '../../core/navigate.dart';
-
 import 'dart:async';
 import 'dart:ui';
 
@@ -9,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hls/hls.dart';
 import 'package:super_movies_api/super_movies_api.dart';
 
+import '../../core/remote/back.dart';
+import '../../core/remote/focus_area.dart';
 import '../../data/library_store.dart';
 import '../../data/stream_resolver.dart';
 import '../../data/web_proxy.dart';
@@ -62,13 +62,13 @@ class _PlayerScreenState extends State<PlayerScreen> {
   /// dub switch interrupted — swapping voice-overs should not lose the place.
   late Duration? _resumeAt = widget.resumeAt;
 
-  /// The panel's own focus scope.
-  ///
-  /// The screen's root `Focus` already holds focus by the time the panel is
-  /// inserted, so `autofocus` on its rows never fires — focus has to be moved
-  /// across deliberately, or the D-pad keeps talking to the player behind it.
-  final _pickerScope = FocusScopeNode(debugLabel: 'picker');
-  final _playerFocus = FocusNode(debugLabel: 'player');
+  /// The last save is the one that matters — where somebody stopped watching —
+  /// and it happens in `dispose`, by which point this element is deactivated
+  /// and reading an ancestor out of the tree throws. So every exit from a film
+  /// ended in `Looking up a deactivated widget's ancestor is unsafe` and the
+  /// final position was never written: the list went on offering the place the
+  /// last fifteen-second tick had saved.
+  late final LibraryStore _library;
 
   /// How long the controls stay up after the last button press.
   static const _controlsLinger = Duration(seconds: 4);
@@ -77,6 +77,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   void initState() {
     super.initState();
+    _library = context.read<LibraryStore>();
     // A television should not dim or sleep mid-film, and the system bars have
     // no business over a picture.
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -85,8 +86,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   @override
   void dispose() {
-    _pickerScope.dispose();
-    _playerFocus.dispose();
     _hideControls?.cancel();
     _saveProgress?.cancel();
     unawaited(_persistProgress());
@@ -174,7 +173,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
     final playback = _playback;
     if (playback == null || !playback.value.isReady) return;
 
-    final library = context.read<LibraryStore>();
     final progress = WatchProgress(
       slug: widget.details.slug,
       position: playback.value.position,
@@ -186,9 +184,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
     // A film watched to the end leaves the rail rather than sitting at 99%.
     if (progress.isFinished) {
-      await library.clearProgress(widget.details.slug);
+      await _library.clearProgress(widget.details.slug);
     } else if (progress.isStarted) {
-      await library.saveProgress(progress);
+      await _library.saveProgress(progress);
     }
   }
 
@@ -249,17 +247,17 @@ class _PlayerScreenState extends State<PlayerScreen> {
       _showControls();
       return;
     }
+    // The panel is an area of its own, and the arbiter walks into it the
+    // moment it is mounted — and puts focus back on the picture when it goes.
+    // Nothing here asks for focus, and nothing here guards against the panel
+    // and the player both answering the arrows: only one of them is on screen
+    // under the ring at a time, which is the whole of the rule now.
     setState(() => _picking = true);
-    // After the frame the panel is built in, so there is a scope to move to.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted && _picking) _pickerScope.requestFocus();
-    });
   }
 
   void _closePicker() {
     if (!_picking) return;
     setState(() => _picking = false);
-    _playerFocus.requestFocus();
   }
 
   /// Same shape as switching a voice-over: remember the moment, close the
@@ -300,52 +298,20 @@ class _PlayerScreenState extends State<PlayerScreen> {
     await cubit.selectSeason(number);
   }
 
-  KeyEventResult _onKey(FocusNode node, KeyEvent event) {
-    // While the panel is up its own rows own the remote.
-    if (_picking) return KeyEventResult.ignored;
-
-    if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
-      return KeyEventResult.ignored;
-    }
-
-    switch (event.logicalKey) {
-      case LogicalKeyboardKey.select:
-      case LogicalKeyboardKey.enter:
-      case LogicalKeyboardKey.space:
-      case LogicalKeyboardKey.mediaPlayPause:
-        unawaited(_togglePlay());
-        return KeyEventResult.handled;
-      case LogicalKeyboardKey.arrowRight:
-      case LogicalKeyboardKey.mediaTrackNext:
+  /// The arrows on a player are not a way round a screen: → is ten seconds,
+  /// ↓ is the panel, and ↑ is "show me what is playing".
+  bool _onMove(RemoteMove move) {
+    switch (move) {
+      case RemoteMove.right:
         unawaited(_seek(_seekStep));
-        return KeyEventResult.handled;
-      case LogicalKeyboardKey.arrowLeft:
-      case LogicalKeyboardKey.mediaTrackPrevious:
+      case RemoteMove.left:
         unawaited(_seek(-_seekStep));
-        return KeyEventResult.handled;
-      case LogicalKeyboardKey.arrowUp:
+      case RemoteMove.up:
         _showControls();
-        return KeyEventResult.handled;
-      case LogicalKeyboardKey.arrowDown:
+      case RemoteMove.down:
         _openPicker();
-        return KeyEventResult.handled;
-      // The way out. Both hints on screen say "⌫ назад", and until this
-      // existed neither key did anything: on a box BACK is a *system* key, so
-      // the platform popped the route without ever reaching here — and in a
-      // browser there is no system key at all. In a PWA window there is no
-      // browser Back either, and the way-back strip is hidden over a picture
-      // that goes edge to edge, so a viewer had nothing left to press.
-      //
-      // Escape as well as Backspace: it is what a browser trains people to
-      // reach for to get out of something full-screen.
-      case LogicalKeyboardKey.backspace:
-      case LogicalKeyboardKey.escape:
-      case LogicalKeyboardKey.goBack:
-        closeRoute(context);
-        return KeyEventResult.handled;
-      default:
-        return KeyEventResult.ignored;
     }
+    return true;
   }
 
   @override
@@ -361,75 +327,92 @@ class _PlayerScreenState extends State<PlayerScreen> {
               current.episode != _playingEpisode),
       listener: (context, state) =>
           unawaited(_start(state.stream!, url: state.playingUrl)),
-      child: Focus(
-        focusNode: _playerFocus,
-        autofocus: true,
-        onKeyEvent: _onKey,
-        child: Scaffold(
-          backgroundColor: Colors.black,
-          // A pointer has no keys to press, so moving it is the only way it
-          // can say "I am here" — without this the controls fade after four
-          // seconds and never come back.
-          body: MouseRegion(
-            onHover: context.pointer ? (_) => _showControls() : null,
-            child: GestureDetector(
-              // Clicking the picture is what a browser has instead of OK.
-              onTap: context.pointer ? () => unawaited(_togglePlay()) : null,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  _AmbientBackdrop(details: widget.details),
-                  if (_playback != null)
-                    AnimatedOpacity(
-                      opacity: _videoVisible ? 1 : 0,
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeOut,
-                      child: Center(
-                        child: AspectRatio(
-                          aspectRatio: _playback!.value.aspectRatio,
-                          child: _playback!.view(),
-                        ),
-                      ),
-                    ),
-                  BlocBuilder<PlayerCubit, PlayerState>(
-                    builder: (context, state) => PlayerControls(
-                      details: widget.details,
-                      episode: state.episode,
-                      playback: _playback,
-                      onSeek: (to) => unawaited(_seekTo(to)),
-                      onTogglePlay: () => unawaited(_togglePlay()),
-                      visible: _controlsVisible || _playback == null,
-                      resolving:
-                          state.status.isLoading && _playbackError == null,
-                      message: _playbackError ?? state.error,
-                      dub: state.stream?.dub,
-                      canSwitchDub:
-                          state.canSwitchDub ||
-                          state.canSwitchSeason ||
-                          state.episodes.isNotEmpty,
-                    ),
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        // A pointer has no keys to press, so moving it is the only way it
+        // can say "I am here" — without this the controls fade after four
+        // seconds and never come back.
+        body: MouseRegion(
+          onHover: context.pointer ? (_) => _showControls() : null,
+          child: GestureDetector(
+            // Clicking the picture is what a browser has instead of OK.
+            onTap: context.pointer ? () => unawaited(_togglePlay()) : null,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                // The picture and its controls: modal, because a film is not
+                // somewhere the arrows should be able to wander out of, and
+                // carrying `controls`, because here they are the transport.
+                FocusArea(
+                  modal: true,
+                  landing: true,
+                  controls: RemoteControls(
+                    onMove: _onMove,
+                    onSelect: () => unawaited(_togglePlay()),
                   ),
-                  if (_picking)
-                    BlocBuilder<PlayerCubit, PlayerState>(
-                      builder: (context, state) => PopScope(
-                        canPop: false,
-                        onPopInvokedWithResult: (didPop, _) {
-                          if (!didPop) _closePicker();
-                        },
-                        child: FocusScope(
-                          node: _pickerScope,
-                          child: PlaybackPicker(
-                            state: state,
-                            onSeason: _chooseSeason,
-                            onEpisode: _chooseEpisode,
-                            onDub: _chooseDub,
-                            onQuality: _chooseQuality,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      _AmbientBackdrop(details: widget.details),
+                      if (_playback != null)
+                        AnimatedOpacity(
+                          opacity: _videoVisible ? 1 : 0,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeOut,
+                          child: Center(
+                            child: AspectRatio(
+                              aspectRatio: _playback!.value.aspectRatio,
+                              child: _playback!.view(),
+                            ),
                           ),
                         ),
+                      BlocBuilder<PlayerCubit, PlayerState>(
+                        builder: (context, state) => PlayerControls(
+                          details: widget.details,
+                          episode: state.episode,
+                          playback: _playback,
+                          onSeek: (to) => unawaited(_seekTo(to)),
+                          onTogglePlay: () => unawaited(_togglePlay()),
+                          visible: _controlsVisible || _playback == null,
+                          resolving:
+                              state.status.isLoading && _playbackError == null,
+                          message: _playbackError ?? state.error,
+                          dub: state.stream?.dub,
+                          canSwitchDub:
+                              state.canSwitchDub ||
+                              state.canSwitchSeason ||
+                              state.episodes.isNotEmpty,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // The panel beside the picture rather than inside it: which of
+                // the two owns the remote is then a matter of where the ring
+                // is, not of a flag the screen has to remember to check on
+                // every key. Its own way out, so the hint that says "⌫ закрити"
+                // is true in a browser and in a PWA window as well as on a box.
+                if (_picking)
+                  BackStop(
+                    onBack: () {
+                      _closePicker();
+                      return BackAnswer.took;
+                    },
+                    child: FocusArea(
+                      modal: true,
+                      landing: true,
+                      child: BlocBuilder<PlayerCubit, PlayerState>(
+                        builder: (context, state) => PlaybackPicker(
+                          state: state,
+                          onSeason: _chooseSeason,
+                          onEpisode: _chooseEpisode,
+                          onDub: _chooseDub,
+                          onQuality: _chooseQuality,
+                        ),
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
           ),
         ),

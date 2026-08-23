@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/remote/focus_area.dart';
 import '../theme/nocturne.dart';
 import 'focusable.dart';
 
@@ -21,28 +22,35 @@ class ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.cloud_off_rounded,
-            size: context.px(56),
-            color: Nocturne.neutral700,
-          ),
-          SizedBox(height: context.px(18)),
-          Text(
-            message,
-            style: TextStyle(
-              fontSize: context.sp(22),
-              color: Nocturne.neutral400,
+    // An area, and an anchoring one: a failure with nothing to press is still
+    // a screen the remote has to be somewhere on, or the next arrow has
+    // nothing to push off from.
+    return FocusArea(
+      landing: true,
+      anchor: true,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.cloud_off_rounded,
+              size: context.px(56),
+              color: Nocturne.neutral700,
             ),
-          ),
-          if (onRetry != null) ...[
-            SizedBox(height: context.px(26)),
-            _RetryButton(onSelect: onRetry!),
+            SizedBox(height: context.px(18)),
+            Text(
+              message,
+              style: TextStyle(
+                fontSize: context.sp(22),
+                color: Nocturne.neutral400,
+              ),
+            ),
+            if (onRetry != null) ...[
+              SizedBox(height: context.px(26)),
+              _RetryButton(onSelect: onRetry!),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -63,7 +71,7 @@ class _RetryButtonState extends State<_RetryButton> {
   @override
   Widget build(BuildContext context) {
     return Focusable(
-      autofocus: true,
+      preferred: true,
       onSelect: widget.onSelect,
       onFocusChange: (focused) => setState(() => _focused = focused),
       child: Container(
@@ -94,10 +102,14 @@ class EmptyView extends StatelessWidget {
   final String message;
 
   @override
-  Widget build(BuildContext context) => Center(
-    child: Text(
-      message,
-      style: TextStyle(fontSize: context.sp(20), color: Nocturne.neutral600),
+  Widget build(BuildContext context) => FocusArea(
+    landing: true,
+    anchor: true,
+    child: Center(
+      child: Text(
+        message,
+        style: TextStyle(fontSize: context.sp(20), color: Nocturne.neutral600),
+      ),
     ),
   );
 }

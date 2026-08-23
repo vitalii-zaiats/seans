@@ -11,6 +11,8 @@ import 'package:iptv/iptv.dart';
 import 'package:provider/provider.dart';
 import 'package:super_movies_api/super_movies_api.dart';
 
+import 'core/remote/back.dart';
+import 'core/remote/remote_control.dart';
 import 'core/router.dart';
 import 'platform/box_for_platform.dart';
 import 'data/camera_store.dart';
@@ -56,6 +58,10 @@ import 'theme/nocturne.dart';
 /// arrows did nothing at all, because a screen that fits has nothing to
 /// scroll. So the four go back to moving focus, and the rest of the web map —
 /// Tab, Enter, Escape, page up and down — is kept as it comes.
+///
+/// This is the spare road now rather than the one everything drives on:
+/// `RemoteControl` answers an arrow before any of it, and only a screen that
+/// has declared no areas at all ever gets this far.
 Map<ShortcutActivator, Intent>? get _shortcuts {
   if (!kIsWeb) return null;
   return <ShortcutActivator, Intent>{
@@ -159,6 +165,15 @@ class _LauncherAppState extends State<LauncherApp> {
     ),
   );
 
+  /// Where Android's BACK key arrives, and the only place it does.
+  ///
+  /// Built once alongside the router it answers for: a dispatcher rebuilt
+  /// under a running `Router` would take the callback off the old one and
+  /// leave the press with nobody to hand it to.
+  late final LauncherBackDispatcher _back = LauncherBackDispatcher(
+    router: _router,
+  );
+
   /// Playlists already fetched this session, with the time they arrived.
   ///
   /// The home row and the ТБ screen ask for the same lists, and a channel list
@@ -236,7 +251,18 @@ class _LauncherAppState extends State<LauncherApp> {
       child: ValueListenableBuilder<Settings>(
         valueListenable: widget.settings.listenable,
         builder: (context, settings, _) => MaterialApp.router(
-          routerConfig: _router,
+          // Spelled out rather than `routerConfig:`, because one of the four
+          // is not the router's own: `backButtonDispatcher` is the seam the
+          // platform's BACK comes through, and this is where it is fitted.
+          routerDelegate: _router.routerDelegate,
+          routeInformationParser: _router.routeInformationParser,
+          routeInformationProvider: _router.routeInformationProvider,
+          backButtonDispatcher: _back,
+          // The arbiter wraps every screen, the launcher shell and the wizard
+          // alike — and sits under `WidgetsApp`'s own `Shortcuts`, which is
+          // what lets it answer an arrow first. See `RemoteControl`.
+          builder: (context, child) =>
+              RemoteControl(router: _router, child: child!),
           shortcuts: _shortcuts,
           title: 'Сеанс',
           debugShowCheckedModeBanner: false,

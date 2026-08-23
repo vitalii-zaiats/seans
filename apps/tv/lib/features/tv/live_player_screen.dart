@@ -1,6 +1,7 @@
 import '../../widgets/back_chip.dart';
 import '../../platform/box_for_platform.dart';
-import '../../core/navigate.dart';
+import '../../core/remote/back.dart';
+import '../../core/remote/focus_area.dart';
 
 import 'dart:async';
 
@@ -176,52 +177,23 @@ class _LivePlayerScreenState extends State<LivePlayerScreen> {
     unawaited(_open(next));
   }
 
-  KeyEventResult _onKey(FocusNode node, KeyEvent event) {
-    if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
-      return KeyEventResult.ignored;
-    }
-
-    switch (event.logicalKey) {
-      // Arrows change channel here. There is nothing to seek through, and a
-      // viewer who presses right expects the next channel, as on any TV.
-      case LogicalKeyboardKey.arrowRight:
-      case LogicalKeyboardKey.arrowDown:
-      case LogicalKeyboardKey.mediaTrackNext:
-        _switch(1);
-        return KeyEventResult.handled;
-      case LogicalKeyboardKey.arrowLeft:
-      case LogicalKeyboardKey.arrowUp:
-      case LogicalKeyboardKey.mediaTrackPrevious:
-        _switch(-1);
-        return KeyEventResult.handled;
-      case LogicalKeyboardKey.select:
-      case LogicalKeyboardKey.enter:
-        _showControls();
-        return KeyEventResult.handled;
-      // The way out. Both hints on screen say "⌫ назад", and until this
-      // existed neither key did anything: on a box BACK is a *system* key, so
-      // the platform popped the route without ever reaching here — and in a
-      // browser there is no system key at all. In a PWA window there is no
-      // browser Back either, and the way-back strip is hidden over a picture
-      // that goes edge to edge, so a viewer had nothing left to press.
-      //
-      // Escape as well as Backspace: it is what a browser trains people to
-      // reach for to get out of something full-screen.
-      case LogicalKeyboardKey.backspace:
-      case LogicalKeyboardKey.escape:
-      case LogicalKeyboardKey.goBack:
-        closeRoute(context);
-        return KeyEventResult.handled;
-      default:
-        return KeyEventResult.ignored;
-    }
+  /// Arrows change channel here. There is nothing to seek through, and a
+  /// viewer who presses right expects the next channel, as on any TV.
+  bool _onMove(RemoteMove move) {
+    _switch(move.forward ? 1 : -1);
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Focus(
-      autofocus: true,
-      onKeyEvent: _onKey,
+    // The screen is the control, so the area carries one and holds a node of
+    // its own. The root `Focus` here used to have no node at all: once
+    // anything else took focus there was nothing left to hand a press to, and
+    // the channel keys went dead until the screen was left and reopened.
+    return FocusArea(
+      modal: true,
+      landing: true,
+      controls: RemoteControls(onMove: _onMove, onSelect: _showControls),
       child: Scaffold(
         backgroundColor: Colors.black,
         // A pointer has no keys, so moving it is the only way it can ask for
@@ -376,7 +348,7 @@ class _Overlay extends StatelessWidget {
                       // hidden over a picture that goes edge to edge — so
                       // without this the only way out was a key nobody can see.
                       if (!platformBox.present) ...[
-                        BackChip(onSelect: () => closeRoute(context)),
+                        BackChip(onSelect: () => Back.requestFrom(context)),
                         SizedBox(width: context.px(20)),
                       ],
                       const _LiveBadge(),

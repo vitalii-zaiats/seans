@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../core/dpad.dart';
+import '../core/remote/activity.dart';
+import '../core/remote/focus_area.dart';
 import '../core/sfx.dart';
 import '../platform/box_for_platform.dart';
 import '../theme/nocturne.dart';
@@ -13,11 +14,16 @@ import '../theme/nocturne.dart';
 /// a soft glow rather than a fill, and that glow breathes — a console-style
 /// pulse, slow enough to read as "alive" from three metres rather than as
 /// something demanding attention.
+///
+/// It takes OK and it never takes an arrow: the arrows belong to
+/// `RemoteControl`, and the printable keys to `HardwareTyping`, whose
+/// `_reserved` set is the other half of the same agreement — space, Enter and
+/// Tab carry a character and are the interface's, not the text's.
 class Focusable extends StatefulWidget {
   const Focusable({
     required this.child,
     required this.onSelect,
-    this.autofocus = false,
+    this.preferred = false,
     this.focusNode,
     this.onFocusChange,
     this.borderRadius,
@@ -40,7 +46,19 @@ class Focusable extends StatefulWidget {
   /// should live here.
   final VoidCallback? onSecondary;
 
-  final bool autofocus;
+  /// Asks the surrounding [FocusArea] to land here when it has no memory of
+  /// its own.
+  ///
+  /// Not Flutter's `autofocus`, which only fires when nothing in the whole
+  /// scope is focused yet — by the time a panel is inserted over a player
+  /// something always is, so the request was dropped and the panel came up
+  /// dumb. This is a claim on the area, and the area is asked at the moment
+  /// focus is being handed over.
+  final bool preferred;
+
+  /// Lent by the caller, and then lent for good: ownership is settled once, in
+  /// `initState`. A node handed in is never disposed here — this used to
+  /// dispose whatever it had been given last.
   final FocusNode? focusNode;
   final ValueChanged<bool>? onFocusChange;
   final BorderRadius? borderRadius;
@@ -81,7 +99,12 @@ class _FocusableState extends State<Focusable>
     LogicalKeyboardKey.contextMenu,
   };
 
-  late FocusNode _node = widget.focusNode ?? FocusNode();
+  late final bool _ownsNode = widget.focusNode == null;
+  late final FocusNode _node = widget.focusNode ?? FocusNode();
+
+  /// The area this surface sits in, if it sits in one.
+  FocusAreaScope? _area;
+
   bool _focused = false;
 
   /// The cursor is over this one.
@@ -99,18 +122,37 @@ class _FocusableState extends State<Focusable>
   );
 
   @override
-  void dispose() {
-    _pulse.dispose();
-    if (widget.focusNode == null) _node.dispose();
-    super.dispose();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final area = FocusArea.of(context);
+    if (identical(area, _area)) return;
+    _area?.releasePreferred(_node);
+    _area = area;
+    if (widget.preferred) area?.claimPreferred(_node);
   }
 
   @override
   void didUpdateWidget(Focusable oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.focusNode != null && widget.focusNode != _node) {
-      _node = widget.focusNode!;
+    assert(
+      identical(widget.focusNode, oldWidget.focusNode),
+      'A Focusable keeps the node it was built with. Swapping one in later '
+      'left two widgets sharing a node and one of them disposing it.',
+    );
+    if (widget.preferred == oldWidget.preferred) return;
+    if (widget.preferred) {
+      _area?.claimPreferred(_node);
+    } else {
+      _area?.releasePreferred(_node);
     }
+  }
+
+  @override
+  void dispose() {
+    _area?.releasePreferred(_node);
+    _pulse.dispose();
+    if (_ownsNode) _node.dispose();
+    super.dispose();
   }
 
   void _onFocusChange(bool focused) {
@@ -153,7 +195,6 @@ class _FocusableState extends State<Focusable>
 
     final tile = Focus(
       focusNode: _node,
-      autofocus: widget.autofocus,
       onFocusChange: _onFocusChange,
       onKeyEvent: _onKey,
       child: AnimatedScale(
@@ -173,7 +214,7 @@ class _FocusableState extends State<Focusable>
                 : 0.0;
 
             // Focus exists from the first frame — something has to be ringed
-            // for OK to mean anything, and `autofocus` puts it there. But on a
+            // for OK to mean anything, and the area lands it there. But on a
             // machine somebody is driving with a mouse, drawing that ring
             // before they have touched an arrow key highlights a choice they
             // did not make. So the ring waits for the first arrow; the focus

@@ -7,21 +7,17 @@ import '../../widgets/chip_row.dart';
 import '../../widgets/poster_tile.dart';
 import '../../widgets/rail.dart';
 import '../../widgets/status_views.dart';
-import 'name_entry_screen.dart';
 import 'playlists_cubit.dart';
 
 /// Lists the owner made, and the ones the catalogue publishes.
 class PlaylistsScreen extends StatelessWidget {
   const PlaylistsScreen({super.key});
 
+  /// The name is typed on a screen of its own, which writes it to the store
+  /// and comes back — so there is nothing to hand over, only a list to re-read.
   Future<void> _create(BuildContext context) async {
-    final cubit = context.read<PlaylistsCubit>();
-    final name = await NameEntryScreen.show(
-      context,
-      title: 'Назва плейлиста',
-      confirmLabel: 'Створити',
-    );
-    if (name != null && name.isNotEmpty) await cubit.create(name);
+    await openRoute<void>(context, '/playlists/new');
+    if (context.mounted) await context.read<PlaylistsCubit>().load();
   }
 
   @override
@@ -64,7 +60,7 @@ class PlaylistsScreen extends StatelessWidget {
                         itemCount: 1,
                         builder: (context, index) => TvChip(
                           label: 'Створити плейлист',
-                          autofocus: true,
+                          preferred: true,
                           onSelect: () => _create(context),
                         ),
                       ),
@@ -157,14 +153,11 @@ class _PlaylistRail extends StatelessWidget {
               1 => TvChip(
                 label: 'Перейменувати',
                 onSelect: () async {
-                  final name = await NameEntryScreen.show(
+                  await openRoute<void>(
                     context,
-                    title: 'Нова назва',
-                    initial: view.playlist.title,
+                    '/playlists/${view.playlist.id}/rename',
                   );
-                  if (name != null) {
-                    await cubit.rename(view.playlist.id, name);
-                  }
+                  if (context.mounted) await cubit.load();
                 },
               ),
               _ => TvChip(

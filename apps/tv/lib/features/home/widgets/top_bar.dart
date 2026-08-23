@@ -18,21 +18,12 @@ class TopBar extends StatelessWidget {
     required this.selected,
     required this.onSelect,
     required this.link,
-    this.onEnter,
     super.key,
   });
 
   final List<NavTab> destinations;
   final NavTab selected;
   final ValueChanged<NavTab> onSelect;
-
-  /// Fires when focus arrives up here from the content below.
-  ///
-  /// The bar does not scroll — the rails under it do — so walking up out of a
-  /// rail leaves the hero half off the top of the screen with nothing to say
-  /// how to get it back. Whoever owns the scroll position handles this by
-  /// returning it to the top.
-  final VoidCallback? onEnter;
 
   /// What the box is connected by: `ethernet`, `wifi`, `cellular` or `none`.
   final String link;
@@ -52,8 +43,11 @@ class TopBar extends StatelessWidget {
             _Destination(
               label: tab.title,
               selected: tab == selected,
+              // Walking up into the row lands on the section showing now
+              // rather than on Головна: the row is where you are, not a list
+              // you start from.
+              preferred: tab == selected,
               onSelect: () => onSelect(tab),
-              onEnter: onEnter,
             ),
             SizedBox(width: context.px(28)),
           ],
@@ -67,7 +61,7 @@ class TopBar extends StatelessWidget {
           ],
           const _Clock(),
           SizedBox(width: context.px(16)),
-          _SettingsButton(onEnter: onEnter),
+          const _SettingsButton(),
         ],
       ),
     );
@@ -78,14 +72,14 @@ class _Destination extends StatefulWidget {
   const _Destination({
     required this.label,
     required this.selected,
+    required this.preferred,
     required this.onSelect,
-    this.onEnter,
   });
 
   final String label;
   final bool selected;
+  final bool preferred;
   final VoidCallback onSelect;
-  final VoidCallback? onEnter;
 
   @override
   State<_Destination> createState() => _DestinationState();
@@ -99,6 +93,7 @@ class _DestinationState extends State<_Destination> {
     final active = widget.selected || _focused;
 
     return Focusable(
+      preferred: widget.preferred,
       // A nav item must not shift its neighbours as focus walks the row.
       scaleOnFocus: 1,
       glow: false,
@@ -106,10 +101,7 @@ class _DestinationState extends State<_Destination> {
       // not get the card's click.
       cue: SfxCue.navEdge,
       onSelect: widget.onSelect,
-      onFocusChange: (focused) {
-        setState(() => _focused = focused);
-        if (focused) widget.onEnter?.call();
-      },
+      onFocusChange: (focused) => setState(() => _focused = focused),
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: context.px(12),
@@ -170,9 +162,7 @@ class _LinkIcon extends StatelessWidget {
 
 /// Opens the launcher's own settings, which in turn offer the box's.
 class _SettingsButton extends StatefulWidget {
-  const _SettingsButton({this.onEnter});
-
-  final VoidCallback? onEnter;
+  const _SettingsButton();
 
   @override
   State<_SettingsButton> createState() => _SettingsButtonState();
@@ -187,10 +177,7 @@ class _SettingsButtonState extends State<_SettingsButton> {
       scaleOnFocus: 1,
       glow: false,
       onSelect: () => openRoute(context, '/settings'),
-      onFocusChange: (focused) {
-        setState(() => _focused = focused);
-        if (focused) widget.onEnter?.call();
-      },
+      onFocusChange: (focused) => setState(() => _focused = focused),
       child: Padding(
         padding: EdgeInsets.all(context.px(6)),
         child: Icon(

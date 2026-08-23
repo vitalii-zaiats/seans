@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:super_movies_api/super_movies_api.dart';
 
+import '../../core/remote/focus_area.dart';
 import '../../data/startup.dart';
 import '../../theme/nocturne.dart';
 import '../../widgets/chip_row.dart';
@@ -55,33 +56,39 @@ class _Account extends StatelessWidget {
             context.px(48),
             context.px(28),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Акаунт',
-                style: TextStyle(
-                  fontSize: context.sp(40),
-                  fontWeight: FontWeight.w500,
-                  color: Nocturne.text,
+          // One area: most of this screen is an explanation, and the actions
+          // are a handful of buttons in the middle of it.
+          child: FocusArea(
+            landing: true,
+            anchor: true,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Акаунт',
+                  style: TextStyle(
+                    fontSize: context.sp(40),
+                    fontWeight: FontWeight.w500,
+                    color: Nocturne.text,
+                  ),
                 ),
-              ),
-              SizedBox(height: context.px(8)),
-              Text(
-                _explain(account, reached: startup.reached),
-                style: TextStyle(
-                  fontSize: context.sp(19),
-                  height: 1.5,
-                  color: Nocturne.neutral400,
+                SizedBox(height: context.px(8)),
+                Text(
+                  _explain(account, reached: startup.reached),
+                  style: TextStyle(
+                    fontSize: context.sp(19),
+                    height: 1.5,
+                    color: Nocturne.neutral400,
+                  ),
                 ),
-              ),
-              SizedBox(height: context.px(32)),
-              Expanded(
-                child: pairing.status == PairingStatus.idle
-                    ? _Standing(account: account)
-                    : _Pairing(pairing: pairing),
-              ),
-            ],
+                SizedBox(height: context.px(32)),
+                Expanded(
+                  child: pairing.status == PairingStatus.idle
+                      ? _Standing(account: account)
+                      : _Pairing(pairing: pairing),
+                ),
+              ],
+            ),
           ),
         ),
       ),

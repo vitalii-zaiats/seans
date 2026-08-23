@@ -39,6 +39,16 @@ abstract interface class Parts {
   /// `/cameras`, `/fun`.
   List<RouteBase> routes();
 
+  /// Which of [routes] want the window to themselves — a camera's picture, a
+  /// file playing off a stick.
+  ///
+  /// Declared next to the routes rather than in a table `router.dart` keeps,
+  /// because that table listed two patterns for screens that do not exist on
+  /// any platform, and a list of strings nothing checks reads like a contract.
+  /// Full-bleed is only about chrome now: the worst a disagreement can do is a
+  /// strip over a picture.
+  Set<String> get fullBleedPaths;
+
   /// Releases whatever the bindings above hold open.
   Future<void> dispose();
 }

@@ -4,6 +4,7 @@ import 'package:super_movies_api/super_movies_api.dart';
 
 import '../../core/navigate.dart';
 import '../../core/home_hero.dart';
+import '../../core/remote/focus_area.dart';
 import '../../core/home_rails.dart';
 import '../../data/library_store.dart';
 import '../../data/settings_store.dart';
@@ -71,82 +72,88 @@ class _Body extends StatelessWidget {
     final settings = context.read<SettingsStore>().value;
     bool shows(HomeRailId rail) => settings.showsRail(rail.id);
 
-    return ListView(
-      controller: controller,
-      padding: EdgeInsets.only(bottom: context.px(40)),
-      children: [
-        if (settings.heroMode == HomeHero.clock) const ClockHero(),
-        if (hero != null && settings.heroMode == HomeHero.slider)
-          HeroPanel(
-            card: hero,
-            progress: state.heroProgress,
-            saved: library.isSaved(hero.slug),
-            index: state.heroIndex,
-            count: state.hero.length,
-            onHold: (held) => context.read<HomeCubit>().holdHero(held: held),
-            onPlay: () => _play(context, hero),
-            onDetails: () => _details(context, hero.slug),
-            onToggleSaved: () async {
-              await library.toggleSaved(hero.slug);
-              if (context.mounted) {
-                await context.read<HomeCubit>().refreshLocalRails();
-              }
-            },
-          ),
-        // First rail whenever there is one: what somebody stopped halfway
-        // through is the likeliest reason they turned the box on.
-        if (state.resume.isNotEmpty && shows(HomeRailId.resume)) ...[
-          SizedBox(height: context.px(28)),
-          Rail(
-            title: 'Продовжити дивитись',
-            itemCount: state.resume.length,
-            itemBuilder: (context, index) {
-              final entry = state.resume[index];
-              return PosterTile(
-                card: entry.card,
-                progress: entry.progress.fraction,
-                subtitle: entry.label,
-                onSelect: () => _play(
-                  context,
-                  entry.card,
-                  resumeAt: entry.progress.position,
-                  season: entry.progress.season,
-                  episode: entry.progress.episode,
-                ),
-              );
-            },
-          ),
-        ],
-        // Right after what is half-watched, and before the content rails: this
-        // is what a launcher is for, and reaching YouTube should not mean
-        // walking to the Застосунки tab.
-        if (shows(HomeRailId.apps)) ...[
-          SizedBox(height: context.px(28)),
-          const PinnedAppsRail(),
-        ],
-
-        // Live channels next, because reaching for the news is the other thing
-        // a box gets turned on for — and the ТБ tab is four presses away.
-        if (shows(HomeRailId.tv)) ...[
-          SizedBox(height: context.px(28)),
-          const TvRail(),
-        ],
-
-        for (final rail in state.rails)
-          if (rail.items.isNotEmpty) ...[
+    // A column of areas: the hero's buttons, then a rail each. In clock mode
+    // there is no hero and so no `landing` at all — focus falls to the first
+    // rail on its own, which is what used to leave the home screen opening
+    // with nothing ringed.
+    return FocusArea(
+      child: ListView(
+        controller: controller,
+        padding: EdgeInsets.only(bottom: context.px(40)),
+        children: [
+          if (settings.heroMode == HomeHero.clock) const ClockHero(),
+          if (hero != null && settings.heroMode == HomeHero.slider)
+            HeroPanel(
+              card: hero,
+              progress: state.heroProgress,
+              saved: library.isSaved(hero.slug),
+              index: state.heroIndex,
+              count: state.hero.length,
+              onHold: (held) => context.read<HomeCubit>().holdHero(held: held),
+              onPlay: () => _play(context, hero),
+              onDetails: () => _details(context, hero.slug),
+              onToggleSaved: () async {
+                await library.toggleSaved(hero.slug);
+                if (context.mounted) {
+                  await context.read<HomeCubit>().refreshLocalRails();
+                }
+              },
+            ),
+          // First rail whenever there is one: what somebody stopped halfway
+          // through is the likeliest reason they turned the box on.
+          if (state.resume.isNotEmpty && shows(HomeRailId.resume)) ...[
             SizedBox(height: context.px(28)),
             Rail(
-              title: rail.title,
-              itemCount: rail.items.length,
-              itemBuilder: (context, index) => PosterTile(
-                card: rail.items[index],
-                onSelect: () => _details(context, rail.items[index].slug),
-              ),
+              title: 'Продовжити дивитись',
+              itemCount: state.resume.length,
+              itemBuilder: (context, index) {
+                final entry = state.resume[index];
+                return PosterTile(
+                  card: entry.card,
+                  progress: entry.progress.fraction,
+                  subtitle: entry.label,
+                  onSelect: () => _play(
+                    context,
+                    entry.card,
+                    resumeAt: entry.progress.position,
+                    season: entry.progress.season,
+                    episode: entry.progress.episode,
+                  ),
+                );
+              },
             ),
           ],
-        SizedBox(height: context.px(20)),
-        const KeyHints(text: '←→↑↓ навігація  ·  OK відкрити  ·  ⌫ назад'),
-      ],
+          // Right after what is half-watched, and before the content rails: this
+          // is what a launcher is for, and reaching YouTube should not mean
+          // walking to the Застосунки tab.
+          if (shows(HomeRailId.apps)) ...[
+            SizedBox(height: context.px(28)),
+            const PinnedAppsRail(),
+          ],
+
+          // Live channels next, because reaching for the news is the other thing
+          // a box gets turned on for — and the ТБ tab is four presses away.
+          if (shows(HomeRailId.tv)) ...[
+            SizedBox(height: context.px(28)),
+            const TvRail(),
+          ],
+
+          for (final rail in state.rails)
+            if (rail.items.isNotEmpty) ...[
+              SizedBox(height: context.px(28)),
+              Rail(
+                title: rail.title,
+                itemCount: rail.items.length,
+                itemBuilder: (context, index) => PosterTile(
+                  card: rail.items[index],
+                  onSelect: () => _details(context, rail.items[index].slug),
+                ),
+              ),
+            ],
+          SizedBox(height: context.px(20)),
+          const KeyHints(text: '←→↑↓ навігація  ·  OK відкрити  ·  ⌫ назад'),
+        ],
+      ),
     );
   }
 

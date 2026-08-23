@@ -26,6 +26,9 @@ final class WebParts implements Parts {
   List<RouteBase> routes() => const [];
 
   @override
+  Set<String> get fullBleedPaths => const {};
+
+  @override
   Future<void> dispose() async {}
 }
 

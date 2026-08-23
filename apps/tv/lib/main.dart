@@ -15,7 +15,7 @@ import 'data/settings_store.dart';
 import 'data/startup.dart';
 import 'data/steam_store.dart';
 import 'data/sweet_tv_store.dart';
-import 'core/dpad.dart';
+import 'core/remote/activity.dart';
 import 'parts/parts_for_platform.dart';
 import 'platform/install_offer.dart';
 import 'platform/install_prompt_for_platform.dart';
@@ -74,9 +74,10 @@ Future<void> main() async {
   // constant that answers "no" — see `platform/install_prompt.dart`.
   installPrompt = installPromptForPlatform();
 
-  // Watches for the first arrow key, so the focus ring can wait until
-  // somebody is actually steering — see `core/dpad.dart`.
-  Dpad.watch();
+  // Watches every key press: the focus ring waits for the first arrow, and
+  // the idle screen has to know somebody is there even while a player is
+  // answering the presses itself — see `core/remote/activity.dart`.
+  RemoteActivity.watch();
 
   // Announced before the first frame too, and for the same reason: the answer
   // says which sections this build may show, and a row that loses two tabs a

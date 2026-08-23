@@ -44,7 +44,7 @@ void main() {
       );
 
       expect(transport.lastRequest.method, 'POST');
-      expect(transport.lastRequest.url.path, '/init');
+      expect(transport.lastRequest.url.path, '/api/v1/init');
       expect(transport.lastBody, {
         'id': '3f2a1e40-9a1c-4f0e-8b1d-2c9e7a5b6d10',
         'platform': 'android',
@@ -204,7 +204,7 @@ void main() {
 
       await api.signOut();
 
-      expect(transport.lastRequest.url.path, '/auth/logout');
+      expect(transport.lastRequest.url.path, '/api/v1/auth/logout');
       expect(api.token, isNull);
       expect(api.isSignedIn, isFalse);
     });
@@ -362,7 +362,7 @@ void main() {
         transport: FakeTransport.empty(),
       );
 
-      expect(api.uriFor('/init').toString(), 'https://api.test/init');
+      expect(api.uriFor('/init').toString(), 'https://api.test/api/v1/init');
     });
   });
 }
@@ -380,7 +380,7 @@ void deviceLinkTests() {
 
       final link = await api.startDeviceLink();
 
-      expect(transport.lastRequest.url.path, '/auth/device');
+      expect(transport.lastRequest.url.path, '/api/v1/auth/device');
       expect(link.code, 'H7KQ2M');
       expect(
         link.verifyUrl(Uri.parse('https://app.test')).toString(),
@@ -480,7 +480,7 @@ void deviceLinkTests() {
         token: 'phone',
       ).approveDeviceLink('H7KQ2M');
 
-      expect(transport.lastRequest.url.path, '/auth/device/approve');
+      expect(transport.lastRequest.url.path, '/api/v1/auth/device/approve');
       expect(transport.lastBody, {'code': 'H7KQ2M'});
       expect(status.approved, isTrue);
       expect(status.deviceName, 'Android TV');

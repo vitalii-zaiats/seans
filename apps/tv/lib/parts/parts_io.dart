@@ -40,6 +40,9 @@ final class NativeParts implements Parts {
   }
 
   @override
+  Set<String> get fullBleedPaths => const {};
+
+  @override
   Future<void> dispose() async {}
 }
 

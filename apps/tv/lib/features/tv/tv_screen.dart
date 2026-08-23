@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/navigate.dart';
 import '../../core/router.dart';
+import '../../core/remote/focus_area.dart';
 import '../../data/iptv_store.dart';
 import '../../theme/nocturne.dart';
 import '../../widgets/chip_row.dart';
@@ -36,92 +37,104 @@ class TvScreen extends StatelessWidget {
               builder: (context, starred, _) {
                 final channels = state.visible(starred);
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(
-                        context.px(80),
-                        context.px(44),
-                        context.px(80),
-                        context.px(16),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            'ТБ',
-                            style: TextStyle(
-                              fontSize: context.sp(38),
-                              fontWeight: FontWeight.w500,
-                              color: Nocturne.text,
+                // Groups over the grid: two areas in a column, so which of
+                // the two the arrows are in is a place rather than a guess.
+                return FocusArea(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          context.px(80),
+                          context.px(44),
+                          context.px(80),
+                          context.px(16),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'ТБ',
+                              style: TextStyle(
+                                fontSize: context.sp(38),
+                                fontWeight: FontWeight.w500,
+                                color: Nocturne.text,
+                              ),
                             ),
-                          ),
-                          SizedBox(width: context.px(16)),
-                          Text(
-                            '${channels.length} каналів',
-                            style: TextStyle(
-                              fontSize: context.sp(17),
-                              color: Nocturne.neutral600,
+                            SizedBox(width: context.px(16)),
+                            Text(
+                              '${channels.length} каналів',
+                              style: TextStyle(
+                                fontSize: context.sp(17),
+                                color: Nocturne.neutral600,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: context.px(80)),
-                      child: TvChipRow(
-                        itemCount: state.groups.length + 1,
-                        builder: (context, index) {
-                          if (index == 0) {
-                            return TvChip(
-                              label: 'Усі',
-                              selected: state.group == null,
-                              autofocus: state.group == null,
-                              onSelect: () =>
-                                  context.read<TvCubit>().showGroup(null),
-                            );
-                          }
-                          final group = state.groups[index - 1];
-                          return TvChip(
-                            label: group,
-                            selected: group == state.group,
-                            onSelect: () =>
-                                context.read<TvCubit>().showGroup(group),
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(height: context.px(18)),
-
-                    Expanded(
-                      child: channels.isEmpty
-                          ? EmptyView(
-                              message: state.group == TvState.favourites
-                                  ? 'Тут будуть канали, які ви позначите '
-                                        'зірочкою'
-                                  : 'У цій групі порожньо',
-                            )
-                          : _Channels(channels: channels, starred: starred),
-                    ),
-
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(
-                        context.px(80),
-                        0,
-                        context.px(80),
-                        context.px(20),
-                      ),
-                      child: Text(
-                        'OK дивитись  ·  ⏯ в обране  ·  ⌫ назад',
-                        style: TextStyle(
-                          fontSize: context.sp(14),
-                          color: Nocturne.neutral700,
+                          ],
                         ),
                       ),
-                    ),
-                  ],
+
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: context.px(80),
+                        ),
+                        child: TvChipRow(
+                          itemCount: state.groups.length + 1,
+                          builder: (context, index) {
+                            if (index == 0) {
+                              return TvChip(
+                                label: 'Усі',
+                                selected: state.group == null,
+                                preferred: state.group == null,
+                                onSelect: () =>
+                                    context.read<TvCubit>().showGroup(null),
+                              );
+                            }
+                            final group = state.groups[index - 1];
+                            return TvChip(
+                              label: group,
+                              selected: group == state.group,
+                              onSelect: () =>
+                                  context.read<TvCubit>().showGroup(group),
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(height: context.px(18)),
+
+                      Expanded(
+                        child: channels.isEmpty
+                            ? EmptyView(
+                                message: state.group == TvState.favourites
+                                    ? 'Тут будуть канали, які ви позначите '
+                                          'зірочкою'
+                                    : 'У цій групі порожньо',
+                              )
+                            : FocusArea(
+                                landing: true,
+                                child: _Channels(
+                                  channels: channels,
+                                  starred: starred,
+                                ),
+                              ),
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          context.px(80),
+                          0,
+                          context.px(80),
+                          context.px(20),
+                        ),
+                        child: Text(
+                          'OK дивитись  ·  ⏯ в обране  ·  ⌫ назад',
+                          style: TextStyle(
+                            fontSize: context.sp(14),
+                            color: Nocturne.neutral700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
             );
@@ -161,7 +174,7 @@ class _Channels extends StatelessWidget {
       itemBuilder: (context, index) => ChannelTile(
         channel: channels[index],
         starred: starred.contains(channels[index].id),
-        autofocus: index == 0,
+        preferred: index == 0,
         onSelect: () => openRoute(
           context,
           '/tv/${Uri.encodeComponent(channels[index].name)}',

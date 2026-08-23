@@ -4,6 +4,7 @@ import 'package:super_movies_api/super_movies_api.dart';
 
 import '../../core/navigate.dart';
 import '../../core/labels.dart';
+import '../../core/remote/focus_area.dart';
 import '../../data/library_store.dart';
 import '../../theme/nocturne.dart';
 import '../../widgets/poster_image.dart';
@@ -98,132 +99,140 @@ class _Body extends StatelessWidget {
               context.px(80),
               context.px(40),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _Tags(details: details),
-                SizedBox(height: context.px(16)),
-                SizedBox(
-                  width: context.px(1000),
-                  child: Text(
-                    details.name,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: context.sp(52),
-                      height: 1.1,
-                      fontWeight: FontWeight.w500,
-                      color: Nocturne.text,
-                    ),
-                  ),
-                ),
-                SizedBox(height: context.px(10)),
-                Text(
-                  metaLine([
-                    details.yearStart?.toString(),
-                    details.time,
-                    details.imdbMark == null
-                        ? null
-                        : '★ ${ratingLabel(details.imdbMark)}',
-                    details.directors.isEmpty
-                        ? null
-                        : 'Реж. ${details.directors.first.name}',
-                  ]),
-                  style: TextStyle(
-                    fontSize: context.sp(18),
-                    color: Nocturne.neutral500,
-                  ),
-                ),
-                if (details.shortDescription != null) ...[
-                  SizedBox(height: context.px(18)),
+            child: FocusArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _Tags(details: details),
+                  SizedBox(height: context.px(16)),
                   SizedBox(
-                    width: context.px(900),
+                    width: context.px(1000),
                     child: Text(
-                      details.shortDescription!,
-                      maxLines: 4,
+                      details.name,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: context.sp(19),
-                        height: 1.55,
-                        color: Nocturne.neutral400,
+                        fontSize: context.sp(52),
+                        height: 1.1,
+                        fontWeight: FontWeight.w500,
+                        color: Nocturne.text,
                       ),
                     ),
                   ),
-                ],
-                if (details.cast.isNotEmpty) ...[
-                  SizedBox(height: context.px(14)),
+                  SizedBox(height: context.px(10)),
                   Text(
-                    'У ролях — ${details.cast.take(4).map((c) => c.name).join(', ')}',
+                    metaLine([
+                      details.yearStart?.toString(),
+                      details.time,
+                      details.imdbMark == null
+                          ? null
+                          : '★ ${ratingLabel(details.imdbMark)}',
+                      details.directors.isEmpty
+                          ? null
+                          : 'Реж. ${details.directors.first.name}',
+                    ]),
                     style: TextStyle(
-                      fontSize: context.sp(16),
-                      color: Nocturne.neutral600,
+                      fontSize: context.sp(18),
+                      color: Nocturne.neutral500,
                     ),
                   ),
-                ],
-                SizedBox(height: context.px(26)),
-                Row(
-                  children: [
-                    HeroButton(
-                      label: progress != null && progress.isStarted
-                          ? 'Продовжити · ${(progress.fraction * 100).round()}%'
-                          : 'Дивитись',
-                      icon: Icons.play_arrow_rounded,
-                      primary: true,
-                      autofocus: true,
-                      onSelect: () => openPlayer(
-                        context,
-                        details: details,
-                        season: resumeSeason,
-                        episode: progress?.episode,
-                        resumeAt: progress?.position,
+                  if (details.shortDescription != null) ...[
+                    SizedBox(height: context.px(18)),
+                    SizedBox(
+                      width: context.px(900),
+                      child: Text(
+                        details.shortDescription!,
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: context.sp(19),
+                          height: 1.55,
+                          color: Nocturne.neutral400,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: context.px(14)),
-                    HeroButton(
-                      label: 'Плейлисти',
-                      icon: Icons.playlist_add_rounded,
-                      onSelect: () => openRoute(
-                        context,
-                        Uri(
-                          path: '/title/${details.slug}/add',
-                          queryParameters: {'name': details.name},
-                        ).toString(),
-                      ),
-                    ),
-                    SizedBox(width: context.px(14)),
-                    HeroButton(
-                      label: state.saved ? 'У списку' : 'Мій список',
-                      icon: state.saved
-                          ? Icons.check_rounded
-                          : Icons.add_rounded,
-                      onSelect: () async {
-                        final saved = await library.toggleSaved(details.slug);
-                        if (context.mounted) {
-                          context.read<DetailsCubit>().setSaved(saved);
-                        }
-                      },
                     ),
                   ],
-                ),
-                if (details.isSeries && state.seasons.isNotEmpty) ...[
-                  SizedBox(height: context.px(28)),
-                  Expanded(
-                    child: EpisodeStrip(
-                      seasons: state.seasons,
-                      seasonIndex: state.seasonIndex,
-                      loading: state.seasonLoading,
-                      onSeason: context.read<DetailsCubit>().showSeason,
-                      onPlay: (episode) => openPlayer(
-                        context,
-                        details: details,
-                        season: season,
-                        episode: episode,
+                  if (details.cast.isNotEmpty) ...[
+                    SizedBox(height: context.px(14)),
+                    Text(
+                      'У ролях — ${details.cast.take(4).map((c) => c.name).join(', ')}',
+                      style: TextStyle(
+                        fontSize: context.sp(16),
+                        color: Nocturne.neutral600,
                       ),
                     ),
+                  ],
+                  SizedBox(height: context.px(26)),
+                  FocusArea(
+                    flow: Axis.horizontal,
+                    landing: true,
+                    child: Row(
+                      children: [
+                        HeroButton(
+                          label: progress != null && progress.isStarted
+                              ? 'Продовжити · ${(progress.fraction * 100).round()}%'
+                              : 'Дивитись',
+                          icon: Icons.play_arrow_rounded,
+                          primary: true,
+                          preferred: true,
+                          onSelect: () => openPlayer(
+                            context,
+                            details: details,
+                            season: resumeSeason,
+                            episode: progress?.episode,
+                            resumeAt: progress?.position,
+                          ),
+                        ),
+                        SizedBox(width: context.px(14)),
+                        HeroButton(
+                          label: 'Плейлисти',
+                          icon: Icons.playlist_add_rounded,
+                          onSelect: () => openRoute(
+                            context,
+                            Uri(
+                              path: '/title/${details.slug}/add',
+                              queryParameters: {'name': details.name},
+                            ).toString(),
+                          ),
+                        ),
+                        SizedBox(width: context.px(14)),
+                        HeroButton(
+                          label: state.saved ? 'У списку' : 'Мій список',
+                          icon: state.saved
+                              ? Icons.check_rounded
+                              : Icons.add_rounded,
+                          onSelect: () async {
+                            final saved = await library.toggleSaved(
+                              details.slug,
+                            );
+                            if (context.mounted) {
+                              context.read<DetailsCubit>().setSaved(saved);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ] else
-                  const Spacer(),
-              ],
+                  if (details.isSeries && state.seasons.isNotEmpty) ...[
+                    SizedBox(height: context.px(28)),
+                    Expanded(
+                      child: EpisodeStrip(
+                        seasons: state.seasons,
+                        seasonIndex: state.seasonIndex,
+                        loading: state.seasonLoading,
+                        onSeason: context.read<DetailsCubit>().showSeason,
+                        onPlay: (episode) => openPlayer(
+                          context,
+                          details: details,
+                          season: season,
+                          episode: episode,
+                        ),
+                      ),
+                    ),
+                  ] else
+                    const Spacer(),
+                ],
+              ),
             ),
           ),
         ),

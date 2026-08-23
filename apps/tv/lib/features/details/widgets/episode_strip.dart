@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:super_movies_api/super_movies_api.dart';
 
 import '../../../core/labels.dart';
+import '../../../core/remote/focus_area.dart';
 import '../../../theme/nocturne.dart';
 import '../../../widgets/chip_row.dart';
 
@@ -45,66 +46,70 @@ class EpisodeStrip extends StatelessWidget {
               Episode(number: number, ready: true),
           ];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (seasons.length > 1)
-          TvChipRow(
-            itemCount: seasons.length,
-            builder: (context, index) => TvChip(
-              label: 'Сезон ${seasons[index].number}',
-              selected: index == seasonIndex,
-              onSelect: () => onSeason(index),
-            ),
-          ),
-        SizedBox(height: context.px(12)),
-        if (loading)
-          SizedBox(
-            height: context.px(56),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: SizedBox(
-                width: context.px(26),
-                height: context.px(26),
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: context.accent,
-                ),
+    // Seasons over episodes: two rows, and stepping between them is a move
+    // between areas rather than something the geometry has to be read for.
+    return FocusArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (seasons.length > 1)
+            TvChipRow(
+              itemCount: seasons.length,
+              builder: (context, index) => TvChip(
+                label: 'Сезон ${seasons[index].number}',
+                selected: index == seasonIndex,
+                onSelect: () => onSeason(index),
               ),
             ),
-          )
-        else if (episodes.isEmpty)
-          SizedBox(
-            height: context.px(56),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                // Only ever reached for a season that came back filled in and
-                // genuinely empty — an unfetched one shows the spinner.
-                'Епізодів ще немає',
-                style: TextStyle(
-                  fontSize: context.sp(18),
-                  color: Nocturne.neutral600,
+          SizedBox(height: context.px(12)),
+          if (loading)
+            SizedBox(
+              height: context.px(56),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                  width: context.px(26),
+                  height: context.px(26),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: context.accent,
+                  ),
                 ),
               ),
+            )
+          else if (episodes.isEmpty)
+            SizedBox(
+              height: context.px(56),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  // Only ever reached for a season that came back filled in and
+                  // genuinely empty — an unfetched one shows the spinner.
+                  'Епізодів ще немає',
+                  style: TextStyle(
+                    fontSize: context.sp(18),
+                    color: Nocturne.neutral600,
+                  ),
+                ),
+              ),
+            )
+          else
+            TvChipRow(
+              itemCount: episodes.length,
+              builder: (context, index) {
+                final episode = episodes[index];
+                final enabled = playable.contains(episode.number);
+                return TvChip(
+                  label: episodeLabel(episode.number, episode.name),
+                  enabled: enabled,
+                  hint: enabled ? null : 'ще не вийшла',
+                  onSelect: () => onPlay(episode.number),
+                );
+              },
             ),
-          )
-        else
-          TvChipRow(
-            itemCount: episodes.length,
-            builder: (context, index) {
-              final episode = episodes[index];
-              final enabled = playable.contains(episode.number);
-              return TvChip(
-                label: episodeLabel(episode.number, episode.name),
-                enabled: enabled,
-                hint: enabled ? null : 'ще не вийшла',
-                onSelect: () => onPlay(episode.number),
-              );
-            },
-          ),
-        const Spacer(),
-      ],
+          const Spacer(),
+        ],
+      ),
     );
   }
 }

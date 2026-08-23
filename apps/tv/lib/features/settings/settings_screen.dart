@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/navigate.dart';
 import '../../core/home_hero.dart';
+import '../../core/keypad.dart';
 import '../../core/home_rails.dart';
 import '../../core/nav_tab.dart';
+import '../../core/remote/focus_area.dart';
 import '../../data/camera_store.dart';
 import '../../data/iptv_store.dart';
 import '../../data/onboarding_store.dart';
@@ -21,6 +23,9 @@ import 'screen_section.dart';
 /// The groups down the left of the settings screen.
 enum SettingsGroup {
   look('Вигляд'),
+  // Both ways of typing are stand-ins for a keyboard. A machine that has one
+  // is shown neither, so there is nothing here to choose between.
+  input('Введення', needsBox: true),
   home('Головна'),
   sections('Розділи'),
   tv('Телебачення'),
@@ -103,29 +108,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 SizedBox(height: context.px(28)),
                 Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: context.px(340),
-                        child: ListView(
-                          clipBehavior: Clip.none,
-                          children: [
-                            for (final group in SettingsGroup.forThisMachine)
-                              _GroupRow(
-                                group: group,
-                                selected: group == _group,
-                                autofocus: group == SettingsGroup.look,
-                                onSelect: () => setState(() => _group = group),
-                              ),
-                          ],
+                  // Groups beside their settings, and said so: the hint at the
+                  // foot — "↑↓ група · → до налаштувань" — is now a
+                  // description of what the arbiter does rather than a hope.
+                  child: FocusArea(
+                    flow: Axis.horizontal,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: context.px(340),
+                          child: FocusArea(
+                            landing: true,
+                            child: ListView(
+                              clipBehavior: Clip.none,
+                              children: [
+                                for (final group
+                                    in SettingsGroup.forThisMachine)
+                                  _GroupRow(
+                                    group: group,
+                                    selected: group == _group,
+                                    preferred: group == _group,
+                                    onSelect: () =>
+                                        setState(() => _group = group),
+                                  ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: context.px(60)),
-                      Expanded(
-                        child: _Pane(group: _group, settings: settings),
-                      ),
-                    ],
+                        SizedBox(width: context.px(60)),
+                        Expanded(
+                          child: _Pane(group: _group, settings: settings),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Text(
@@ -153,13 +169,13 @@ class _GroupRow extends StatefulWidget {
   const _GroupRow({
     required this.group,
     required this.selected,
-    required this.autofocus,
+    required this.preferred,
     required this.onSelect,
   });
 
   final SettingsGroup group;
   final bool selected;
-  final bool autofocus;
+  final bool preferred;
   final VoidCallback onSelect;
 
   @override
@@ -174,7 +190,7 @@ class _GroupRowState extends State<_GroupRow> {
     final active = widget.selected || _focused;
 
     return Focusable(
-      autofocus: widget.autofocus,
+      preferred: widget.preferred,
       scaleOnFocus: 1,
       glow: false,
       onSelect: widget.onSelect,
@@ -217,29 +233,35 @@ class _Pane extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      clipBehavior: Clip.none,
-      children: switch (group) {
-        SettingsGroup.look => [_Look(settings: settings)],
-        SettingsGroup.home => [_Home(settings: settings)],
-        SettingsGroup.sections => [_Sections(settings: settings)],
-        SettingsGroup.tv => [const _Tv()],
-        SettingsGroup.cameras => [const _Cameras()],
-        SettingsGroup.fun => [const _Fun()],
-        SettingsGroup.idle => [_Idle(settings: settings)],
-        SettingsGroup.screen => [
-          const _Section(
-            label: 'ЕКРАН',
-            note:
-                'Те саме, що показують `wm size` і `wm density`, плюс те, у '
-                'чому насправді малює лаунчер',
-            child: ScreenSection(),
-          ),
-        ],
-        SettingsGroup.network => [_Network(settings: settings)],
-        SettingsGroup.support => [const _SupportSection()],
-        SettingsGroup.system => [const _System()],
-      },
+    // Its own area, so the pane a group opens is somewhere → steps into and ←
+    // steps back out of — and so a pane that has nothing focusable in it is
+    // skipped rather than swallowing the press.
+    return FocusArea(
+      child: ListView(
+        clipBehavior: Clip.none,
+        children: switch (group) {
+          SettingsGroup.look => [_Look(settings: settings)],
+          SettingsGroup.input => [_Input(settings: settings)],
+          SettingsGroup.home => [_Home(settings: settings)],
+          SettingsGroup.sections => [_Sections(settings: settings)],
+          SettingsGroup.tv => [const _Tv()],
+          SettingsGroup.cameras => [const _Cameras()],
+          SettingsGroup.fun => [const _Fun()],
+          SettingsGroup.idle => [_Idle(settings: settings)],
+          SettingsGroup.screen => [
+            const _Section(
+              label: 'ЕКРАН',
+              note:
+                  'Те саме, що показують `wm size` і `wm density`, плюс те, у '
+                  'чому насправді малює лаунчер',
+              child: ScreenSection(),
+            ),
+          ],
+          SettingsGroup.network => [_Network(settings: settings)],
+          SettingsGroup.support => [const _SupportSection()],
+          SettingsGroup.system => [const _System()],
+        },
+      ),
     );
   }
 }
@@ -351,6 +373,37 @@ class _Look extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _Input extends StatelessWidget {
+  const _Input({required this.settings});
+
+  final Settings settings;
+
+  @override
+  Widget build(BuildContext context) {
+    final store = context.read<SettingsStore>();
+
+    return _Section(
+      label: 'ЯК НАБИРАТИ ТЕКСТ',
+      note:
+          'Сітка — літери на екрані, ходити стрілками. Цифри — мультитап на '
+          'кнопках пульта, як колись на телефоні: 4 тричі — це Ї. Літери '
+          'підписані на кнопках, а 1 — апостроф і дефіс',
+      child: TvChipRow(
+        itemCount: TypingMode.values.length,
+        builder: (context, index) {
+          final mode = TypingMode.values[index];
+          return TvChip(
+            label: mode.title,
+            hint: mode.note,
+            selected: mode == settings.typingMode,
+            onSelect: () => store.setTypingMode(mode),
+          );
+        },
+      ),
     );
   }
 }

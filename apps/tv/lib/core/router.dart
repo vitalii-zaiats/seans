@@ -7,6 +7,7 @@ import 'package:super_movies_api/super_movies_api.dart';
 import '../data/iptv_store.dart';
 import '../data/library_store.dart';
 import '../data/onboarding_store.dart';
+import '../data/playlist_store.dart';
 import '../data/stream_resolver.dart';
 import '../data/sweet_tv_store.dart';
 import '../features/account/account_screen.dart';
@@ -18,8 +19,10 @@ import '../features/details/details_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/player/player_cubit.dart';
 import '../features/player/player_screen.dart';
+import '../features/playlists/name_entry_screen.dart';
 import '../features/playlists/playlist_picker_screen.dart';
 import '../features/playlists/playlist_screen.dart';
+import '../features/playlists/playlists_cubit.dart';
 import '../features/playlists/playlists_screen.dart';
 import '../features/search/search_cubit.dart';
 import '../features/search/search_screen.dart';
@@ -155,12 +158,46 @@ GoRouter buildRouter({
               ),
               GoRoute(
                 path: 'playlists',
-                builder: (context, state) => const PlaylistsScreen(),
+                builder: (context, state) => BlocProvider(
+                  create: (context) => PlaylistsCubit(
+                    context.read<SuperMoviesApi>(),
+                    context.read<PlaylistStore>(),
+                    context.read<PublicPlaylists>(),
+                  )..load(),
+                  child: const PlaylistsScreen(),
+                ),
                 routes: [
+                  // Before `:id`, which would otherwise swallow it: go_router
+                  // takes the first route that matches, in the order written.
+                  GoRoute(
+                    path: 'new',
+                    builder: (context, state) {
+                      final store = context.read<PlaylistStore>();
+                      return NameEntryScreen(
+                        title: 'Назва плейлиста',
+                        confirmLabel: 'Створити',
+                        onDone: store.create,
+                      );
+                    },
+                  ),
                   GoRoute(
                     path: ':id',
                     builder: (context, state) =>
                         PlaylistScreen(playlistId: state.pathParameters['id']!),
+                    routes: [
+                      GoRoute(
+                        path: 'rename',
+                        builder: (context, state) {
+                          final store = context.read<PlaylistStore>();
+                          final id = state.pathParameters['id']!;
+                          return NameEntryScreen(
+                            title: 'Нова назва',
+                            initial: store.byId(id)?.title ?? '',
+                            onDone: (name) => store.rename(id, name),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -244,6 +281,26 @@ GoRouter buildRouter({
                       slug: state.pathParameters['slug']!,
                       titleName: state.uri.queryParameters['name'] ?? '',
                     ),
+                    routes: [
+                      // Naming a new list and filing this title into it is one
+                      // errand, so it is one address rather than a screen that
+                      // hands a string back to the one underneath.
+                      GoRoute(
+                        path: 'new',
+                        builder: (context, state) {
+                          final store = context.read<PlaylistStore>();
+                          final slug = state.pathParameters['slug']!;
+                          return NameEntryScreen(
+                            title: 'Назва плейлиста',
+                            confirmLabel: 'Створити',
+                            onDone: (name) async {
+                              final playlist = await store.create(name);
+                              await store.toggle(playlist.id, slug);
+                            },
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -301,8 +358,14 @@ class LiveArgs {
 /// A player has its own controls, its own way out and a picture that goes edge
 /// to edge, so the way-back strip would letterbox the film to make room for a
 /// button the screen already offers.
-bool isFullBleed(String? pattern) => switch (pattern) {
+///
+/// Chrome, and only chrome. Whether a screen takes the arrows for itself is a
+/// separate question with a separate answer — `FocusArea(modal: true)`, stated
+/// by the screen that does the taking — and the two cannot drift apart,
+/// because the second is not a list of paths. This one used to name
+/// `/cameras/:id` and `/storage/play`, which no platform has ever routed; the
+/// machine that has such a screen names it beside the route now.
+bool isFullBleed(String? pattern, Parts parts) => switch (pattern) {
   '/title/:slug/play' || '/tv/:channel' => true,
-  '/cameras/:id' || '/storage/play' => true,
-  _ => false,
+  _ => pattern != null && parts.fullBleedPaths.contains(pattern),
 };

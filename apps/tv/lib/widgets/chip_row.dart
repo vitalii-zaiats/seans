@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/remote/focus_area.dart';
 import '../theme/nocturne.dart';
 import 'focusable.dart';
 
@@ -7,6 +8,11 @@ import 'focusable.dart';
 ///
 /// `Clip.none` matters: a focused chip is outlined, and a clipping viewport
 /// would shave the ring off the one at either end.
+///
+/// An area, for the same reason a rail is one: every chip row in the app — the
+/// player's panel, the groups on ТБ, the modes in settings, the confirm button
+/// under a keyboard — becomes something the arrows step in and out of by
+/// saying it here once.
 class TvChipRow extends StatelessWidget {
   const TvChipRow({
     required this.itemCount,
@@ -21,15 +27,18 @@ class TvChipRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: context.px(56),
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        clipBehavior: Clip.none,
-        padding: padding,
-        itemCount: itemCount,
-        separatorBuilder: (_, _) => SizedBox(width: context.px(10)),
-        itemBuilder: builder,
+    return FocusArea(
+      flow: Axis.horizontal,
+      child: SizedBox(
+        height: context.px(56),
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          clipBehavior: Clip.none,
+          padding: padding,
+          itemCount: itemCount,
+          separatorBuilder: (_, _) => SizedBox(width: context.px(10)),
+          itemBuilder: builder,
+        ),
       ),
     );
   }
@@ -42,7 +51,7 @@ class TvChip extends StatefulWidget {
     required this.onSelect,
     this.selected = false,
     this.enabled = true,
-    this.autofocus = false,
+    this.preferred = false,
     this.hint,
     this.swatch,
     super.key,
@@ -52,7 +61,7 @@ class TvChip extends StatefulWidget {
   final VoidCallback onSelect;
   final bool selected;
   final bool enabled;
-  final bool autofocus;
+  final bool preferred;
 
   /// A colour this chip stands for, drawn as a dot before the label.
   final Color? swatch;
@@ -133,7 +142,7 @@ class _TvChipState extends State<TvChip> {
     if (!widget.enabled) return Opacity(opacity: 0.45, child: body);
 
     return Focusable(
-      autofocus: widget.autofocus,
+      preferred: widget.preferred,
       // Chips must not grow: a shifting chip is one you press by mistake.
       scaleOnFocus: 1,
       glow: false,

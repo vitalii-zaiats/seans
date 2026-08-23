@@ -4,6 +4,7 @@ import 'package:super_movies_api/super_movies_api.dart';
 
 import '../../core/navigate.dart';
 import '../../core/labels.dart';
+import '../../core/remote/focus_area.dart';
 import '../../theme/nocturne.dart';
 import '../../widgets/focusable.dart';
 import '../../widgets/status_views.dart';
@@ -80,43 +81,57 @@ class _CatalogScreenState extends State<CatalogScreen> {
                     }
 
                     final section = snapshot.data?[_type];
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: context.px(300),
-                          child: _Sections(
-                            selected: _type,
-                            counts: snapshot.data,
-                            onSelect: (type) => setState(() => _type = type),
+                    // The three-part shape the class docstring describes, now
+                    // said rather than left to be inferred: one area across,
+                    // three areas in it, and ← → is the step between them.
+                    return FocusArea(
+                      flow: Axis.horizontal,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: context.px(300),
+                            child: FocusArea(
+                              landing: true,
+                              child: _Sections(
+                                selected: _type,
+                                counts: snapshot.data,
+                                onSelect: (type) =>
+                                    setState(() => _type = type),
+                              ),
+                            ),
                           ),
-                        ),
-                        SizedBox(width: context.px(40)),
-                        Expanded(
-                          flex: 3,
-                          child: _Column(
-                            title: 'Жанри',
-                            child: section == null
-                                ? const SizedBox.shrink()
-                                : _Genres(
-                                    genres: section.allGenres,
-                                    onSelect: (slug) => _open(genre: slug),
-                                  ),
+                          SizedBox(width: context.px(40)),
+                          Expanded(
+                            flex: 3,
+                            child: _Column(
+                              title: 'Жанри',
+                              child: section == null
+                                  ? const SizedBox.shrink()
+                                  : FocusArea(
+                                      child: _Genres(
+                                        genres: section.allGenres,
+                                        onSelect: (slug) => _open(genre: slug),
+                                      ),
+                                    ),
+                            ),
                           ),
-                        ),
-                        SizedBox(width: context.px(40)),
-                        Expanded(
-                          child: _Column(
-                            title: 'Роки',
-                            child: section == null
-                                ? const SizedBox.shrink()
-                                : _Years(
-                                    years: section.years,
-                                    onSelect: (slug) => _open(year: slug),
-                                  ),
+                          SizedBox(width: context.px(40)),
+                          Expanded(
+                            child: _Column(
+                              title: 'Роки',
+                              child: section == null
+                                  ? const SizedBox.shrink()
+                                  : FocusArea(
+                                      child: _Years(
+                                        years: section.years,
+                                        onSelect: (slug) => _open(year: slug),
+                                      ),
+                                    ),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     );
                   },
                 ),
@@ -178,7 +193,7 @@ class _Sections extends StatelessWidget {
               label: contentTypeLabel(type),
               count: counts?[type]?.totalCount,
               selected: type == selected,
-              autofocus: type == selected,
+              preferred: type == selected,
               onSelect: () => onSelect(type),
             ),
           ),
@@ -192,14 +207,14 @@ class _SectionRow extends StatefulWidget {
     required this.label,
     required this.count,
     required this.selected,
-    required this.autofocus,
+    required this.preferred,
     required this.onSelect,
   });
 
   final String label;
   final int? count;
   final bool selected;
-  final bool autofocus;
+  final bool preferred;
   final VoidCallback onSelect;
 
   @override
@@ -214,7 +229,7 @@ class _SectionRowState extends State<_SectionRow> {
     final active = widget.selected || _focused;
 
     return Focusable(
-      autofocus: widget.autofocus,
+      preferred: widget.preferred,
       scaleOnFocus: 1,
       glow: false,
       onSelect: widget.onSelect,

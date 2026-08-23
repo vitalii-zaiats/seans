@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/remote/focus_area.dart';
 import '../platform/box_for_platform.dart';
 import '../theme/nocturne.dart';
 import 'focusable.dart';
@@ -30,6 +31,13 @@ enum KeyboardLayout {
 /// works there and always did: `HardwareTyping` wraps both screens that use
 /// this and feeds real key presses into the very same callbacks, so hiding the
 /// grid removes a picture of a keyboard rather than the ability to type.
+///
+/// Every row is an area and the grid is an area of rows, so stepping from one
+/// row to the next is a move the arbiter makes rather than something ordinary
+/// traversal has to infer from seventy boxes' geometry. Nothing here asks for
+/// focus: landing gives the first key of the first row, which is why the
+/// address layout — where there is no `А` to autofocus — no longer opens with
+/// nothing ringed at all.
 class DpadKeyboard extends StatelessWidget {
   const DpadKeyboard({
     required this.onKey,
@@ -63,51 +71,49 @@ class DpadKeyboard extends StatelessWidget {
     // See the class docstring: a machine with a keyboard gets none of this.
     if (!platformBox.present) return const SizedBox.shrink();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (final row in layout.rows) ...[
-          Row(
-            children: [
-              for (final character in row.split('')) ...[
-                _Key(
-                  label: character,
-                  onSelect: () => onKey(character),
-                  autofocus: character == 'А',
-                ),
-                SizedBox(width: context.px(8)),
-              ],
-            ],
-          ),
-          SizedBox(height: context.px(8)),
-        ],
-        Row(
-          children: [
-            _Key(label: 'Пробіл', width: 200, onSelect: () => onKey(' ')),
-            SizedBox(width: context.px(8)),
-            _Key(label: '⌫', width: 96, onSelect: onBackspace),
-            SizedBox(width: context.px(8)),
-            _Key(label: 'Очистити', width: 160, onSelect: onClear),
+    return FocusArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final row in layout.rows) ...[
+            FocusArea(
+              flow: Axis.horizontal,
+              child: Row(
+                children: [
+                  for (final character in row.split('')) ...[
+                    _Key(label: character, onSelect: () => onKey(character)),
+                    SizedBox(width: context.px(8)),
+                  ],
+                ],
+              ),
+            ),
+            SizedBox(height: context.px(8)),
           ],
-        ),
-      ],
+          FocusArea(
+            flow: Axis.horizontal,
+            child: Row(
+              children: [
+                _Key(label: 'Пробіл', width: 200, onSelect: () => onKey(' ')),
+                SizedBox(width: context.px(8)),
+                _Key(label: '⌫', width: 96, onSelect: onBackspace),
+                SizedBox(width: context.px(8)),
+                _Key(label: 'Очистити', width: 160, onSelect: onClear),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 class _Key extends StatefulWidget {
-  const _Key({
-    required this.label,
-    required this.onSelect,
-    this.width = 56,
-    this.autofocus = false,
-  });
+  const _Key({required this.label, required this.onSelect, this.width = 56});
 
   final String label;
   final VoidCallback onSelect;
   final double width;
-  final bool autofocus;
 
   @override
   State<_Key> createState() => _KeyState();
@@ -119,7 +125,6 @@ class _KeyState extends State<_Key> {
   @override
   Widget build(BuildContext context) {
     return Focusable(
-      autofocus: widget.autofocus,
       onSelect: widget.onSelect,
       // Keys must not grow: a shifting key is one you press by mistake.
       scaleOnFocus: 1,

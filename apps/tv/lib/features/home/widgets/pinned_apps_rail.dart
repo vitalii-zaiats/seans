@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/pinned_apps_store.dart';
+import '../../../core/remote/focus_area.dart';
 import '../../../platform/box.dart';
 import '../../../platform/box_for_platform.dart';
 import '../../../theme/nocturne.dart';
@@ -62,16 +63,20 @@ class _PinnedAppsRailState extends State<PinnedAppsRail> {
                   ),
                 ),
                 SizedBox(height: context.px(14)),
-                SizedBox(
-                  height: context.px(150),
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    clipBehavior: Clip.none,
-                    padding: EdgeInsets.symmetric(horizontal: context.px(80)),
-                    itemCount: shown.length,
-                    separatorBuilder: (_, _) => SizedBox(width: context.px(16)),
-                    itemBuilder: (context, index) =>
-                        _PinnedTile(app: shown[index]),
+                FocusArea(
+                  flow: Axis.horizontal,
+                  child: SizedBox(
+                    height: context.px(150),
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      clipBehavior: Clip.none,
+                      padding: EdgeInsets.symmetric(horizontal: context.px(80)),
+                      itemCount: shown.length,
+                      separatorBuilder: (_, _) =>
+                          SizedBox(width: context.px(16)),
+                      itemBuilder: (context, index) =>
+                          _PinnedTile(app: shown[index]),
+                    ),
                   ),
                 ),
               ],

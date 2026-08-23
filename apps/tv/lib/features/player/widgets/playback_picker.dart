@@ -107,7 +107,7 @@ class PlaybackPicker extends StatelessWidget {
                       label: episodeLabel(episode.number, episode.name),
                       selected: episode.number == state.episode,
                       enabled: enabled,
-                      autofocus: episode.number == state.episode,
+                      preferred: episode.number == state.episode,
                       hint: enabled ? null : 'ще не вийшла',
                       onSelect: () => onEpisode(episode.number),
                     );
@@ -124,7 +124,7 @@ class PlaybackPicker extends StatelessWidget {
                   label: state.dubs[index].label,
                   selected: index == state.selected,
                   // A film has nothing above this row, so focus lands here.
-                  autofocus:
+                  preferred:
                       !state.canSwitchSeason &&
                       state.episodes.isEmpty &&
                       index == state.selected,

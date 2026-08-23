@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../core/navigate.dart';
+import '../../core/remote/back.dart';
+import '../../core/remote/focus_area.dart';
 import '../../data/camera_store.dart';
 import '../../data/iptv_store.dart';
 import '../../data/library_store.dart';
@@ -82,109 +83,117 @@ class ResetScreen extends StatelessWidget {
             context.px(80),
             context.px(40),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Скинути лаунчер',
-                style: TextStyle(
-                  fontSize: context.sp(38),
-                  fontWeight: FontWeight.w500,
-                  color: Nocturne.text,
-                ),
-              ),
-              SizedBox(height: context.px(10)),
-              SizedBox(
-                width: context.px(1000),
-                child: Text(
-                  'Усе, що лаунчер зберігає на цій приставці, буде стерто. '
-                  'Скасувати це неможливо.',
+          // One area: the two buttons at the foot are the whole of what can
+          // be pressed here, and `anchor` keeps focus on the screen while the
+          // wall of copy above them is being read.
+          child: FocusArea(
+            landing: true,
+            anchor: true,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Скинути лаунчер',
                   style: TextStyle(
-                    fontSize: context.sp(19),
-                    height: 1.5,
-                    color: Nocturne.neutral400,
+                    fontSize: context.sp(38),
+                    fontWeight: FontWeight.w500,
+                    color: Nocturne.text,
                   ),
                 ),
-              ),
-              SizedBox(height: context.px(28)),
+                SizedBox(height: context.px(10)),
+                SizedBox(
+                  width: context.px(1000),
+                  child: Text(
+                    'Усе, що лаунчер зберігає на цій приставці, буде стерто. '
+                    'Скасувати це неможливо.',
+                    style: TextStyle(
+                      fontSize: context.sp(19),
+                      height: 1.5,
+                      color: Nocturne.neutral400,
+                    ),
+                  ),
+                ),
+                SizedBox(height: context.px(28)),
 
-              Expanded(
-                child: ListView(
-                  clipBehavior: Clip.none,
-                  children: [
-                    for (final (icon, title, body) in _goes)
-                      Padding(
-                        padding: EdgeInsets.only(bottom: context.px(18)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              icon,
-                              size: context.px(24),
-                              color: context.accent,
-                            ),
-                            SizedBox(width: context.px(18)),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    title,
-                                    style: TextStyle(
-                                      fontSize: context.sp(20),
-                                      color: Nocturne.text,
-                                    ),
-                                  ),
-                                  SizedBox(height: context.px(4)),
-                                  Text(
-                                    body,
-                                    style: TextStyle(
-                                      fontSize: context.sp(16),
-                                      height: 1.45,
-                                      color: Nocturne.neutral500,
-                                    ),
-                                  ),
-                                ],
+                Expanded(
+                  child: ListView(
+                    clipBehavior: Clip.none,
+                    children: [
+                      for (final (icon, title, body) in _goes)
+                        Padding(
+                          padding: EdgeInsets.only(bottom: context.px(18)),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                icon,
+                                size: context.px(24),
+                                color: context.accent,
                               ),
-                            ),
-                          ],
+                              SizedBox(width: context.px(18)),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      title,
+                                      style: TextStyle(
+                                        fontSize: context.sp(20),
+                                        color: Nocturne.text,
+                                      ),
+                                    ),
+                                    SizedBox(height: context.px(4)),
+                                    Text(
+                                      body,
+                                      style: TextStyle(
+                                        fontSize: context.sp(16),
+                                        height: 1.45,
+                                        color: Nocturne.neutral500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      Padding(
+                        padding: EdgeInsets.only(top: context.px(6)),
+                        child: Text(
+                          'Сам застосунок і те, що встановлено на боксі, '
+                          'лишаються на місці.',
+                          style: TextStyle(
+                            fontSize: context.sp(16),
+                            color: Nocturne.neutral600,
+                          ),
                         ),
                       ),
-                    Padding(
-                      padding: EdgeInsets.only(top: context.px(6)),
-                      child: Text(
-                        'Сам застосунок і те, що встановлено на боксі, '
-                        'лишаються на місці.',
-                        style: TextStyle(
-                          fontSize: context.sp(16),
-                          color: Nocturne.neutral600,
-                        ),
-                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: context.px(12)),
+                Row(
+                  children: [
+                    _Action(
+                      label: 'Скасувати',
+                      preferred: true,
+                      // Not `Navigator.pop`: on the web this screen is a
+                      // location rather than a pushed route, and there
+                      // would be nothing on the stack to pop. One way out,
+                      // and the ⌫ key takes the very same one.
+                      onSelect: () => Back.requestFrom(context),
+                    ),
+                    SizedBox(width: context.px(14)),
+                    _Action(
+                      label: 'Стерти все і почати спочатку',
+                      destructive: true,
+                      onSelect: () => _wipe(context),
                     ),
                   ],
                 ),
-              ),
-
-              SizedBox(height: context.px(12)),
-              Row(
-                children: [
-                  _Action(
-                    label: 'Скасувати',
-                    autofocus: true,
-                    // Not `Navigator.pop`: on the web this screen is a
-                    // location rather than a pushed route, and there
-                    // would be nothing on the stack to pop.
-                    onSelect: () => closeRoute(context),
-                  ),
-                  SizedBox(width: context.px(14)),
-                  _Action(
-                    label: 'Стерти все і почати спочатку',
-                    destructive: true,
-                    onSelect: () => _wipe(context),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -196,13 +205,13 @@ class _Action extends StatefulWidget {
   const _Action({
     required this.label,
     required this.onSelect,
-    this.autofocus = false,
+    this.preferred = false,
     this.destructive = false,
   });
 
   final String label;
   final VoidCallback onSelect;
-  final bool autofocus;
+  final bool preferred;
   final bool destructive;
 
   @override
@@ -221,7 +230,7 @@ class _ActionState extends State<_Action> {
         : (widget.destructive ? Nocturne.neutral800 : Nocturne.neutral700);
 
     return Focusable(
-      autofocus: widget.autofocus,
+      preferred: widget.preferred,
       scaleOnFocus: 1.03,
       onSelect: widget.onSelect,
       onFocusChange: (focused) => setState(() => _focused = focused),

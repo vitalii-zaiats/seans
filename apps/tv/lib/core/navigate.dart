@@ -2,9 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-import 'nav_tab.dart';
-import 'web_history.dart';
-
 /// Opening a screen, on a machine that has an address bar and on one that does
 /// not.
 ///
@@ -36,22 +33,12 @@ Future<T?> openRoute<T extends Object?>(
   return Future<T?>.value(null);
 }
 
-/// The way back out of whatever is showing.
+/// Switching section, from the row along the top.
 ///
-/// Three answers, in order, because there are three ways to have got here:
-/// something was pushed and can be popped; the browser has a step of its own
-/// history to take; or there is neither, and the way out is home.
-void closeRoute(BuildContext context) {
-  final router = GoRouter.of(context);
-  if (router.canPop()) {
-    router.pop();
-    return;
-  }
-  if (kIsWeb && canGoBackInHistory()) {
-    goBackInHistory();
-    return;
-  }
-  if (router.state.matchedLocation != NavTab.home.path) {
-    router.go(NavTab.home.path);
-  }
-}
+/// Always `go`, on every machine: a section is a move sideways, not a step in.
+/// Pushing them stacked `/` under `/tv` under `/catalog`, and BACK then walked
+/// out through every section somebody had looked at instead of going home —
+/// which on a box, where this app is the home screen, reads as the launcher
+/// forgetting where home is.
+void openSection(BuildContext context, String path) =>
+    GoRouter.of(context).go(path);

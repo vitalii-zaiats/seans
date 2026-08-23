@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:super_movies_api/super_movies_api.dart';
 
 import '../../../core/labels.dart';
+import '../../../core/remote/focus_area.dart';
 import '../../../data/library_store.dart';
 import '../../../theme/nocturne.dart';
 import '../../../widgets/focusable.dart';
@@ -158,33 +159,41 @@ class HeroPanel extends StatelessWidget {
                   SizedBox(height: context.px(28)),
                   Focus(
                     // Watches the buttons without ever taking focus itself.
+                    // A subscription to somebody resting on the hero, not a
+                    // piece of steering.
                     canRequestFocus: false,
                     skipTraversal: true,
                     onFocusChange: onHold,
-                    child: Row(
-                      children: [
-                        HeroButton(
-                          label: resumable
-                              ? 'Продовжити · ${(progress!.fraction * 100).round()}%'
-                              : 'Дивитись',
-                          icon: Icons.play_arrow_rounded,
-                          primary: true,
-                          autofocus: true,
-                          onSelect: onPlay,
-                        ),
-                        SizedBox(width: context.px(14)),
-                        HeroButton(
-                          label: 'Деталі',
-                          icon: Icons.info_outline_rounded,
-                          onSelect: onDetails,
-                        ),
-                        SizedBox(width: context.px(14)),
-                        HeroButton(
-                          label: saved ? 'У списку' : 'Мій список',
-                          icon: saved ? Icons.check_rounded : Icons.add_rounded,
-                          onSelect: onToggleSaved,
-                        ),
-                      ],
+                    child: FocusArea(
+                      flow: Axis.horizontal,
+                      landing: true,
+                      child: Row(
+                        children: [
+                          HeroButton(
+                            label: resumable
+                                ? 'Продовжити · ${(progress!.fraction * 100).round()}%'
+                                : 'Дивитись',
+                            icon: Icons.play_arrow_rounded,
+                            primary: true,
+                            preferred: true,
+                            onSelect: onPlay,
+                          ),
+                          SizedBox(width: context.px(14)),
+                          HeroButton(
+                            label: 'Деталі',
+                            icon: Icons.info_outline_rounded,
+                            onSelect: onDetails,
+                          ),
+                          SizedBox(width: context.px(14)),
+                          HeroButton(
+                            label: saved ? 'У списку' : 'Мій список',
+                            icon: saved
+                                ? Icons.check_rounded
+                                : Icons.add_rounded,
+                            onSelect: onToggleSaved,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   if (count > 1) ...[
@@ -237,7 +246,7 @@ class HeroButton extends StatefulWidget {
     required this.icon,
     required this.onSelect,
     this.primary = false,
-    this.autofocus = false,
+    this.preferred = false,
     this.focusNode,
     super.key,
   });
@@ -246,7 +255,7 @@ class HeroButton extends StatefulWidget {
   final IconData icon;
   final VoidCallback onSelect;
   final bool primary;
-  final bool autofocus;
+  final bool preferred;
   final FocusNode? focusNode;
 
   @override
@@ -264,7 +273,7 @@ class _HeroButtonState extends State<HeroButton> {
     final foreground = _focused ? context.accentText : Nocturne.text;
 
     return Focusable(
-      autofocus: widget.autofocus,
+      preferred: widget.preferred,
       focusNode: widget.focusNode,
       onSelect: widget.onSelect,
       scaleOnFocus: 1.04,

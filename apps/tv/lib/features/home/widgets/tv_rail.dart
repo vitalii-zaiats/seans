@@ -4,6 +4,7 @@ import 'package:iptv/iptv.dart';
 import 'package:super_movies_api/super_movies_api.dart';
 
 import '../../../core/navigate.dart';
+import '../../../core/remote/focus_area.dart';
 import '../../../core/router.dart';
 import '../../../data/iptv_store.dart';
 import '../../../data/sweet_tv_store.dart';
@@ -74,27 +75,31 @@ class _Body extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: context.px(14)),
-                SizedBox(
-                  // Padding, logo and two lines of text come to just under 80;
-                  // the slack is for a font that measures a shade taller than
-                  // Roboto does.
-                  height: context.px(88),
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    clipBehavior: Clip.none,
-                    padding: EdgeInsets.symmetric(horizontal: context.px(80)),
-                    itemCount: shown.length,
-                    separatorBuilder: (_, _) => SizedBox(width: context.px(16)),
-                    itemBuilder: (context, index) => ChannelTile(
-                      channel: shown[index],
-                      starred: starred.contains(shown[index].id),
-                      width: context.px(300),
-                      onSelect: () => openRoute(
-                        context,
-                        '/tv/${Uri.encodeComponent(shown[index].name)}',
-                        extra: LiveArgs(channel: shown[index], cubit: cubit),
+                FocusArea(
+                  flow: Axis.horizontal,
+                  child: SizedBox(
+                    // Padding, logo and two lines of text come to just under
+                    // 80; the slack is for a font that measures a shade taller
+                    // than Roboto does.
+                    height: context.px(88),
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      clipBehavior: Clip.none,
+                      padding: EdgeInsets.symmetric(horizontal: context.px(80)),
+                      itemCount: shown.length,
+                      separatorBuilder: (_, _) =>
+                          SizedBox(width: context.px(16)),
+                      itemBuilder: (context, index) => ChannelTile(
+                        channel: shown[index],
+                        starred: starred.contains(shown[index].id),
+                        width: context.px(300),
+                        onSelect: () => openRoute(
+                          context,
+                          '/tv/${Uri.encodeComponent(shown[index].name)}',
+                          extra: LiveArgs(channel: shown[index], cubit: cubit),
+                        ),
+                        onStar: () => store.toggleFavourite(shown[index].id),
                       ),
-                      onStar: () => store.toggleFavourite(shown[index].id),
                     ),
                   ),
                 ),

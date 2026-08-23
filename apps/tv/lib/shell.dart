@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_movies_api/super_movies_api.dart';
 
@@ -12,6 +11,9 @@ import 'platform/box_for_platform.dart';
 import 'data/startup.dart';
 import 'data/camera_store.dart';
 import 'core/navigate.dart';
+import 'core/remote/activity.dart';
+import 'core/remote/back.dart';
+import 'core/remote/focus_area.dart';
 import 'core/router.dart';
 import 'data/library_store.dart';
 import 'data/settings_store.dart';
@@ -41,7 +43,8 @@ class LauncherShell extends StatefulWidget {
 }
 
 class _LauncherShellState extends State<LauncherShell> {
-  late final Box _box = context.read<Parts>().box;
+  late final Parts _parts = context.read<Parts>();
+  late final Box _box = _parts.box;
 
   /// How long the box sits untouched before the launcher gets out of the way,
   /// as chosen in settings. Zero minutes means never.
@@ -94,7 +97,11 @@ class _LauncherShellState extends State<LauncherShell> {
   /// a section that had already closed.
   NavTab? get _section {
     final where = GoRouter.of(context).state.matchedLocation;
-    for (final tab in _tabs) {
+    // Every section, not the filtered row: this is asked from a callback as
+    // well as from `build`, and `_tabs` watches a provider — which throws
+    // outside a build and took the whole tab press down with it. Switching
+    // section then did nothing at all, silently.
+    for (final tab in NavTab.values) {
       if (tab.path == where) return tab;
     }
     return null;
@@ -106,16 +113,17 @@ class _LauncherShellState extends State<LauncherShell> {
   /// beside it, and a row of tabs over them would offer to leave sideways from
   /// somewhere you got to by going in. Those keep the way back instead.
   bool get _showsTabs =>
-      _section != null && !isFullBleed(GoRouter.of(context).state.fullPath);
+      _section != null &&
+      !isFullBleed(GoRouter.of(context).state.fullPath, _parts);
 
   bool get _showsWayBack {
     if (!Settings.pointerByDefault) return false;
     final router = GoRouter.of(context);
-    if (isFullBleed(router.state.fullPath)) return false;
+    if (isFullBleed(router.state.fullPath, _parts)) return false;
     // Not beside the tabs: where they are showing, they *are* the way out —
     // every section is one click away and home is among them.
     if (_showsTabs) return false;
-    // Anywhere else, whatever kind of navigation put us here — `closeRoute`
+    // Anywhere else, whatever kind of navigation put us here — `Back.request`
     // works out which. Home itself has none, which is what stops the strip
     // appearing over the screen it would return to.
     return router.canPop() || _awayFromHome(router);
@@ -143,6 +151,10 @@ class _LauncherShellState extends State<LauncherShell> {
   void initState() {
     super.initState();
     _events = _box.events().listen(_onBoxEvent);
+    // Every press, wherever it lands. Counting them in a key handler of the
+    // shell's own missed the ones a player answered first, so the screensaver
+    // dropped over a film somebody was watching with the remote in their hand.
+    RemoteActivity.onKeyPress.addListener(_onActivity);
     _restartIdleTimer();
 
     // A preferred display mode is an attribute of a window, not a system
@@ -168,6 +180,7 @@ class _LauncherShellState extends State<LauncherShell> {
   void dispose() {
     _events?.cancel();
     _delegate?.removeListener(_onRoute);
+    RemoteActivity.onKeyPress.removeListener(_onActivity);
     _idle?.cancel();
     _scrollController.dispose();
     super.dispose();
@@ -196,30 +209,13 @@ class _LauncherShellState extends State<LauncherShell> {
     }
   }
 
-  /// The way back, if there is still one when the tap lands.
-  ///
-  /// `_showsWayBack` asks `canPop()` too, but that answer is from the last
-  /// build and this one runs later. Two things close the gap: a second click
-  /// before the rebuild has painted — easy with a mouse, and this strip only
-  /// exists where there is one — and the browser's own Back, which empties the
-  /// stack without going through here at all. Either way the chip is still on
-  /// screen, still holding a closure, and `pop()` on an empty stack is a
-  /// `GoError` rather than a no-op.
-  ///
-  /// Nothing, rather than falling back to HOME: reaching this means the pop
-  /// already happened a moment ago, so the person is where the button was
-  /// going to put them. Jumping them somewhere else would be the surprise.
-  void _goBack() => closeRoute(context);
-
   /// Switching section, from the row that is always there now.
   ///
-  /// `openRoute` rather than a bare `go`: on a box a section is still a screen
-  /// pushed on top, so BACK unwinds to home the way it always did. On the web
-  /// it is an address. Either way the row above survives the move, because it
-  /// belongs to the shell and not to what is underneath it.
+  /// The row above survives the move, because it belongs to the shell and not
+  /// to what is underneath it.
   void _openSection(NavTab tab) {
     if (tab == _section) return;
-    unawaited(openRoute<void>(context, tab.path));
+    openSection(context, tab.path);
   }
 
   /// Puts the rails back at the top when focus walks up into the row.
@@ -260,35 +256,75 @@ class _LauncherShellState extends State<LauncherShell> {
     });
   }
 
-  /// Any key press is activity — including the one that wakes the box from the
-  /// idle screen, which is why this runs before the screens see it.
-  KeyEventResult _onKey(FocusNode node, KeyEvent event) {
-    if (event is KeyDownEvent) _restartIdleTimer();
-    return KeyEventResult.ignored;
+  /// Somebody pressed something, wherever it landed.
+  ///
+  /// The idle screen goes on any key at all — a remote has buttons and nothing
+  /// else, so a press is the whole interaction — and it does *not* also send
+  /// anybody home: the screensaver can fall over a film or halfway down a
+  /// section, and waking up somewhere else is a punishment for looking away.
+  /// The arbiter puts focus back where the idle screen covered it.
+  void _onActivity() {
+    if (_ambient) _wake();
+    _restartIdleTimer();
+  }
+
+  void _wake() {
+    if (!_ambient) return;
+    setState(() => _ambient = false);
+    _restartIdleTimer();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Focus(
-      onKeyEvent: _onKey,
-      canRequestFocus: false,
-      skipTraversal: true,
-      child: BlocProvider(
-        create: (context) {
-          final cubit = HomeCubit(
-            context.read<SuperMoviesApi>(),
-            context.read<LibraryStore>(),
-            context.read<SettingsStore>(),
-          )..load();
-          _home = cubit;
-          return cubit;
-        },
-        child: HomeScroll(
-          controller: _scrollController,
-          child: Stack(
-            children: [
-              Column(
+    return BlocProvider(
+      create: (context) {
+        final cubit = HomeCubit(
+          context.read<SuperMoviesApi>(),
+          context.read<LibraryStore>(),
+          context.read<SettingsStore>(),
+        )..load();
+        _home = cubit;
+        return cubit;
+      },
+      child: HomeScroll(
+        controller: _scrollController,
+        child: Stack(
+          children: [
+            // Three areas stacked down the panel. The bridge between the row
+            // and the screen under it stopped being a special case the moment
+            // it was written down: it is a step to the neighbouring area, the
+            // same going up as going down, and the arbiter makes it.
+            FocusArea(
+              child: Column(
                 children: [
+                  // The section row, above whichever section is showing. It
+                  // lives here rather than in the home screen so that leaving
+                  // home does not take it away — switching tab is a sideways
+                  // move, and the tabs have to still be there to move to.
+                  if (_showsTabs)
+                    FocusArea(
+                      flow: Axis.horizontal,
+                      // Only when the arbiter brought focus up here — an air
+                      // mouse drifting across the row is not a request to
+                      // scroll the screen underneath back to the top.
+                      onEntered: _toTop,
+                      // `Material`, and it is not decoration: the row now sits
+                      // in the shell, outside every `Scaffold`, and a `Text`
+                      // with no `Material` above it is painted in Flutter's
+                      // yellow double-underlined debug style. The home screen
+                      // used to lend it one; nothing does now.
+                      child: Material(
+                        color: context.ground,
+                        child: BlocBuilder<HomeCubit, HomeState>(
+                          builder: (context, state) => TopBar(
+                            destinations: _tabs,
+                            selected: _section ?? NavTab.home,
+                            link: state.link,
+                            onSelect: _openSection,
+                          ),
+                        ),
+                      ),
+                    ),
                   // A remote has a BACK key; a browser window and a desktop do
                   // not. The browser's own back button works now that every
                   // screen has an address — this is for a desktop build, and
@@ -302,60 +338,52 @@ class _LauncherShellState extends State<LauncherShell> {
                   // Painted, because it sits outside every `Scaffold` — and an
                   // unpainted strip is not transparent, it is the browser's
                   // own white showing through the app.
-                  // The section row, above whichever section is showing. It
-                  // lives here rather than in the home screen so that leaving
-                  // home does not take it away — switching tab is a sideways
-                  // move, and the tabs have to still be there to move to.
-                  if (_showsTabs)
-                    // `Material`, and it is not decoration: the row now sits
-                    // in the shell, outside every `Scaffold`, and a `Text`
-                    // with no `Material` above it is painted in Flutter's
-                    // yellow double-underlined debug style. The home screen
-                    // used to lend it one; nothing does now.
-                    Material(
-                      color: context.ground,
-                      child: BlocBuilder<HomeCubit, HomeState>(
-                        builder: (context, state) => TopBar(
-                          destinations: _tabs,
-                          selected: _section ?? NavTab.home,
-                          link: state.link,
-                          onSelect: _openSection,
-                          onEnter: _toTop,
-                        ),
-                      ),
-                    ),
                   if (_showsWayBack)
-                    ColoredBox(
-                      color: context.ground,
-                      child: SizedBox(
-                        height: context.px(64),
-                        width: double.infinity,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: context.px(28)),
-                            child: BackChip(onSelect: _goBack),
+                    FocusArea(
+                      flow: Axis.horizontal,
+                      child: ColoredBox(
+                        color: context.ground,
+                        child: SizedBox(
+                          height: context.px(64),
+                          width: double.infinity,
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: context.px(28)),
+                              child: BackChip(
+                                onSelect: () => Back.requestFrom(context),
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  Expanded(child: widget.child),
-                ],
-              ),
-              if (_ambient)
-                Positioned.fill(
-                  child: BlocBuilder<HomeCubit, HomeState>(
-                    builder: (context, state) => AmbientScreen(
-                      resumeTitle: state.resume.isEmpty
-                          ? null
-                          : '${state.resume.first.card.name} · '
-                                '${(state.resume.first.progress.fraction * 100).round()}%',
-                      onWake: _goHome,
+                  Expanded(
+                    // `anchor`, so a screen made only of text still has focus
+                    // somewhere — and `landing`, so a screen that declares no
+                    // areas of its own still gets one when it opens.
+                    child: FocusArea(
+                      anchor: true,
+                      landing: true,
+                      child: widget.child,
                     ),
                   ),
+                ],
+              ),
+            ),
+            if (_ambient)
+              Positioned.fill(
+                child: BlocBuilder<HomeCubit, HomeState>(
+                  builder: (context, state) => AmbientScreen(
+                    resumeTitle: state.resume.isEmpty
+                        ? null
+                        : '${state.resume.first.card.name} · '
+                              '${(state.resume.first.progress.fraction * 100).round()}%',
+                    onWake: _wake,
+                  ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );

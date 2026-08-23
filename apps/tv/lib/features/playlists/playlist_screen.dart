@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_movies_api/super_movies_api.dart';
 
 import '../../core/navigate.dart';
+import '../../core/remote/focus_area.dart';
 import '../../core/error_message.dart';
 import '../../core/load_status.dart';
 import '../../data/playlist_store.dart';
@@ -123,30 +124,33 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
       );
     }
 
-    return GridView.builder(
-      clipBehavior: Clip.none,
-      padding: EdgeInsets.fromLTRB(
-        context.px(80),
-        context.px(18),
-        context.px(80),
-        context.px(40),
-      ),
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: context.px(220),
-        childAspectRatio: 0.52,
-        crossAxisSpacing: context.px(20),
-        mainAxisSpacing: context.px(24),
-      ),
-      itemCount: _items.length,
-      itemBuilder: (context, index) => PosterTile(
-        card: _items[index],
-        autofocus: index == 0,
-        onSelect: () async {
-          await openRoute(context, '/title/${_items[index].slug}');
-          // Membership is changed on the title's own page, so the grid may be
-          // stale by the time it comes back.
-          if (mounted) await _load();
-        },
+    return FocusArea(
+      landing: true,
+      child: GridView.builder(
+        clipBehavior: Clip.none,
+        padding: EdgeInsets.fromLTRB(
+          context.px(80),
+          context.px(18),
+          context.px(80),
+          context.px(40),
+        ),
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: context.px(220),
+          childAspectRatio: 0.52,
+          crossAxisSpacing: context.px(20),
+          mainAxisSpacing: context.px(24),
+        ),
+        itemCount: _items.length,
+        itemBuilder: (context, index) => PosterTile(
+          card: _items[index],
+          preferred: index == 0,
+          onSelect: () async {
+            await openRoute(context, '/title/${_items[index].slug}');
+            // Membership is changed on the title's own page, so the grid may
+            // be stale by the time it comes back.
+            if (mounted) await _load();
+          },
+        ),
       ),
     );
   }

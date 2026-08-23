@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/remote/focus_area.dart';
 import '../theme/nocturne.dart';
 
 /// A titled horizontal row of tiles.
@@ -7,6 +8,10 @@ import '../theme/nocturne.dart';
 /// The list is `shrinkWrap`-free and lazily built: a rail can hold a whole
 /// catalogue page, and a television has the least memory of anything Flutter
 /// runs on.
+///
+/// The row is an area, declared here rather than at every call site: a rail is
+/// a thing you walk along sideways and step out of upwards, and saying so once
+/// makes every rail in the app behave the same without anybody remembering to.
 class Rail extends StatelessWidget {
   const Rail({
     required this.itemCount,
@@ -45,17 +50,20 @@ class Rail extends StatelessWidget {
               ),
             ),
           ),
-        SizedBox(
-          height: height ?? context.px(372),
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            // A focused tile scales up; a clipping viewport would shave its
-            // accent ring, and the page padding leaves room for the growth.
-            clipBehavior: Clip.none,
-            padding: EdgeInsets.symmetric(horizontal: context.px(80)),
-            itemCount: itemCount,
-            separatorBuilder: (_, _) => SizedBox(width: context.px(20)),
-            itemBuilder: itemBuilder,
+        FocusArea(
+          flow: Axis.horizontal,
+          child: SizedBox(
+            height: height ?? context.px(372),
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              // A focused tile scales up; a clipping viewport would shave its
+              // accent ring, and the page padding leaves room for the growth.
+              clipBehavior: Clip.none,
+              padding: EdgeInsets.symmetric(horizontal: context.px(80)),
+              itemCount: itemCount,
+              separatorBuilder: (_, _) => SizedBox(width: context.px(20)),
+              itemBuilder: itemBuilder,
+            ),
           ),
         ),
       ],

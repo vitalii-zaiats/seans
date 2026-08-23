@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 
 import '../core/home_hero.dart';
+import '../core/keypad.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,6 +22,7 @@ class Settings {
     this.preferredModeId = 0,
     this.useDoh = false,
     this.pointer = false,
+    this.typingMode = TypingMode.keyboard,
   });
 
   /// Id of the chosen accent, from `Nocturne.accents`.
@@ -91,6 +93,14 @@ class Settings {
   /// view never got focus to begin with.
   final bool pointer;
 
+  /// How text gets typed where there is no keyboard to type it with.
+  ///
+  /// The grid by default, because it is the one that needs nothing explained:
+  /// the letters are on the screen and the arrows walk to them. The number
+  /// keys are faster for anybody who remembers a telephone and a puzzle for
+  /// anybody who does not, which is the right way round for a setting.
+  final TypingMode typingMode;
+
   /// Whether this machine has a pointer at all, and so what [pointer]
   /// defaults to before anybody chooses.
   ///
@@ -116,6 +126,7 @@ class Settings {
     int? preferredModeId,
     bool? useDoh,
     bool? pointer,
+    TypingMode? typingMode,
   }) => Settings(
     accentId: accentId ?? this.accentId,
     groundId: groundId ?? this.groundId,
@@ -128,6 +139,7 @@ class Settings {
     preferredModeId: preferredModeId ?? this.preferredModeId,
     useDoh: useDoh ?? this.useDoh,
     pointer: pointer ?? this.pointer,
+    typingMode: typingMode ?? this.typingMode,
   );
 
   @override
@@ -145,7 +157,8 @@ class Settings {
       other.heroMode == heroMode &&
       other.preferredModeId == preferredModeId &&
       other.useDoh == useDoh &&
-      other.pointer == pointer;
+      other.pointer == pointer &&
+      other.typingMode == typingMode;
 
   @override
   int get hashCode => Object.hash(
@@ -160,6 +173,7 @@ class Settings {
     preferredModeId,
     useDoh,
     pointer,
+    typingMode,
   );
 }
 
@@ -184,6 +198,7 @@ class SettingsStore {
   static const _mode = 'settings.displayMode';
   static const _doh = 'settings.useDoh';
   static const _pointer = 'settings.pointer';
+  static const _typing = 'settings.typingMode';
 
   static Future<SettingsStore> open() async =>
       SettingsStore(await SharedPreferences.getInstance());
@@ -211,6 +226,7 @@ class SettingsStore {
     preferredModeId: prefs.getInt(_mode) ?? 0,
     useDoh: prefs.getBool(_doh) ?? false,
     pointer: prefs.getBool(_pointer) ?? Settings.pointerByDefault,
+    typingMode: TypingMode.fromId(prefs.getString(_typing)),
   );
 
   Future<void> setAccent(String id) async {
@@ -226,6 +242,11 @@ class SettingsStore {
   Future<void> setIdleMinutes(int minutes) async {
     _notifier.value = value.copyWith(idleMinutes: minutes);
     await _prefs.setInt(_idle, minutes);
+  }
+
+  Future<void> setTypingMode(TypingMode mode) async {
+    _notifier.value = value.copyWith(typingMode: mode);
+    await _prefs.setString(_typing, mode.id);
   }
 
   Future<void> setFocusGlow(bool enabled) async {
@@ -247,6 +268,7 @@ class SettingsStore {
     await _prefs.remove(_mode);
     await _prefs.remove(_doh);
     await _prefs.remove(_pointer);
+    await _prefs.remove(_typing);
   }
 
   /// Shows or hides one home row, and says which it did.

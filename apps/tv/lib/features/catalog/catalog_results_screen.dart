@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/navigate.dart';
+import '../../core/remote/focus_area.dart';
 import '../../core/labels.dart';
 import '../../theme/nocturne.dart';
 import '../../widgets/poster_tile.dart';
@@ -135,53 +136,56 @@ class _Body extends StatelessWidget {
       return const EmptyView(message: 'За цими фільтрами нічого немає');
     }
 
-    return CustomScrollView(
-      controller: controller,
-      slivers: [
-        SliverPadding(
-          // Room above the first row: a focused tile grows, and the viewport
-          // clips at its own top edge whatever the grid's clipBehaviour says.
-          padding: EdgeInsets.fromLTRB(
-            context.px(80),
-            context.px(18),
-            context.px(80),
-            0,
-          ),
-          sliver: SliverGrid(
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: context.px(220),
-              childAspectRatio: 0.52,
-              crossAxisSpacing: context.px(20),
-              mainAxisSpacing: context.px(24),
+    return FocusArea(
+      landing: true,
+      child: CustomScrollView(
+        controller: controller,
+        slivers: [
+          SliverPadding(
+            // Room above the first row: a focused tile grows, and the viewport
+            // clips at its own top edge whatever the grid's clipBehaviour says.
+            padding: EdgeInsets.fromLTRB(
+              context.px(80),
+              context.px(18),
+              context.px(80),
+              0,
             ),
-            delegate: SliverChildBuilderDelegate((context, index) {
-              final card = state.items[index];
-              return PosterTile(
-                card: card,
-                autofocus: index == 0,
-                onSelect: () => openRoute(context, '/title/${card.slug}'),
-              );
-            }, childCount: state.items.length),
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: SizedBox(
-            height: context.px(90),
-            child: Center(
-              child: state.loadingMore
-                  ? SizedBox(
-                      width: context.px(26),
-                      height: context.px(26),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: context.accent,
-                      ),
-                    )
-                  : const SizedBox.shrink(),
+            sliver: SliverGrid(
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: context.px(220),
+                childAspectRatio: 0.52,
+                crossAxisSpacing: context.px(20),
+                mainAxisSpacing: context.px(24),
+              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final card = state.items[index];
+                return PosterTile(
+                  card: card,
+                  preferred: index == 0,
+                  onSelect: () => openRoute(context, '/title/${card.slug}'),
+                );
+              }, childCount: state.items.length),
             ),
           ),
-        ),
-      ],
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: context.px(90),
+              child: Center(
+                child: state.loadingMore
+                    ? SizedBox(
+                        width: context.px(26),
+                        height: context.px(26),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: context.accent,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

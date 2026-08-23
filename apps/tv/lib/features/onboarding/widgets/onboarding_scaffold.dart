@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/remote/focus_area.dart';
 import '../../../data/settings_store.dart';
 import '../../../theme/nocturne.dart';
 import '../../../widgets/back_chip.dart';
@@ -89,30 +90,38 @@ class OnboardingScaffold extends StatelessWidget {
                 ),
               ],
               SizedBox(height: context.px(36)),
-              Expanded(child: child),
+              // The body is where every answer lives, and `anchor` covers the
+              // two screens that are pure copy with a QR code on them: even
+              // there the remote has somewhere to be.
+              Expanded(
+                child: FocusArea(landing: true, anchor: true, child: child),
+              ),
               // The way back keeps the company of the line that says what the
               // remote does: both are the same sentence — how to leave this
               // screen — and the top of every setup screen belongs to its
               // heading.
               if (chip || foot != null) ...[
                 SizedBox(height: context.px(16)),
-                Row(
-                  children: [
-                    if (chip) ...[
-                      BackChip(onSelect: cubit.back),
-                      SizedBox(width: context.px(20)),
-                    ],
-                    if (foot != null)
-                      Expanded(
-                        child: Text(
-                          foot,
-                          style: TextStyle(
-                            fontSize: context.sp(14),
-                            color: Nocturne.neutral700,
+                FocusArea(
+                  flow: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      if (chip) ...[
+                        BackChip(onSelect: cubit.back),
+                        SizedBox(width: context.px(20)),
+                      ],
+                      if (foot != null)
+                        Expanded(
+                          child: Text(
+                            foot,
+                            style: TextStyle(
+                              fontSize: context.sp(14),
+                              color: Nocturne.neutral700,
+                            ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ],
@@ -164,7 +173,7 @@ class ChoiceTile extends StatefulWidget {
     required this.title,
     required this.description,
     required this.onSelect,
-    this.autofocus = false,
+    this.preferred = false,
     this.icon,
     this.note,
     super.key,
@@ -173,7 +182,7 @@ class ChoiceTile extends StatefulWidget {
   final String title;
   final String description;
   final VoidCallback onSelect;
-  final bool autofocus;
+  final bool preferred;
   final IconData? icon;
 
   /// A caveat worth reading before choosing, drawn apart from the description.
@@ -191,7 +200,7 @@ class _ChoiceTileState extends State<ChoiceTile> {
     return Padding(
       padding: EdgeInsets.only(bottom: context.px(12)),
       child: Focusable(
-        autofocus: widget.autofocus,
+        preferred: widget.preferred,
         scaleOnFocus: 1,
         onSelect: widget.onSelect,
         onFocusChange: (focused) {

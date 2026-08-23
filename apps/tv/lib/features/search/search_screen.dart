@@ -4,13 +4,14 @@ import 'package:super_movies_api/super_movies_api.dart';
 
 import '../../core/navigate.dart';
 import '../../core/labels.dart';
+import '../../core/remote/focus_area.dart';
 import '../../theme/nocturne.dart';
 import '../../widgets/focusable.dart';
 import '../../widgets/hardware_typing.dart';
 import '../../widgets/poster_image.dart';
 import '../../widgets/status_views.dart';
 import 'search_cubit.dart';
-import '../../widgets/dpad_keyboard.dart';
+import '../../widgets/typing_pad.dart';
 
 /// Keyboard on the left, results on the right, updating as the query grows.
 class SearchScreen extends StatelessWidget {
@@ -23,7 +24,6 @@ class SearchScreen extends StatelessWidget {
     return HardwareTyping(
       onCharacter: cubit.type,
       onBackspace: cubit.backspace,
-      onClear: cubit.clear,
       child: Scaffold(
         body: SafeArea(
           child: Padding(
@@ -33,33 +33,46 @@ class SearchScreen extends StatelessWidget {
               context.px(80),
               context.px(40),
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: context.px(700),
-                  // Scrollable for the same reason the name entry is: seven rows
-                  // of keys plus the query line overflow a 1080p panel once the
-                  // interface scale is turned up.
-                  child: SingleChildScrollView(
-                    clipBehavior: Clip.none,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const _QueryLine(),
-                        SizedBox(height: context.px(28)),
-                        DpadKeyboard(
-                          onKey: cubit.type,
-                          onBackspace: cubit.backspace,
-                          onClear: cubit.clear,
+            // Keyboard and results, side by side and stated as such. Where
+            // there is a real keyboard the left half draws nothing, so the area
+            // has nothing to land on and is skipped — the platform fork that
+            // used to decide this by hand is gone, and `anchor` keeps focus on
+            // the screen either way so `HardwareTyping` above still sees the
+            // letters.
+            child: FocusArea(
+              flow: Axis.horizontal,
+              anchor: true,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: context.px(700),
+                    // Scrollable for the same reason the name entry is: seven
+                    // rows of keys plus the query line overflow a 1080p panel
+                    // once the interface scale is turned up.
+                    child: FocusArea(
+                      landing: true,
+                      child: SingleChildScrollView(
+                        clipBehavior: Clip.none,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const _QueryLine(),
+                            SizedBox(height: context.px(28)),
+                            TypingPad(
+                              onKey: cubit.type,
+                              onBackspace: cubit.backspace,
+                              onClear: cubit.clear,
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(width: context.px(60)),
-                const Expanded(child: _Results()),
-              ],
+                  SizedBox(width: context.px(60)),
+                  const Expanded(child: _Results()),
+                ],
+              ),
             ),
           ),
         ),
@@ -154,12 +167,14 @@ class _Results extends StatelessWidget {
             ),
             SizedBox(height: context.px(16)),
             Expanded(
-              child: ListView.separated(
-                clipBehavior: Clip.none,
-                itemCount: state.results.length,
-                separatorBuilder: (_, _) => SizedBox(height: context.px(10)),
-                itemBuilder: (context, index) =>
-                    _ResultRow(result: state.results[index]),
+              child: FocusArea(
+                child: ListView.separated(
+                  clipBehavior: Clip.none,
+                  itemCount: state.results.length,
+                  separatorBuilder: (_, _) => SizedBox(height: context.px(10)),
+                  itemBuilder: (context, index) =>
+                      _ResultRow(result: state.results[index]),
+                ),
               ),
             ),
           ],

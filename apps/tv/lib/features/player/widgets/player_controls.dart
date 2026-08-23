@@ -3,7 +3,7 @@ import 'package:super_movies_api/super_movies_api.dart';
 
 import '../../../widgets/back_chip.dart';
 import '../../../platform/box_for_platform.dart';
-import '../../../core/navigate.dart';
+import '../../../core/remote/back.dart';
 import '../../../core/labels.dart';
 import '../../../platform/fullscreen.dart';
 import '../../../playback/playback.dart';
@@ -93,7 +93,7 @@ class PlayerControls extends StatelessWidget {
                   // Back and the shell hides its way-back strip over a picture
                   // that goes edge to edge — so there was nothing to aim at.
                   if (!platformBox.present) ...[
-                    BackChip(onSelect: () => closeRoute(context)),
+                    BackChip(onSelect: () => Back.requestFrom(context)),
                     SizedBox(height: context.px(24)),
                   ],
                   Text(

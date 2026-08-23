@@ -11,7 +11,7 @@ class PosterTile extends StatefulWidget {
   const PosterTile({
     required this.card,
     required this.onSelect,
-    this.autofocus = false,
+    this.preferred = false,
     this.progress,
     this.subtitle,
     super.key,
@@ -19,7 +19,7 @@ class PosterTile extends StatefulWidget {
 
   final ContentCard card;
   final VoidCallback onSelect;
-  final bool autofocus;
+  final bool preferred;
 
   /// 0–1, drawn as a bar across the poster's foot. Set for the
   /// "Continue watching" rail.
@@ -44,7 +44,7 @@ class _PosterTileState extends State<PosterTile> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Focusable(
-            autofocus: widget.autofocus,
+            preferred: widget.preferred,
             onSelect: widget.onSelect,
             onFocusChange: (focused) {
               setState(() => _focused = focused);

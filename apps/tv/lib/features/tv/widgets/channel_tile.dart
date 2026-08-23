@@ -16,7 +16,7 @@ class ChannelTile extends StatefulWidget {
     required this.starred,
     required this.onSelect,
     required this.onStar,
-    this.autofocus = false,
+    this.preferred = false,
     this.width,
     super.key,
   });
@@ -25,7 +25,7 @@ class ChannelTile extends StatefulWidget {
   final bool starred;
   final VoidCallback onSelect;
   final VoidCallback onStar;
-  final bool autofocus;
+  final bool preferred;
 
   /// Fixed width for a horizontal row; the grid sizes its own cells.
   final double? width;
@@ -45,7 +45,7 @@ class _ChannelTileState extends State<ChannelTile> {
     final now = channel.nowPlaying;
 
     return Focusable(
-      autofocus: widget.autofocus,
+      preferred: widget.preferred,
       scaleOnFocus: 1.03,
       onSelect: widget.onSelect,
       onSecondary: widget.onStar,

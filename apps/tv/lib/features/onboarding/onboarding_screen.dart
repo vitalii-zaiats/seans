@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../core/remote/back.dart';
 import '../../data/network_probe.dart';
 import '../../data/onboarding_store.dart';
 import '../../platform/box_for_platform.dart';
@@ -31,17 +32,19 @@ class OnboardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OnboardingCubit, OnboardingViewState>(
-      builder: (context, state) => PopScope(
+      builder: (context, state) => BackStop(
         // BACK steps the wizard back rather than popping the route: there is
         // one route under all eleven screens, and handing the press to the
         // system would close the app from the middle of setting it up.
         //
-        // Except on the first screen, where there is nothing to unwind and the
-        // press means what it always means — the way out of an app is not
-        // something a wizard should be allowed to take away.
-        canPop: !state.canGoBack,
-        onPopInvokedWithResult: (didPop, _) {
-          if (!didPop) context.read<OnboardingCubit>().back();
+        // Except on the first screen, where there is nothing to unwind: there
+        // the answer is `floor`, which lets the platform have the press — the
+        // way out of an app is not something a wizard should be allowed to
+        // take away.
+        onBack: () {
+          if (!state.canGoBack) return BackAnswer.floor;
+          context.read<OnboardingCubit>().back();
+          return BackAnswer.took;
         },
         child: switch (state.step) {
           OnboardingStep.welcome => const _Welcome(),
@@ -93,7 +96,7 @@ class _Welcome extends StatelessWidget {
         alignment: Alignment.topLeft,
         child: _Action(
           label: 'Почати',
-          autofocus: true,
+          preferred: true,
           onSelect: context.read<OnboardingCubit>().start,
         ),
       ),
@@ -136,7 +139,7 @@ class _Content extends StatelessWidget {
               return TvChip(
                 label: rail.title,
                 selected: state.sections.contains(rail.id),
-                autofocus: index == 0,
+                preferred: index == 0,
                 onSelect: () => cubit.toggleSection(rail.id),
               );
             },
@@ -175,7 +178,7 @@ class _Tv extends StatelessWidget {
           _Action(
             label: 'Так, потрібне',
             primary: true,
-            autofocus: true,
+            preferred: true,
             onSelect: () => cubit.chooseTv(wanted: true),
           ),
           SizedBox(width: context.px(16)),
@@ -223,7 +226,7 @@ class _TvSources extends StatelessWidget {
               return TvChip(
                 label: label,
                 selected: state.tvSources.contains(id),
-                autofocus: index == 0,
+                preferred: index == 0,
                 onSelect: () => cubit.toggleTvSource(id),
               );
             },
@@ -263,7 +266,7 @@ class _Fun extends StatelessWidget {
           _Action(
             label: 'Так, цікавить',
             primary: true,
-            autofocus: true,
+            preferred: true,
             onSelect: () => cubit.chooseFun(wanted: true),
           ),
           SizedBox(width: context.px(16)),
@@ -303,7 +306,7 @@ class _Account extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           ChoiceTile(
-            autofocus: true,
+            preferred: true,
             icon: Icons.tv_rounded,
             title: 'Продовжити анонімно',
             description:
@@ -389,7 +392,7 @@ class _Pairing extends StatelessWidget {
                 PairingStatus.waiting => _Waiting(code: pairing.link!.code),
                 PairingStatus.linked => _Action(
                   label: 'Далі',
-                  autofocus: true,
+                  preferred: true,
                   onSelect: cubit.finishPairing,
                 ),
                 _ => Column(
@@ -397,7 +400,7 @@ class _Pairing extends StatelessWidget {
                   children: [
                     _Action(
                       label: 'Показати новий код',
-                      autofocus: true,
+                      preferred: true,
                       onSelect: pairs.start,
                     ),
                     SizedBox(height: context.px(12)),
@@ -503,7 +506,7 @@ class _Waiting extends StatelessWidget {
         SizedBox(height: context.px(28)),
         _Action(
           label: 'Продовжити як гість',
-          autofocus: true,
+          preferred: true,
           onSelect: cubit.skipPairing,
         ),
       ],
@@ -554,7 +557,7 @@ class _Support extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           ChoiceTile(
-            autofocus: true,
+            preferred: true,
             icon: Icons.close_rounded,
             title: 'Не зараз',
             description:
@@ -678,7 +681,7 @@ class _BandwidthConsent extends StatelessWidget {
             children: [
               _Action(
                 label: 'Ні, дякую',
-                autofocus: true,
+                preferred: true,
                 onSelect: () => cubit.answerBandwidthConsent(agreed: false),
               ),
               SizedBox(width: context.px(14)),
@@ -746,7 +749,7 @@ class _Network extends StatelessWidget {
                 _Action(
                   label: 'Підключити Wi-Fi',
                   primary: true,
-                  autofocus: true,
+                  preferred: true,
                   onSelect: platformBox.wifi,
                 ),
                 SizedBox(width: context.px(14)),
@@ -757,7 +760,7 @@ class _Network extends StatelessWidget {
                 _Action(
                   label: 'Далі',
                   primary: true,
-                  autofocus: true,
+                  preferred: true,
                   onSelect: cubit.showDone,
                 ),
                 SizedBox(width: context.px(14)),
@@ -998,7 +1001,7 @@ class _InstallApp extends StatelessWidget {
                   _Action(
                     label: 'Встановити',
                     primary: true,
-                    autofocus: true,
+                    preferred: true,
                     // Not awaited into a state change: whatever the person
                     // answers, the wizard is done asking. Accepting swaps the
                     // window under us, and declining should not strand anybody
@@ -1011,7 +1014,7 @@ class _InstallApp extends StatelessWidget {
                   _Action(
                     label: 'Далі',
                     primary: true,
-                    autofocus: true,
+                    preferred: true,
                     onSelect: cubit.showDone,
                   ),
               ],
@@ -1043,7 +1046,7 @@ class _Done extends StatelessWidget {
         child: _Action(
           label: 'Почати дивитись',
           primary: true,
-          autofocus: true,
+          preferred: true,
           onSelect: context.read<OnboardingCubit>().finish,
         ),
       ),
@@ -1057,13 +1060,13 @@ class _Action extends StatefulWidget {
     required this.label,
     required this.onSelect,
     this.primary = false,
-    this.autofocus = false,
+    this.preferred = false,
   });
 
   final String label;
   final VoidCallback onSelect;
   final bool primary;
-  final bool autofocus;
+  final bool preferred;
 
   @override
   State<_Action> createState() => _ActionState();
@@ -1079,7 +1082,7 @@ class _ActionState extends State<_Action> {
         : Nocturne.neutral700;
 
     return Focusable(
-      autofocus: widget.autofocus,
+      preferred: widget.preferred,
       scaleOnFocus: 1.03,
       onSelect: widget.onSelect,
       onFocusChange: (focused) => setState(() => _focused = focused),

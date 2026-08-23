@@ -477,9 +477,30 @@ final class SuperMoviesApi {
   String resolve(String url) =>
       url.startsWith('/') ? uriFor(url).toString() : url;
 
+  /// Which version of the API this client speaks.
+  ///
+  /// v2 exists beside it on the same server and is not finished; a client that
+  /// followed the newest prefix it could see would be betting on shapes nobody
+  /// has agreed yet. Moving is a deliberate edit here, once the shapes this
+  /// package parses are the ones v2 sends.
+  static const version = '/api/v1';
+
+  /// Paths that are the server's, not the API's, and carry no version.
+  ///
+  /// A proxied poster comes back *from* the server as `/proxy/…` and is handed
+  /// straight to [resolve] — versioning it here would rewrite an address the
+  /// server just gave us. `/stream` is the event stream and `/health` is what a
+  /// load balancer asks; neither describes a payload anybody parses, so neither
+  /// is versioned. All three are spelled out in `contracts/openapi.json` with
+  /// no prefix, which is where this list comes from.
+  static const _unversioned = ['/proxy/', '/stream', '/health'];
+
   Uri uriFor(String path) {
     final base = baseUrl.toString().replaceAll(RegExp(r'/+$'), '');
-    return Uri.parse('$base$path');
+    final versioned = _unversioned.any(path.startsWith)
+        ? path
+        : '$version$path';
+    return Uri.parse('$base$versioned');
   }
 
   Future<JsonMap> _get(String path) => _send('GET', path);

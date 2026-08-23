@@ -54,10 +54,17 @@ class _T9KeypadState extends State<T9Keypad> {
 
   /// How long a key stays "the one being cycled".
   ///
-  /// A telephone waited about a second. Shorter and `АА` is impossible to
-  /// type; longer and every double letter is a pause somebody has to sit
-  /// through.
-  static const _settleFor = Duration(milliseconds: 900);
+  /// A telephone waited about a second and this waits half again as long, for
+  /// a reason that has nothing to do with how fast anybody presses: a cheap box
+  /// drops frames, and the *second* press of a pair arrives late because the
+  /// engine was still painting the first. At 900 ms that overrun landed past
+  /// the window often enough to be maddening — `ББ` came out `Б` then `Б` in a
+  /// new letter, and the fix somebody reaches for is pressing faster, which
+  /// makes the box slower still.
+  ///
+  /// The cost is the other way round and it is smaller: a doubled letter waits
+  /// this long before it can be started, and only a doubled letter does.
+  static const _settleFor = Duration(milliseconds: 1500);
 
   Keypad _keypad = Keypad.ukrainian;
 
